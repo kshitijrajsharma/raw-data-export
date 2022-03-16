@@ -126,6 +126,7 @@ $(document).ready(function () {
         download_url[1].innerHTML=''
     }
     function handleSubmit(event) {
+        document.getElementById("hot_export_btn").disabled = true;
         event.preventDefault();
         var data = editableLayers.toGeoJSON();
         console.log(data);
@@ -173,7 +174,11 @@ $(document).ready(function () {
             }
             input+='}'
             console.log(input);
-            stat[1].innerHTML="Running"    
+            stat[1].innerHTML="Running"
+            response_time=document.getElementById('summary_response').rows[2].cells;
+            response_time[1].innerHTML=''
+            download_url=document.getElementById('summary_response').rows[3].cells;
+            download_url[1].innerHTML=''    
             $.ajax( 
                 { 
                     type:"POST",
@@ -192,12 +197,14 @@ $(document).ready(function () {
                     response_time[1].innerHTML=data.response_time
                     download_url=document.getElementById('summary_response').rows[3].cells;
                     download_url[1].innerHTML='<a id="response_file_download" href="'+data.download_url+'"> Click Here to Download </a>'
+                    document.getElementById("hot_export_btn").disabled = false;               
                     },
                 error: function( e) 
                 { 
                     console.log(e.responseText);
                     stat=document.getElementById('summary_response').rows[1].cells;
-                    stat[1].innerHTML="Error, See Console for Details"
+                    stat[1].innerHTML="Error, See Console for Details";
+                    document.getElementById("hot_export_btn").disabled = false;               
         
                     } 
             })
