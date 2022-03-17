@@ -136,12 +136,17 @@ $(document).ready(function () {
             const form_data = new FormData(event.target);
             geometryType = form_data.getAll("geometryType");
             osmTags = form_data.getAll("osmTags");
+            osmElements = form_data.getAll("osmElements");
             osmTags_custom_key = form_data.getAll("customtag_key");
             osmTags_custom_value = form_data.getAll("customtag_value");
 
             if (geometryType.length>0){
                 console.log(geometryType);
                 input+=',"geometryType":'+JSON.stringify(geometryType)
+            }
+            if (osmElements.length>0){
+                console.log(osmElements);
+                input+=',"osmElements":'+JSON.stringify(osmElements)
             }
             if (osmTags.length>0 || osmTags_custom_key.length > 0){
                 var tagsobj = {};
@@ -201,9 +206,9 @@ $(document).ready(function () {
                     },
                 error: function( e) 
                 { 
-                    console.log(e.responseText);
+                    console.log(e.responseJSON);
                     stat=document.getElementById('summary_response').rows[1].cells;
-                    stat[1].innerHTML="Error, See Console for Details";
+                    stat[1].innerHTML=e.responseJSON.detail[0].msg;
                     document.getElementById("hot_export_btn").disabled = false;               
         
                     } 

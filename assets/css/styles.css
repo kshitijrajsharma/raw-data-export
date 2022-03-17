@@ -8,3 +8,80 @@ html,body {
   }
 
   #map { height: 500px; }
+
+  .btn_round {
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 35px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  .btn_round:hover {
+    color: #fff;
+    background: #6b4acc;
+    border: 1px solid #6b4acc;
+  }
+  
+  .btn_content_outer {
+    display: inline-block;
+    width: 85%;
+  }
+  .close_c_btn {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    line-height: 30px;
+    border-radius: 50%;
+    background: #ededed;
+    border: 1px solid #ccc;
+    color: #ff5c5c;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .add_icon {
+    padding: 10px;
+    border: 1px dashed #aaa;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .add_group_btn {
+    display: flex;
+  }
+  .add_group_btn i {
+    font-size: 32px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .add_group_btn span {
+    margin-top: 8px;
+  }
+  .add_group_btn,
+  .clone_sub_task {
+    cursor: pointer;
+  }
+  
+  .sub_task_append_area .custom_square {
+    cursor: move;
+  }
+  
+  .del_btn_d {
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 18px;
+  }
