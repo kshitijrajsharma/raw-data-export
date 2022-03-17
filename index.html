@@ -20,7 +20,7 @@
 <body>
   <div class="container-fluid" style="height:87vh;">
     <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
-      <div class="container">
+      <div class="container-fluid">
         <img src="assets/img/1588741335578_hot-logo.png" style="width: 50px" /><a class="navbar-brand" href="#">Hot
           Export</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
           <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
@@ -43,10 +43,10 @@
         </div>
       </div>
     </nav>
-    <div class="row" style="height:85%;">
+    <div class="row" style="height:99%;">
 
-      <div class="col-md-6 col-xl-4">
-        <div>
+      <div class="col-md-6 col-xl-4" >
+        <div >
           <form>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item" role="presentation">
@@ -83,11 +83,60 @@
                   </label>
                 </div>
                 <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="amenity" id="amenity" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Amenity
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="emergency" id="emergency" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Emergency
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="healthcare" id="healthcare" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Healthcare
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="landuse" id="landuse" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Landuse
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="route" id="route" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Route
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="place" id="place" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Place
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="shop" id="shop" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Shop
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="tourism" id="tourism" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Tourism
+                  </label>
+                </div>
+                <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="boundary" id="boundary" />
                   <label class="form-check-label" for="flexCheckDefault">
                     Administrative Boundary
                   </label>
                 </div>
+
                 <div class="row" style="padding:10px;">
                   <div class="container">
                     <div class="row">
@@ -240,16 +289,6 @@
       </div>
     </div>
   </div>
-  <footer class="footer-basic" style="margin:5px;padding:5px">
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Home</a></li>
-      <li class="list-inline-item"><a href="#">Learn</a></li>
-      <li class="list-inline-item"><a href="#">About</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-      <li class="list-inline-item"><a href="#">Github</a></li>
-    </ul>
-    <p class="copyright">HOTOSM © 2022</p>
-  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"

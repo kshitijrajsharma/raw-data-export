@@ -43,3 +43,7 @@ html,body {
   .dynamic-element{
     margin-bottom:0px;
   }
+  .form-check{
+    padding:3px;
+    margin-left: 30px;
+  }
