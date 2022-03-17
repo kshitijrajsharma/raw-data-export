@@ -9,12 +9,37 @@ html,body {
 
   #map { height: 100%; }
 
-  .entry:not(:first-of-type)
-  {
-      margin-top: 10px;
+  .form-container{
+    padding:10px;
+    padding-bottom:5px;
+    margin:5px ;
+    margin-top:5px;
+    background-color: #fdfdfd;
   }
   
-  .glyphicon
-  {
-      font-size: 12px;
+  .add-one{
+    color:green;
+    text-align:center;
+    cursor:pointer;
+    margin-top:10px;
+  }
+  
+  .delete{
+    color:white;
+    background-color:rgb(231, 76, 60);
+    text-align:center;
+    margin-top:6px;
+    font-weight:700;
+    border-radius:5px;
+    min-width:20px;
+    cursor:pointer;
+  }
+  
+  #singlebutton{
+    width:100%;
+    margin-top:20px;
+  }
+  
+  .dynamic-element{
+    margin-bottom:0px;
   }

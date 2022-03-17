@@ -1,427 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,height=device-height,initial-scale=1.0, shrink-to-fit=no"
-    />
-    <title>Hot Export</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
-    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin=""
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css" integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  </head>
 
-  <body>
-    <div class="container-fluid" style="height:87vh;">
-      <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
-        <div class="container">
-          <img
-            src="assets/img/1588741335578_hot-logo.png"
-            style="width: 50px"
-          /><a class="navbar-brand" href="#">Hot Export</a
-          ><button
-            data-bs-toggle="collapse"
-            class="navbar-toggler"
-            data-bs-target="#navcol-1"
-          >
-            <span class="visually-hidden">Toggle navigation</span
-            ><span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav me-auto">
-              <li class="nav-item">
-                <a class="nav-link active" href="#">Create</a>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0, shrink-to-fit=no" />
+  <title>Hot Export</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+  <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css"
+    integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <div class="container-fluid" style="height:87vh;">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+      <div class="container">
+        <img src="assets/img/1588741335578_hot-logo.png" style="width: 50px" /><a class="navbar-brand" href="#">Hot
+          Export</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+          <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Create</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="#">Exports</a></li>
+            <li class="nav-item dropdown">
+              <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">English</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">French</a </div>
+            </li>
+          </ul>
+          <span class="navbar-text actions">
+            <a class="btn btn-light action-button" role="button" href="#" style="background: rgb(214, 64, 63)">Log
+              In</a></span>
+        </div>
+      </div>
+    </nav>
+    <div class="row" style="height:85%;">
+
+      <div class="col-md-6 col-xl-4">
+        <div>
+          <form>
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-1" style="color: rgb(0, 0, 0)">Data</a>
               </li>
-              <li class="nav-item"><a class="nav-link" href="#">Exports</a></li>
-              <li class="nav-item dropdown">
-                <a
-                  class="dropdown-toggle nav-link"
-                  aria-expanded="false"
-                  data-bs-toggle="dropdown"
-                  href="#"
-                  >English</a
-                >
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="#">French</a
-                </div>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-2"
+                  style="color: rgb(0, 0, 0)">Formats</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-3"
+                  style="color: rgb(0, 0, 0)">Summary</a>
               </li>
             </ul>
-            <span class="navbar-text actions">
-              <a
-                class="btn btn-light action-button"
-                role="button"
-                href="#"
-                style="background: rgb(214, 64, 63)"
-                >Log In</a
-              ></span
-            >
-          </div>
-        </div>
-      </nav>
-      <div class="row" style="height:85%;">
-        
-        <div class="col-md-6 col-xl-4">
-          <div>
-            <form>
-              <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-1"
-                    style="color: rgb(0, 0, 0)"
-                    >Data</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-2"
-                    style="color: rgb(0, 0, 0)"
-                    >Formats</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link active"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-3"
-                    style="color: rgb(0, 0, 0)"
-                    >Summary</a
-                  >
-                </li>
-              </ul>
-              <div class="tab-content">
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-1"
-                  style="padding: 15px"
-                >
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="osmTags"
-                      value="building"
-                      id="flexCheckChecked"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="flexCheckChecked"
-                      id="buildings"
-                    >
-                      Buildings
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="highway"
-                      id="highways"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Highways
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="waterway"
-                      id="waterways"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Waterways
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="boundary"
-                      id="boundary"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Administrative Boundary
-                    </label>
-                  </div>
-                  <div class="row" style="padding:10px;">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_key"
-                            class="form-control"
-                            name="customtag_key"
-                            placeholder="Key"
-                          />
-                        </div>
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_value"
-                            name="customtag_value"
-                            class="form-control"
-                            placeholder="Value"
-                          />
+            <div class="tab-content">
+              <div class="tab-pane" role="tabpanel" id="tab-1" style="padding: 15px">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="osmTags" value="building"
+                    id="flexCheckChecked" />
+                  <label class="form-check-label" for="flexCheckChecked" id="buildings">
+                    Buildings
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="highway" id="highways" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Highways
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="waterway" id="waterways" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Waterways
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="boundary" id="boundary" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Administrative Boundary
+                  </label>
+                </div>
+                <div class="row" style="padding:10px;">
+                  <div class="container">
+                    <div class="row">
+
+                      <div class="form-group dynamic-element" style="display:none">
+                        <div class="row">
+                          <div class="col-md-2"></div>
+
+                          <!-- Replace these fields -->
+                          <div class="col-md-4">
+                            <input type="text" id="customtag_key" class="form-control" name="customtag_key"
+                              placeholder="Key" />
+                          </div>
+                          <div class="col-md-3">
+                            <input type="text" id="customtag_value" name="customtag_value" class="form-control"
+                              placeholder="Value" />
+                          </div>
+                          <!-- End of fields-->
+                          <div class="col-md-1">
+                            <p class="delete">x</p>
+                          </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_key"
-                            class="form-control"
-                            name="customtag_key"
-                            placeholder="Key"
-                          />
-                        </div>
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_value"
-                            name="customtag_value"
-                            class="form-control"
-                            placeholder="Value"
-                          />
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_key"
-                            class="form-control"
-                            name="customtag_key"
-                            placeholder="Key"
-                          />
-                        </div>
-                        <div class="col">
-                          <input
-                            type="text"
-                            id="customtag_value"
-                            name="customtag_value"
-                            class="form-control"
-                            placeholder="Value"
-                          />
-                        </div>
+                      <!-- END OF HIDDEN ELEMENT -->
+
+
+
+
+
+                      <div class="form-container">
+                        <form class="form-horizontal">
+                          <fieldset>
+                            <!-- Form Name -->
+                            <div class="dynamic-stuff">
+                              <!-- Dynamic element will be cloned here -->
+                              <!-- You can call clone function once if you want it to show it a first element-->
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p class="add-one">+ Add Your Own Key Value</p>
+                                </div>
+                                <div class="col-md-5"></div>
+
+                              </div>
+                            </div>
+                          </fieldset>
+                        </form>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-2"
-                  style="padding: 15px"
-                >
-                  <p class="h6" style="padding: 10px">Output Types</p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="formCheck-8"
-                      checked
-                      disabled
-                    /><label class="form-check-label" for="formCheck-1"
-                      >GeoJSON</label
-                    >
-                  </div>
-                  <p class="h6" style="padding: 10px">Geometry Types</p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="geometryType"
-                      value="point"
-                      id="flexCheckChecked"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="flexCheckChecked"
-                      id="point"
-                    >
-                      Point
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="geometryType"
-                      value="linestring"
-                      id="linestring"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Linestring
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="geometryType"
-                      type="checkbox"
-                      value="polygon"
-                      id="polygon"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Polygon
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="geometryType"
-                      type="checkbox"
-                      value="multilinestring"
-                      id="multilinestring"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Multilinestring
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="geometryType"
-                      type="checkbox"
-                      value="multipolygon"
-                      id="multipolygon"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Multipolygon
-                    </label>
-                  </div>
-                  <p class="h6" style="padding: 10px">OSM Elements</p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="osmElements"
-                      value="nodes"
-                      id="flexCheckChecked"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="flexCheckChecked"
-                      id="Nodes"
-                    >
-                      Nodes
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="osmElements"
-                      value="ways"
-                      id="Ways"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Ways
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmElements"
-                      type="checkbox"
-                      value="relations"
-                      id="relations"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Relations
-                    </label>
-                  </div>
+              </div>
+              <div class="tab-pane" role="tabpanel" id="tab-2" style="padding: 15px">
+                <p class="h6" style="padding: 10px">Output Types</p>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="formCheck-8" checked disabled /><label
+                    class="form-check-label" for="formCheck-1">GeoJSON</label>
                 </div>
-                <div
-                  class="tab-pane active"
-                  role="tabpanel"
-                  id="tab-3"
-                  style="padding: 15px"
-                >
-                  <table id="summary_response" class="table table-hover">
-                    <tbody>
-                      <tr>
-                        <th scope="row">Area</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Status</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Response Time</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Download</th>
-                        <td colspan="2"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <button class="btn btn-primary text-end" style="background: rgb(214, 64, 63)" id="hot_export_btn" type="submit">Export</button>
+                <p class="h6" style="padding: 10px">Geometry Types</p>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="geometryType" value="point"
+                    id="flexCheckChecked" />
+                  <label class="form-check-label" for="flexCheckChecked" id="point">
+                    Point
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="geometryType" value="linestring"
+                    id="linestring" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Linestring
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="geometryType" type="checkbox" value="polygon" id="polygon" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Polygon
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="geometryType" type="checkbox" value="multilinestring"
+                    id="multilinestring" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Multilinestring
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="geometryType" type="checkbox" value="multipolygon"
+                    id="multipolygon" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Multipolygon
+                  </label>
+                </div>
+                <p class="h6" style="padding: 10px">OSM Elements</p>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="osmElements" value="nodes"
+                    id="flexCheckChecked" />
+                  <label class="form-check-label" for="flexCheckChecked" id="Nodes">
+                    Nodes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="osmElements" value="ways" id="Ways" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Ways
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" name="osmElements" type="checkbox" value="relations" id="relations" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Relations
+                  </label>
                 </div>
               </div>
-            </form>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-8 offset-xl-0">
-          
-            <div id="map"></div>
-           
+              <div class="tab-pane active" role="tabpanel" id="tab-3" style="padding: 15px">
+                <table id="summary_response" class="table table-hover">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Area</th>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Status</th>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Response Time</th>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Download</th>
+                      <td colspan="2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="btn btn-primary text-end" style="background: rgb(214, 64, 63)" id="hot_export_btn"
+                  type="submit">Export</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-    </div>
-    <footer
-      class="footer-basic"
-      style="margin:5px;padding:5px"
-    >
-      <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Home</a></li>
-        <li class="list-inline-item"><a href="#">Learn</a></li>
-        <li class="list-inline-item"><a href="#">About</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
-        <li class="list-inline-item"><a href="#">Github</a></li>
-      </ul>
-      <p class="copyright">HOTOSM © 2022</p>
-    </footer>
+      <div class="col-md-6 col-xl-8 offset-xl-0">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script
-      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin=""
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="assets/js/map.js"></script>
-  </body>
+        <div id="map"></div>
+
+      </div>
+    </div>
+  </div>
+  <footer class="footer-basic" style="margin:5px;padding:5px">
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Home</a></li>
+      <li class="list-inline-item"><a href="#">Learn</a></li>
+      <li class="list-inline-item"><a href="#">About</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+      <li class="list-inline-item"><a href="#">Github</a></li>
+    </ul>
+    <p class="copyright">HOTOSM © 2022</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"
+    integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="assets/js/map.js"></script>
+</body>
+
 </html>
