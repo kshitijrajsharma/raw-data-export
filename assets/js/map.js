@@ -11,37 +11,7 @@ $(document).ready(function () {
 
     var editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
-    var options = {
-        edit: {
-            featureGroup: editableLayers,
-            rectangle :{
-                metric: true
-            },
-            polygon: {
-                metric: true
-            }
-            
-        },
-        draw: {
-            polyline: false,
-            circle:false,
-            marker: false,
-            rectangle :{
-                shapeOptions: {
-                    color: '#d6403f',
-                    opacity:1
-                },
-                metric: true
-            },
-            polygon: {
-                shapeOptions: {
-                    color: '#d6403f',
-                    opacity:1
-                },
-                metric: true
-            }
-        }
-    };
+    
     var drawControlFull = new L.Control.Draw({
         draw: {
             polyline: false,
@@ -106,13 +76,14 @@ $(document).ready(function () {
         });
     });
 
-    map.on('draw:deleted', function(e) {
-        if (editableLayers.getLayers().length === 0){
-            map.removeControl(drawControlEditOnly);
-            map.addControl(drawControlFull);
-            clear_summary();
+    L.EditToolbar.Delete.include({
+        enable: function () {
+          this.options.featureGroup.clearLayers()
+          map.removeControl(drawControlEditOnly);
+          map.addControl(drawControlFull);
+          clear_summary();
         }
-    });
+      })
 
     
     function clear_summary(){
