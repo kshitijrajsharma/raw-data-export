@@ -24,7 +24,7 @@
   </head>
 
   <body>
-    <div class="container-fluid">
+    <div class="container-fluid" style="height:87vh;">
       <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
         <div class="container">
           <img
@@ -70,7 +70,8 @@
           </div>
         </div>
       </nav>
-      <div class="row">
+      <div class="row" style="height:85%;">
+        
         <div class="col-md-6 col-xl-4">
           <div>
             <form>
@@ -167,6 +168,46 @@
                   </div>
                   <div class="row" style="padding:10px;">
                     <div class="container">
+                      <div class="row">
+                        <div class="col">
+                          <input
+                            type="text"
+                            id="customtag_key"
+                            class="form-control"
+                            name="customtag_key"
+                            placeholder="Key"
+                          />
+                        </div>
+                        <div class="col">
+                          <input
+                            type="text"
+                            id="customtag_value"
+                            name="customtag_value"
+                            class="form-control"
+                            placeholder="Value"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <input
+                            type="text"
+                            id="customtag_key"
+                            class="form-control"
+                            name="customtag_key"
+                            placeholder="Key"
+                          />
+                        </div>
+                        <div class="col">
+                          <input
+                            type="text"
+                            id="customtag_value"
+                            name="customtag_value"
+                            class="form-control"
+                            placeholder="Value"
+                          />
+                        </div>
+                      </div>
                       <div class="row">
                         <div class="col">
                           <input
@@ -347,12 +388,16 @@
             </form>
           </div>
         </div>
-        <div class="col-md-6 col-xl-8 offset-xl-0" id="map"></div>
+        <div class="col-md-6 col-xl-8 offset-xl-0">
+          
+            <div id="map"></div>
+           
+        </div>
       </div>
     </div>
     <footer
       class="footer-basic"
-      style="padding-top: 10px; padding-bottom: 10px"
+      style="margin:5px;padding:5px"
     >
       <ul class="list-inline">
         <li class="list-inline-item"><a href="#">Home</a></li>

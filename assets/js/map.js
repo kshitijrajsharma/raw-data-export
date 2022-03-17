@@ -133,17 +133,21 @@ $(document).ready(function () {
                     }
                 }
                 if (osmTags_custom_key.length > 0){
-                    if (osmTags_custom_value.length > 0){
-                        if (osmTags_custom_value[0] != ''){
-                            console.log(osmTags_custom_value[0]);
-                            const myArray = osmTags_custom_value[0].split(",");
-                            tagsobj[osmTags_custom_key[0]] = [myArray.join("','")];
+                    for (var i = 0 ; i < osmTags_custom_key.length; i++) {
+                        // console.log(osmTags_custom_value[i]);
+                        if (osmTags_custom_value[i] != ''){                  
+                            // console.log(osmTags_custom_value[i]);
+                            const myArray = osmTags_custom_value[i].split(",");
+                            console.log(myArray);
+                            tagsobj[osmTags_custom_key[i]] = myArray;
+                        
+                        }else{   
+                            if (osmTags_custom_key[i] != ''){                       
+                                tagsobj[osmTags_custom_key[i]] = [];
+                            }
+                            
                         }
-                    }else{
-                        if (osmTags_custom_value[0] != ''){
-                            tagsobj[osmTags_custom_key[0]] = [];
-                        }
-                    }
+                    }    
                 }
 
                 input+=',"osmTags":'+JSON.stringify(tagsobj)
