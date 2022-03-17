@@ -63,21 +63,22 @@
             </ul>
             <div class="tab-content">
               <div class="tab-pane" role="tabpanel" id="tab-1" style="padding: 15px">
-                <div class="form-check">
+                <p class="h6" style="padding: 10px">Pre Defined Keys</p>
+                <div class="form-check" >
                   <input class="form-check-input" type="checkbox" name="osmTags" value="building"
                     id="flexCheckChecked" />
-                  <label class="form-check-label" for="flexCheckChecked" id="buildings">
+                  <label class="form-check-label" for="flexCheckChecked" data-toggle="tooltip"  title="Building is Not Null" id="buildings">
                     Buildings
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="highway" id="highways" />
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="highway" id="highways"  />
                   <label class="form-check-label" for="flexCheckDefault">
                     Highways
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="waterway" id="waterways" />
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="waterway" id="waterways"  />
                   <label class="form-check-label" for="flexCheckDefault">
                     Waterways
                   </label>
@@ -89,7 +90,7 @@
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="emergency" id="emergency" />
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="emergency" id="emergency"/>
                   <label class="form-check-label" for="flexCheckDefault">
                     Emergency
                   </label>
@@ -101,38 +102,38 @@
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="landuse" id="landuse" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="landuse" id="landuse"  />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Building is Not Null">
                     Landuse
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="route" id="route" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Building is Not Null">
                     Route
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="place" id="place" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Building is Not Null">
                     Place
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="shop" id="shop" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="shop" id="shop"  />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Building is Not Null">
                     Shop
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="tourism" id="tourism" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="tourism" id="tourism"  />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Building is Not Null">
                     Tourism
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="boundary" id="boundary" />
-                  <label class="form-check-label" for="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Boundary = Administrative" >
                     Administrative Boundary
                   </label>
                 </div>
@@ -150,13 +151,13 @@
                             <input type="text" id="customtag_key" class="form-control" name="customtag_key"
                               placeholder="Key" />
                           </div>
-                          <div class="col-md-3">
-                            <input type="text" id="customtag_value" name="customtag_value" class="form-control"
+                          <div class="col-md-3" >
+                            <input type="text" id="customtag_value" name="customtag_value" class="form-control" 
                               placeholder="Value" />
                           </div>
                           <!-- End of fields-->
                           <div class="col-md-1">
-                            <p class="delete">x</p>
+                            <p class="delete">-</p>
                           </div>
                         </div>
                       </div>
@@ -178,7 +179,7 @@
                             <!-- Button -->
                             <div class="form-group">
                               <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12" data-toggle="tooltip"  title="Define Key and value pair normally like this => Key : value . You can Define multiple values for key like this => Key : value1,value2 eg=> amenity : cafe,fast_food,pub . If value is left empty it will be considered as * eg=> building:  will be considered as building=*" data-placement="top">
                                   <p class="add-one">+ Add Your Own Key Value</p>
                                 </div>
                                 <div class="col-md-5"></div>
@@ -255,6 +256,9 @@
                 </div>
               </div>
               <div class="tab-pane active" role="tabpanel" id="tab-3" style="padding: 15px">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>Hi There ! </strong> You can leave everything unchecked in Data and Formats Tab to download All Data within Area
+                </div>
                 <table id="summary_response" class="table table-hover">
                   <tbody>
                     <tr>
@@ -300,6 +304,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="assets/js/map.js"></script>
 </body>
 
