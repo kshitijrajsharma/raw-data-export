@@ -194,12 +194,15 @@
                 </div>
               </div>
               <div class="tab-pane" role="tabpanel" id="tab-2" style="padding: 15px">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                   You can Leave Everything Unchecked to get all types of data or select according to your requirement , Hover over heading to get instruction
+                </div>
                 <p class="h6" style="padding: 10px">Output Types</p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="formCheck-8" checked disabled /><label
                     class="form-check-label" for="formCheck-1">GeoJSON</label>
                 </div>
-                <p class="h6" style="padding: 10px">Geometry Types</p>
+                <p class="h6" style="padding: 10px" data-toggle="tooltip"  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Hot Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements" data-placement="top">Geometry Types </p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="geometryType" value="point"
                     id="flexCheckChecked" />
@@ -234,7 +237,7 @@
                     Multipolygon
                   </label>
                 </div>
-                <p class="h6" style="padding: 10px">OSM Elements</p>
+                <p class="h6" style="padding: 10px" data-toggle="tooltip"  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Hot Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements" data-placement="top">OSM Elements</p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="osmElements" value="nodes"
                     id="flexCheckChecked" />
