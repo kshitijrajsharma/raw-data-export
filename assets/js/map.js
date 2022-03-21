@@ -178,10 +178,16 @@ $(document).ready(function () {
           document.getElementById("hot_export_btn").disabled = false;
         },
         error: function (e) {
+          try {
           console.log(e.responseJSON);
           stat = document.getElementById("summary_response").rows[1].cells;
           stat[1].innerHTML = e.responseJSON.detail[0].msg;
           document.getElementById("hot_export_btn").disabled = false;
+          }
+          catch(err) {
+            stat[1].innerHTML = "Error , API didn't responded"
+            document.getElementById("hot_export_btn").disabled = false;
+          }
         },
       });
     } else {
