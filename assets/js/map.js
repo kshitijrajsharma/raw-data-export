@@ -109,6 +109,10 @@ $(document).ready(function () {
       osmElements = form_data.getAll("osmElements");
       osmTags_custom_key = form_data.getAll("customtag_key");
       osmTags_custom_value = form_data.getAll("customtag_value");
+      columns_filter = form_data.getAll("column_key");
+
+      
+
 
       if (geometryType.length > 0) {
         console.log(geometryType);
@@ -117,6 +121,13 @@ $(document).ready(function () {
       if (osmElements.length > 0) {
         console.log(osmElements);
         input += ',"osmElements":' + JSON.stringify(osmElements);
+      }
+      if (columns_filter.length > 0) {
+        console.log(columns_filter);
+        if (columns_filter[0] != "") {
+          console.log(columns_filter);
+          input += ',"columns":' + JSON.stringify(columns_filter);
+        }
       }
       if (osmTags.length > 0 || osmTags_custom_key.length > 0) {
         var tagsobj = {};
@@ -199,8 +210,13 @@ $(document).ready(function () {
   form.addEventListener("submit", handleSubmit);
 
   //Clone the hidden element and shows it
-  $(".add-one").click(function () {
-    $(".dynamic-element").first().clone().appendTo(".dynamic-stuff").show();
+  $("#custom_tag_add_btn").click(function () {
+    $("#custom_tag_content").first().clone().appendTo("#custom_tag_content_show").show();
+    attach_delete();
+  });
+
+  $("#attr_elem_btn").click(function () {
+    $("#attr_elem").first().clone().appendTo("#attr_elem_stuff").show();
     attach_delete();
   });
 

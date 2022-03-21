@@ -45,8 +45,8 @@
     </nav>
     <div class="row" style="height:99%;">
 
-      <div class="col-md-6 col-xl-4" >
-        <div >
+      <div class="col-md-6 col-xl-4">
+        <div>
           <form>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item" role="presentation">
@@ -57,6 +57,10 @@
                   style="color: rgb(0, 0, 0)">Formats</a>
               </li>
               <li class="nav-item" role="presentation">
+                <a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-4"
+                  style="color: rgb(0, 0, 0)">Columns</a>
+              </li>
+              <li class="nav-item" role="presentation">
                 <a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-3"
                   style="color: rgb(0, 0, 0)">Summary</a>
               </li>
@@ -64,76 +68,88 @@
             <div class="tab-content">
               <div class="tab-pane" role="tabpanel" id="tab-1" style="padding: 15px">
                 <p class="h6" style="padding: 10px">Pre Defined Keys</p>
-                <div class="form-check" >
-                  <input class="form-check-input" type="checkbox" name="osmTags" value="building"
-                    id="flexCheckChecked" checked/>
-                  <label class="form-check-label" for="flexCheckChecked" data-toggle="tooltip"  title="Building is Not Null i.e. building=*" id="buildings">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="osmTags" value="building" id="flexCheckChecked"
+                    checked />
+                  <label class="form-check-label" for="flexCheckChecked" data-toggle="tooltip"
+                    title="Building is Not Null i.e. building=*" id="buildings">
                     Buildings
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="highway" id="highways"  />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Highways is Not Null i.e. highway=*">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="highway" id="highways" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Highways is Not Null i.e. highway=*">
                     Highways
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="waterway" id="waterways"  />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Waterways is Not Null i.e. waterway=*">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="waterway" id="waterways" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Waterways is Not Null i.e. waterway=*">
                     Waterways
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="amenity" id="amenity" />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Amenity is Not Null i.e. amenity=*">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Amenity is Not Null i.e. amenity=*">
                     Amenity
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="emergency" id="emergency"/>
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Emergency is Not Null i.e. emergency=*">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="emergency" id="emergency" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Emergency is Not Null i.e. emergency=*">
                     Emergency
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="healthcare" id="healthcare" />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Healthcare is Not Null i.e. healthcare=*">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Healthcare is Not Null i.e. healthcare=*">
                     Healthcare
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="landuse" id="landuse"  />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Landuse is Not Null i.e. landuse=*">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="landuse" id="landuse" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Landuse is Not Null i.e. landuse=*">
                     Landuse
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="route" id="route" />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Route is Not Null i.e.route=*">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Route is Not Null i.e.route=*">
                     Route
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="place" id="place" />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Place is Not Null i.e. place=* ">
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Place is Not Null i.e. place=* ">
                     Place
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="shop" id="shop"  />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Shop is Not Null i.e.shop = *">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="shop" id="shop" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Shop is Not Null i.e.shop = *">
                     Shop
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="osmTags" type="checkbox" value="tourism" id="tourism"  />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Tourism is Not Null i.e. tourism=*">
+                  <input class="form-check-input" name="osmTags" type="checkbox" value="tourism" id="tourism" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Tourism is Not Null i.e. tourism=*">
                     Tourism
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" name="osmTags" type="checkbox" value="boundary" id="boundary" />
-                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"  title="Boundary = Administrative" >
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="Boundary = Administrative">
                     Administrative Boundary
                   </label>
                 </div>
@@ -142,7 +158,7 @@
                   <div class="container">
                     <div class="row">
 
-                      <div class="form-group dynamic-element" style="display:none">
+                      <div class="form-group dynamic-element" id="custom_tag_content" style="display:none">
                         <div class="row">
                           <div class="col-md-2"></div>
 
@@ -151,8 +167,8 @@
                             <input type="text" id="customtag_key" class="form-control" name="customtag_key"
                               placeholder="Key" />
                           </div>
-                          <div class="col-md-3" >
-                            <input type="text" id="customtag_value" name="customtag_value" class="form-control" 
+                          <div class="col-md-3">
+                            <input type="text" id="customtag_value" name="customtag_value" class="form-control"
                               placeholder="Value" />
                           </div>
                           <!-- End of fields-->
@@ -171,7 +187,7 @@
                         <form class="form-horizontal">
                           <fieldset>
                             <!-- Form Name -->
-                            <div class="dynamic-stuff">
+                            <div class="dynamic-stuff" id="custom_tag_content_show">
                               <!-- Dynamic element will be cloned here -->
                               <!-- You can call clone function once if you want it to show it a first element-->
                             </div>
@@ -179,8 +195,10 @@
                             <!-- Button -->
                             <div class="form-group">
                               <div class="row">
-                                <div class="col-md-12" data-toggle="tooltip"  title="Define Key and value pair normally like this => Key : value . You can Define multiple values for key like this => Key : value1,value2 eg=> amenity : cafe,fast_food,pub . If value is left empty it will be considered as * eg=> building:  will be considered as building=*" data-placement="top">
-                                  <p class="add-one">+ Add Your Own Key Value</p>
+                                <div class="col-md-12" data-toggle="tooltip"
+                                  title="Define Key and value pair normally like this => Key : value . You can Define multiple values for key like this => Key : value1,value2 eg=> amenity : cafe,fast_food,pub . If value is left empty it will be considered as * eg=> building:  will be considered as building=*"
+                                  data-placement="top">
+                                  <p class="add-one" id="custom_tag_add_btn">+ Add Your Own Key Value</p>
                                 </div>
                                 <div class="col-md-5"></div>
 
@@ -195,14 +213,16 @@
               </div>
               <div class="tab-pane" role="tabpanel" id="tab-2" style="padding: 15px">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                Hover over heading to get instructions
+                  Hover over heading to get instructions
                 </div>
                 <p class="h6" style="padding: 10px">Output Types</p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="formCheck-8" checked disabled /><label
                     class="form-check-label" for="formCheck-1">GeoJSON</label>
                 </div>
-                <p class="h6" style="padding: 10px" data-toggle="tooltip"  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Galaxy Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements" data-placement="top">Geometry Types </p>
+                <p class="h6" style="padding: 10px" data-toggle="tooltip"
+                  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Galaxy Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements"
+                  data-placement="top">Geometry Types </p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="geometryType" value="point"
                     id="flexCheckChecked" />
@@ -218,7 +238,8 @@
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" name="geometryType" type="checkbox" value="polygon" id="polygon" checked />
+                  <input class="form-check-input" name="geometryType" type="checkbox" value="polygon" id="polygon"
+                    checked />
                   <label class="form-check-label" for="flexCheckDefault">
                     Polygon
                   </label>
@@ -237,7 +258,9 @@
                     Multipolygon
                   </label>
                 </div>
-                <p class="h6" style="padding: 10px" data-toggle="tooltip"  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Galaxy Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements" data-placement="top">OSM Elements</p>
+                <p class="h6" style="padding: 10px" data-toggle="tooltip"
+                  title="Geometry Types and OSM Elements are Optional. OSM Elements are targeted for Operpass API Users and Geometry Types are targeted for Galaxy Export Users , You can  filter them by geometry or osm elements or None of them (Default You will be getting all type of data) or both of them for eg : you can get line features from ways by selecting linestring in geometry type and ways in osm elements"
+                  data-placement="top">OSM Elements</p>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="osmElements" value="nodes"
                     id="flexCheckChecked" />
@@ -258,9 +281,28 @@
                   </label>
                 </div>
               </div>
+              <div class="tab-pane" role="tabpanel" id="tab-4" style="padding: 15px">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  Default, You will get all tags as Tags column. You can specify if you want any of tag as different column (osm_id will be included in all condition)
+                </div>
+                <p class="h6" style="padding: 10px">Predefined Columns</p>
+                <div class="form-check">
+                  <input class="form-check-input" name="column_key" type="checkbox" value="name" id="column_key" />
+                  <label class="form-check-label" for="flexCheckDefault" data-toggle="tooltip"
+                    title="This will export the attribute value of name tag for each feature as name (Column)">
+                    Name
+                  </label>
+                </div>
+                <p class="h6" style="padding: 10px">Define Your Own</p>
+                <input type="text" id="column_key" class="form-control" name="column_key" placeholder="Column_Key" />
+                <input type="text" id="column_key" class="form-control" name="column_key" placeholder="Column_Key" />
+                <input type="text" id="column_key" class="form-control" name="column_key" placeholder="Column_Key" />
+                <input type="text" id="column_key" class="form-control" name="column_key" placeholder="Column_Key" />
+              </div>
               <div class="tab-pane active" role="tabpanel" id="tab-3" style="padding: 15px">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  <strong>Hi There ! </strong> You can leave everything unchecked in Data and Formats Tab to download All Data within Area
+                  <strong>Hi There ! </strong> You can leave everything unchecked in Data and Formats Tab to download
+                  All Data within Area
                 </div>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                   <strong>Asia and Africa is Available ! </strong>
@@ -310,7 +352,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
   <script src="assets/js/map.js"></script>
 </body>
 
