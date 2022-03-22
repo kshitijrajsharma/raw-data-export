@@ -97,6 +97,7 @@ $(document).ready(function () {
   }
   function handleSubmit(event) {
     document.getElementById("hot_export_btn").disabled = true;
+    map.removeControl(drawControlEditOnly);
     event.preventDefault();
     var data = editableLayers.toGeoJSON();
     console.log(data);
@@ -192,6 +193,8 @@ $(document).ready(function () {
             data.download_url +
             '"> Click Here to Download </a>';
           document.getElementById("hot_export_btn").disabled = false;
+          map.addControl(drawControlEditOnly);
+
         },
         error: function (e) {
           try {
@@ -199,10 +202,14 @@ $(document).ready(function () {
           stat = document.getElementById("summary_response").rows[1].cells;
           stat[1].innerHTML = '<p style="color:red;">'+e.responseJSON.detail[0].msg+'</p>';
           document.getElementById("hot_export_btn").disabled = false;
+          map.addControl(drawControlEditOnly);
+
           }
           catch(err) {
             stat[1].innerHTML = '<p style="color:red;">'+"Error , API didn't responded"+'</p>' ;
             document.getElementById("hot_export_btn").disabled = false;
+            map.addControl(drawControlEditOnly);
+
           }
         },
       });
@@ -236,4 +243,25 @@ $(document).ready(function () {
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
   });
+  var max_fields = 5;
+  var wrapper = $("#columnadd");
+  var add_button = $("#addcolumnkey");
+
+  var x = 1;
+  $(add_button).click(function(e) {
+      e.preventDefault();
+      if (x < max_fields) {
+          x++;
+          $(wrapper).append('<div class="col-md-7"><input type="text" class="form-control" name="column_key" placeholder="Osm Key"/> <div class="col-md-1" id="columndelete"><p class="delete">-</p></div></div>'); //add input box
+      } else {
+          alert('You Reached the limits')
+      }
+  });
+
+  $(wrapper).on("click", "#columndelete", function(e) {
+      e.preventDefault();
+      $(this).parent('div').remove();
+      x--;
+  })
+
 });
