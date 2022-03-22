@@ -197,11 +197,11 @@ $(document).ready(function () {
           try {
           console.log(e.responseJSON);
           stat = document.getElementById("summary_response").rows[1].cells;
-          stat[1].innerHTML = e.responseJSON.detail[0].msg;
+          stat[1].innerHTML = '<p style="color:red;">'+e.responseJSON.detail[0].msg+'</p>';
           document.getElementById("hot_export_btn").disabled = false;
           }
           catch(err) {
-            stat[1].innerHTML = "Error , API didn't responded"
+            stat[1].innerHTML = '<p style="color:red;">'+"Error , API didn't responded"+'</p>' ;
             document.getElementById("hot_export_btn").disabled = false;
           }
         },
