@@ -107,11 +107,16 @@ $(document).ready(function () {
       geometryType = form_data.getAll("geometryType");
       osmTags = form_data.getAll("osmTags");
       osmElements = form_data.getAll("osmElements");
+      outputType = form_data.getAll("outputType");
+
       osmTags_custom_key = form_data.getAll("customtag_key");
       osmTags_custom_value = form_data.getAll("customtag_value");
       columns_filter = form_data.getAll("column_key");
 
-      
+      if (outputType.length > 0) {
+        console.log(outputType);
+        input += ',"outputType":' + JSON.stringify(outputType[0]);
+      }
 
 
       if (geometryType.length > 0) {
@@ -192,11 +197,11 @@ $(document).ready(function () {
           try {
           console.log(e.responseJSON);
           stat = document.getElementById("summary_response").rows[1].cells;
-          stat[1].innerHTML = e.responseJSON.detail[0].msg;
+          stat[1].innerHTML = '<p style="color:red;">'+e.responseJSON.detail[0].msg+'</p>';
           document.getElementById("hot_export_btn").disabled = false;
           }
           catch(err) {
-            stat[1].innerHTML = "Error , API didn't responded"
+            stat[1].innerHTML = '<p style="color:red;">'+"Error , API didn't responded"+'</p>' ;
             document.getElementById("hot_export_btn").disabled = false;
           }
         },
