@@ -252,7 +252,7 @@ $(document).ready(function () {
       e.preventDefault();
       if (x < max_fields) {
           x++;
-          $(wrapper).append('<div class="col-md-7"><input type="text" class="form-control" name="column_key" placeholder="Osm Key"/> <div class="col-md-1" id="columndelete"><p class="delete">-</p></div></div>'); //add input box
+          $(wrapper).append('<div class="col-sm-9 col-md-6 col-lg-8 col-xl-10"><input type="text" class="form-control" name="column_key" placeholder="Osm Key"/> <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" id="columndelete"><p class="delete">-</p></div></div>'); //add input box
       } else {
           alert('You Reached the limits')
       }
