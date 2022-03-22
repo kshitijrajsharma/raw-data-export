@@ -107,11 +107,16 @@ $(document).ready(function () {
       geometryType = form_data.getAll("geometryType");
       osmTags = form_data.getAll("osmTags");
       osmElements = form_data.getAll("osmElements");
+      outputType = form_data.getAll("outputType");
+
       osmTags_custom_key = form_data.getAll("customtag_key");
       osmTags_custom_value = form_data.getAll("customtag_value");
       columns_filter = form_data.getAll("column_key");
 
-      
+      if (outputType.length > 0) {
+        console.log(outputType);
+        input += ',"outputType":' + JSON.stringify(outputType[0]);
+      }
 
 
       if (geometryType.length > 0) {
