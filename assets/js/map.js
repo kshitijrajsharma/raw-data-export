@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  check_status();
   var map = L.map("map", {
     minZoom: 2,
     attributionControl: false,
@@ -191,7 +192,7 @@ $(document).ready(function () {
           download_url[1].innerHTML =
             '<a id="response_file_download" href="' +
             data.download_url +
-            '"> Click Here to Download </a>';
+            '"> Download </a><p><small>( Zip Size : '+data.zip_file_size+', Actual File size : '+data.binded_file_size+' )</small></p>';
           document.getElementById("hot_export_btn").disabled = false;
           map.addControl(drawControlEditOnly);
 
@@ -264,4 +265,23 @@ $(document).ready(function () {
       x--;
   })
 
+  function check_status(){
+    $.ajax({
+      type: "GET",
+      url: "http://18.209.245.110:8000/raw-data/status/",
+      contentType: "text/plain; charset=utf-8",
+      success: function (data) {
+        // console.log(data);
+        document.getElementById("db_status").innerHTML = '<strong> Database Updated '+data.last_updated+'</strong>';
+      },
+      error: function (e) {
+        console.log(e);
+        document.getElementById("db_status").innerHTML = '<p style="color:red;">Could not connect to Database</p>';
+      },
+    });
+  }
+  // let nIntervId;
+  // if (!nIntervId) {
+  //   nIntervId = setInterval(check_status, 120000);
+  // }
 });
