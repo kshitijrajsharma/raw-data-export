@@ -4,7 +4,7 @@ $(document).ready(function () {
     minZoom: 2,
     attributionControl: false,
   });
-  map.setView([28.2957487, 83.8123341], 3);
+  map.setView([28.2957487, 83.8123341], 7);
   L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -174,7 +174,7 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://18.209.245.110:8000/raw-data/current-snapshot/",
+        url: "http://127.0.0.1:8080/raw-data/current-snapshot/",
         contentType: "text/plain; charset=utf-8",
         data: input,
 
@@ -268,7 +268,7 @@ $(document).ready(function () {
   function check_status(){
     $.ajax({
       type: "GET",
-      url: "http://18.209.245.110:8000/raw-data/status/",
+      url: "http://127.0.0.1:8080/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
