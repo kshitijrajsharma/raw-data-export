@@ -174,7 +174,7 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8080/raw-data/current-snapshot/",
+        url: "http://34.201.2.85:8000/raw-data/current-snapshot/",
         contentType: "text/plain; charset=utf-8",
         data: input,
 
@@ -268,7 +268,7 @@ $(document).ready(function () {
   function check_status(){
     $.ajax({
       type: "GET",
-      url: "http://127.0.0.1:8080/raw-data/status/",
+      url: "http://34.201.2.85:8000/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
