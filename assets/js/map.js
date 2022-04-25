@@ -192,7 +192,7 @@ $(document).ready(function () {
           download_url[1].innerHTML =
             '<a id="response_file_download" href="' +
             data.download_url +
-            '"> Download </a><p><small>( Zip Size : '+data.zip_file_size+', Actual File size : '+data.binded_file_size+' )</small></p>';
+            '"> Download </a><p><small>( Zip Size : '+data.zip_file_size+' MB, Inside File size : '+data.binded_file_size+' )</small></p>';
           document.getElementById("hot_export_btn").disabled = false;
           map.addControl(drawControlEditOnly);
 
