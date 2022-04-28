@@ -9,6 +9,16 @@ $(document).ready(function () {
     attribution:
       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
+  map.addControl( new L.Control.Search({
+		url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+		jsonpParam: 'json_callback',
+		propertyName: 'display_name',
+		propertyLoc: ['lat','lon'],
+		marker: L.circleMarker([0,0],{radius:30}),
+		autoCollapse: true,
+		autoType: false,
+		minLength: 2
+	}) );
 
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
@@ -174,7 +184,7 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://34.201.2.85:8000/raw-data/current-snapshot/",
+        url: "http://localhost:8080/raw-data/current-snapshot/",
         contentType: "text/plain; charset=utf-8",
         data: input,
 
@@ -268,7 +278,7 @@ $(document).ready(function () {
   function check_status(){
     $.ajax({
       type: "GET",
-      url: "http://34.201.2.85:8000/raw-data/status/",
+      url: "http://localhost:8080/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
