@@ -64,6 +64,9 @@
                   style="color: rgb(0, 0, 0)">Columns</a>
               </li>
               <li class="nav-item" role="presentation">
+                <a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-5" style="color: rgb(0, 0, 0)">AOI</a>
+              </li>
+              <li class="nav-item" role="presentation">
                 <a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-3"
                   style="color: rgb(0, 0, 0)">Summary</a>
               </li>
@@ -239,8 +242,8 @@
                     title="It will use ogr2ogr logic for binding">KML</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" id="formCheck-8" name="outputType" value="MBTILES" /><label
-                    class="form-check-label" for="formCheck-1" data-toggle="tooltip"
+                  <input class="form-check-input" type="radio" id="formCheck-8" name="outputType"
+                    value="MBTILES" /><label class="form-check-label" for="formCheck-1" data-toggle="tooltip"
                     title="It will use ogr2ogr logic for binding , Default : MINZOOM=10 and MAXZOOM=22 , Try avoiding including relation features in your query this is still experimental">MBTILES</label>
                 </div>
                 <p class="h6" style="padding: 10px" data-toggle="tooltip"
@@ -322,12 +325,12 @@
                 </div>
                 <p class="h6" style="padding: 10px">Define Your Own</p>
                 <div class="row">
-                <div class="dynamic-stuff" id="columnadd">
-                  <div class="col-sm-9 col-md-6 col-lg-8 col-xl-10" style="margin-bottom: 10px;" ><input type="text" id="column_key" class="form-control" name="column_key"
-                    placeholder="Osm Key" /></div>
-                  
+                  <div class="dynamic-stuff" id="columnadd">
+                    <div class="col-sm-9 col-md-6 col-lg-8 col-xl-10" style="margin-bottom: 10px;"><input type="text"
+                        id="column_key" class="form-control" name="column_key" placeholder="Osm Key" /></div>
+
+                  </div>
                 </div>
-              </div>
 
                 <!-- Button -->
                 <div class="form-group">
@@ -343,14 +346,31 @@
                 </div>
 
               </div>
+              <div class="tab-pane" role="tabpanel" id="tab-5" style="padding: 15px">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  You can paste or change Geojson which is defined as Area of Interest, Loaded Geojson will appeared as
+                  Blue while created will appear Red.
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Paste Your GeoJson Here or Draw</label>
+                  <textarea class="form-control" id="geojsontextarea" rows="10"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <button style="margin:10px;padding:10px;" type="button" id="loadgeojson"
+                      class="btn btn-success">Load to Map </button>
+                  </div>
+                </div>
+
+
+              </div>
               <div class="tab-pane active" role="tabpanel" id="tab-3" style="padding: 15px">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                   <strong>Hi There ! </strong> You can leave everything unchecked in Data and Formats Tab to download
                   All Data within Area . Download link will expire after an hour.
                 </div>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  <strong>Asia and Africa is Available ! </strong>
-                </div>
+
                 <table id="summary_response" class="table table-hover">
                   <tbody>
                     <tr>
@@ -373,9 +393,10 @@
                 </table>
                 <button class="btn btn-primary text-end" style="background: rgb(214, 64, 63)" id="hot_export_btn"
                   type="submit">Export</button>
-                  <div class="alert alert-warning alert-dismissible fade show" style="margin-top: 10px;" id="db_status" role="alert">
-                    <strong>Connecting to Database ...</strong>
-                  </div>
+                <div class="alert alert-warning alert-dismissible fade show" style="margin-top: 10px;" id="db_status"
+                  role="alert">
+                  <strong>Connecting to Database ...</strong>
+                </div>
 
               </div>
 

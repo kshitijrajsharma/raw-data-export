@@ -63,6 +63,7 @@ $(document).ready(function () {
     if (type === "polygon" || type == "rectangle") {
       var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
       area = document.getElementById("summary_response").rows[0].cells;
+      document.getElementById("geojsontextarea").value=JSON.stringify(layer.toGeoJSON());
       area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML = "Ready to Run";
@@ -79,6 +80,9 @@ $(document).ready(function () {
       var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
+      document.getElementById("geojsontextarea").value=JSON.stringify(layer.toGeoJSON());
+
+      
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML = "Ready to Run";
       console.log(layer.toGeoJSON());
@@ -92,6 +96,8 @@ $(document).ready(function () {
       this.options.featureGroup.clearLayers();
       map.removeControl(drawControlEditOnly);
       map.addControl(drawControlFull);
+      document.getElementById("geojsontextarea").value="";
+
       clear_summary();
     },
   });
@@ -108,6 +114,10 @@ $(document).ready(function () {
   }
   function handleSubmit(event) {
     document.getElementById("hot_export_btn").disabled = true;
+    document.getElementById("loadgeojson").disabled = true;
+    document.getElementById("geojsontextarea").disabled = true;
+
+
     map.removeControl(drawControlEditOnly);
     event.preventDefault();
     var data = editableLayers.toGeoJSON();
@@ -184,7 +194,7 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://localhost:8080/raw-data/current-snapshot/",
+        url: "http://localhost:9090/raw-data/current-snapshot/",
         contentType: "text/plain; charset=utf-8",
         data: input,
 
@@ -204,6 +214,8 @@ $(document).ready(function () {
             data.download_url +
             '"> Download </a><p><small>( Zip Size : '+data.zip_file_size+' MB, Inside File size : '+data.binded_file_size+' )</small></p>';
           document.getElementById("hot_export_btn").disabled = false;
+          document.getElementById("loadgeojson").disabled = false;
+          document.getElementById("geojsontextarea").disabled = false;
           map.addControl(drawControlEditOnly);
 
         },
@@ -213,12 +225,16 @@ $(document).ready(function () {
           stat = document.getElementById("summary_response").rows[1].cells;
           stat[1].innerHTML = '<p style="color:red;">'+e.responseJSON.detail[0].msg+'</p>';
           document.getElementById("hot_export_btn").disabled = false;
+          document.getElementById("loadgeojson").disabled = false;
+          document.getElementById("geojsontextarea").disabled = false;
           map.addControl(drawControlEditOnly);
 
           }
           catch(err) {
             stat[1].innerHTML = '<p style="color:red;">'+"Error , API didn't responded"+'</p>' ;
             document.getElementById("hot_export_btn").disabled = false;
+            document.getElementById("loadgeojson").disabled = false;
+            document.getElementById("geojsontextarea").disabled = false;
             map.addControl(drawControlEditOnly);
 
           }
@@ -275,10 +291,29 @@ $(document).ready(function () {
       x--;
   })
 
+  $("#loadgeojson").click(function () {
+    jsonstring = document.getElementById('geojsontextarea');
+    try {
+      geojson_layer=JSON.parse(jsonstring.value);
+      document.querySelector("a.leaflet-draw-edit-remove").click(); 
+      
+      editableLayers.addLayer(L.geoJSON(geojson_layer));
+      map.removeControl(drawControlFull);
+      map.addControl(drawControlEditOnly);
+      stat = document.getElementById("summary_response").rows[1].cells;
+      stat[1].innerHTML = "Ready to Run";
+      area = document.getElementById("summary_response").rows[0].cells;
+      area[1].innerHTML = "To be Calculated";
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+});
+
   function check_status(){
     $.ajax({
       type: "GET",
-      url: "http://localhost:8080/raw-data/status/",
+      url: "http://localhost:9090/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
