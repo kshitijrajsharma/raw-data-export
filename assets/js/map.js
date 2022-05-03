@@ -294,6 +294,7 @@ $(document).ready(function () {
   $("#loadgeojson").click(function () {
     jsonstring = document.getElementById('geojsontextarea');
     try {
+      value=jsonstring.value;
       geojson_layer=JSON.parse(jsonstring.value);
       document.querySelector("a.leaflet-draw-edit-remove").click(); 
       
@@ -304,6 +305,7 @@ $(document).ready(function () {
       stat[1].innerHTML = "Ready to Run";
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = "To be Calculated";
+      document.getElementById("geojsontextarea").value=value;
     } catch (error) {
       console.log(error);
       alert(error);
