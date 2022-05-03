@@ -115,6 +115,8 @@ $(document).ready(function () {
   function handleSubmit(event) {
     document.getElementById("hot_export_btn").disabled = true;
     document.getElementById("loadgeojson").disabled = true;
+    document.getElementById("filename").disabled = true;
+
     document.getElementById("geojsontextarea").disabled = true;
 
 
@@ -138,6 +140,10 @@ $(document).ready(function () {
       if (outputType.length > 0) {
         console.log(outputType);
         input += ',"outputType":' + JSON.stringify(outputType[0]);
+      }
+
+      if (document.getElementById("filename").value!=""){
+        input += ',"fileName":"'+document.getElementById("filename").value+'"';
       }
 
 
@@ -216,6 +222,8 @@ $(document).ready(function () {
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
+          document.getElementById("filename").disabled = false;
+
           map.addControl(drawControlEditOnly);
 
         },
@@ -227,6 +235,8 @@ $(document).ready(function () {
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
+          document.getElementById("filename").disabled = false;
+
           map.addControl(drawControlEditOnly);
 
           }
@@ -235,6 +245,8 @@ $(document).ready(function () {
             document.getElementById("hot_export_btn").disabled = false;
             document.getElementById("loadgeojson").disabled = false;
             document.getElementById("geojsontextarea").disabled = false;
+            document.getElementById("filename").disabled = false;
+
             map.addControl(drawControlEditOnly);
 
           }
