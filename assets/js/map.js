@@ -200,7 +200,7 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://localhost:9090/raw-data/current-snapshot/",
+        url: "http://44.203.33.53:8000/raw-data/current-snapshot/",
         contentType: "text/plain; charset=utf-8",
         data: input,
 
@@ -327,7 +327,7 @@ $(document).ready(function () {
   function check_status(){
     $.ajax({
       type: "GET",
-      url: "http://localhost:9090/raw-data/status/",
+      url: "http://44.203.33.53:8000/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
