@@ -55,6 +55,8 @@ $(document).ready(function () {
   });
   map.addControl(drawControlFull);
 
+  document.getElementById("filename").disabled = false; //disable me - temp 
+
   map.on("draw:created", function (e) {
     clear_summary();
     var type = e.layerType,
