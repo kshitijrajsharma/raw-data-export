@@ -55,7 +55,7 @@ $(document).ready(function () {
   });
   map.addControl(drawControlFull);
 
-  document.getElementById("filename").disabled = false; //disable me - temp 
+  document.getElementById("filename").disabled = true; //disable me - temp 
 
   map.on("draw:created", function (e) {
     clear_summary();
@@ -224,7 +224,7 @@ $(document).ready(function () {
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
-          document.getElementById("filename").disabled = false;
+          // document.getElementById("filename").disabled = false;
 
           map.addControl(drawControlEditOnly);
 
@@ -237,7 +237,7 @@ $(document).ready(function () {
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
-          document.getElementById("filename").disabled = false;
+          // document.getElementById("filename").disabled = false;
 
           map.addControl(drawControlEditOnly);
 
@@ -247,7 +247,7 @@ $(document).ready(function () {
             document.getElementById("hot_export_btn").disabled = false;
             document.getElementById("loadgeojson").disabled = false;
             document.getElementById("geojsontextarea").disabled = false;
-            document.getElementById("filename").disabled = false;
+            // document.getElementById("filename").disabled = false;
 
             map.addControl(drawControlEditOnly);
 
