@@ -191,7 +191,10 @@ $(document).ready(function () {
               }
             }
           }
-
+          console.log(tagsobj)
+          if (tagsobj.length >0){
+            tagsobj={"building":[]}
+          }
           input +=
             ',"filters":{"tags":{"all_geometry":' +
             JSON.stringify(tagsobj) +
@@ -199,7 +202,6 @@ $(document).ready(function () {
           if (columns_filter.length > 0) {
             console.log(columns_filter);
             if (columns_filter[0] != "") {
-              console.log(columns_filter);
               input +=
                 ',"attributes":{"all_geometry":' +
                 JSON.stringify(columns_filter) +
