@@ -18,8 +18,9 @@ $(document).ready(function () {
       jsonpParam: "json_callback",
       propertyName: "display_name",
       propertyLoc: ["lat", "lon"],
-      marker: L.circleMarker([0, 0], { radius: 30 }),
-      autoCollapse: true,
+      hideMarkerOnCollapse: true,
+      // marker: L.circleMarker([0, 0], { radius: 30 }),
+      autoCollapse: false,
       autoType: false,
       minLength: 2,
     })
