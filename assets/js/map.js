@@ -74,9 +74,9 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
-      area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
+      area[1].innerHTML = parseFloat(seeArea / 1000000).toFixed(2) + " Sq Km";
       stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML = "Ready to Run";
+      stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
     }
 
     editableLayers.addLayer(layer);
@@ -95,7 +95,7 @@ $(document).ready(function () {
       );
 
       stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML = "Ready to Run";
+      stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
       console.log(layer.toGeoJSON());
 
       //do whatever you want; most likely save back to db
@@ -211,7 +211,7 @@ $(document).ready(function () {
       }
       input += "}";
       console.log(input);
-      stat[1].innerHTML = "Running";
+      stat[1].innerHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running</strong></div>';
       response_time = document.getElementById("summary_response").rows[2].cells;
       response_time[1].innerHTML = "";
       download_url = document.getElementById("summary_response").rows[3].cells;
@@ -230,7 +230,7 @@ $(document).ready(function () {
           area = document.getElementById("summary_response").rows[0].cells;
           area[1].innerHTML = data.query_area;
           stat = document.getElementById("summary_response").rows[1].cells;
-          stat[1].innerHTML = "Ready to Download";
+          stat[1].innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
           response_time =
             document.getElementById("summary_response").rows[2].cells;
           response_time[1].innerHTML = data.response_time;
@@ -345,7 +345,7 @@ $(document).ready(function () {
       map.removeControl(drawControlFull);
       map.addControl(drawControlEditOnly);
       stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML = "Ready to Run";
+      stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = "To be Calculated";
       document.getElementById("geojsontextarea").value = value;
