@@ -1,24 +1,29 @@
 $(document).ready(function () {
+  window.onbeforeunload = function () {
+    return "Dude, are you sure you want to leave? Think of your existing exports!";
+  };
   check_status();
   var map = L.map("map", {
     minZoom: 2,
     attributionControl: false,
   });
-  map.setView([28.2957487, 83.8123341], 7);
+  map.setView([28.2957487, 83.8123341], 4);
   L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
-  map.addControl( new L.Control.Search({
-		url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
-		jsonpParam: 'json_callback',
-		propertyName: 'display_name',
-		propertyLoc: ['lat','lon'],
-		marker: L.circleMarker([0,0],{radius:30}),
-		autoCollapse: true,
-		autoType: false,
-		minLength: 2
-	}) );
+  map.addControl(
+    new L.Control.Search({
+      url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
+      jsonpParam: "json_callback",
+      propertyName: "display_name",
+      propertyLoc: ["lat", "lon"],
+      marker: L.circleMarker([0, 0], { radius: 30 }),
+      autoCollapse: true,
+      autoType: false,
+      minLength: 2,
+    })
+  );
 
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
@@ -55,7 +60,7 @@ $(document).ready(function () {
   });
   map.addControl(drawControlFull);
 
-  document.getElementById("filename").disabled = true; //disable me - temp 
+  // document.getElementById("filename").disabled = true; //disable me - temp
 
   map.on("draw:created", function (e) {
     clear_summary();
@@ -65,7 +70,9 @@ $(document).ready(function () {
     if (type === "polygon" || type == "rectangle") {
       var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
       area = document.getElementById("summary_response").rows[0].cells;
-      document.getElementById("geojsontextarea").value=JSON.stringify(layer.toGeoJSON());
+      document.getElementById("geojsontextarea").value = JSON.stringify(
+        layer.toGeoJSON()
+      );
       area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML = "Ready to Run";
@@ -82,9 +89,10 @@ $(document).ready(function () {
       var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
-      document.getElementById("geojsontextarea").value=JSON.stringify(layer.toGeoJSON());
+      document.getElementById("geojsontextarea").value = JSON.stringify(
+        layer.toGeoJSON()
+      );
 
-      
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML = "Ready to Run";
       console.log(layer.toGeoJSON());
@@ -98,7 +106,7 @@ $(document).ready(function () {
       this.options.featureGroup.clearLayers();
       map.removeControl(drawControlEditOnly);
       map.addControl(drawControlFull);
-      document.getElementById("geojsontextarea").value="";
+      document.getElementById("geojsontextarea").value = "";
 
       clear_summary();
     },
@@ -121,7 +129,6 @@ $(document).ready(function () {
 
     document.getElementById("geojsontextarea").disabled = true;
 
-
     map.removeControl(drawControlEditOnly);
     event.preventDefault();
     var data = editableLayers.toGeoJSON();
@@ -129,69 +136,77 @@ $(document).ready(function () {
     stat = document.getElementById("summary_response").rows[1].cells;
     if (JSON.stringify(data) != '{"type":"FeatureCollection","features":[]}') {
       var input = '{"geometry":' + JSON.stringify(data.features[0].geometry);
-      const form_data = new FormData(event.target);
-      geometryType = form_data.getAll("geometryType");
-      osmTags = form_data.getAll("osmTags");
-      osmElements = form_data.getAll("osmElements");
-      outputType = form_data.getAll("outputType");
-
-      osmTags_custom_key = form_data.getAll("customtag_key");
-      osmTags_custom_value = form_data.getAll("customtag_value");
-      columns_filter = form_data.getAll("column_key");
-
-      if (outputType.length > 0) {
-        console.log(outputType);
-        input += ',"outputType":' + JSON.stringify(outputType[0]);
+      if (document.getElementById("filename").value != "") {
+        input +=
+          ',"fileName":"' + document.getElementById("filename").value + '"';
       }
+      if (document.getElementById("download_everything").checked) {
+        console.log(
+          "Downloading everything inside area, Ignoring other fields"
+        );
+      } else {
+        const form_data = new FormData(event.target);
+        geometryType = form_data.getAll("geometryType");
+        osmTags = form_data.getAll("osmTags");
+        osmElements = form_data.getAll("osmElements");
+        outputType = form_data.getAll("outputType");
 
-      if (document.getElementById("filename").value!=""){
-        input += ',"fileName":"'+document.getElementById("filename").value+'"';
-      }
+        osmTags_custom_key = form_data.getAll("customtag_key");
+        osmTags_custom_value = form_data.getAll("customtag_value");
+        columns_filter = form_data.getAll("column_key");
 
-
-      if (geometryType.length > 0) {
-        console.log(geometryType);
-        input += ',"geometryType":' + JSON.stringify(geometryType);
-      }
-      if (osmElements.length > 0) {
-        console.log(osmElements);
-        input += ',"osmElements":' + JSON.stringify(osmElements);
-      }
-      if (columns_filter.length > 0) {
-        console.log(columns_filter);
-        if (columns_filter[0] != "") {
-          console.log(columns_filter);
-          input += ',"columns":' + JSON.stringify(columns_filter);
+        if (outputType.length > 0) {
+          console.log(outputType);
+          input += ',"outputType":' + JSON.stringify(outputType[0]);
         }
-      }
-      if (osmTags.length > 0 || osmTags_custom_key.length > 0) {
-        var tagsobj = {};
-        if (osmTags.length > 0) {
-          for (var i = 0; i < osmTags.length; i++) {
-            if (osmTags[i] == "boundary") {
-              tagsobj[osmTags[i]] = ["administrative"];
-            } else {
-              tagsobj[osmTags[i]] = [];
-            }
-          }
+        if (geometryType.length > 0) {
+          console.log(geometryType);
+          input += ',"geometryType":' + JSON.stringify(geometryType);
         }
-        if (osmTags_custom_key.length > 0) {
-          for (var i = 0; i < osmTags_custom_key.length; i++) {
-            // console.log(osmTags_custom_value[i]);
-            if (osmTags_custom_value[i] != "") {
-              // console.log(osmTags_custom_value[i]);
-              const myArray = osmTags_custom_value[i].split(",");
-              console.log(myArray);
-              tagsobj[osmTags_custom_key[i]] = myArray;
-            } else {
-              if (osmTags_custom_key[i] != "") {
-                tagsobj[osmTags_custom_key[i]] = [];
+
+        if (osmTags.length > 0 || osmTags_custom_key.length > 0) {
+          var tagsobj = {};
+          if (osmTags.length > 0) {
+            for (var i = 0; i < osmTags.length; i++) {
+              if (osmTags[i] == "boundary") {
+                tagsobj[osmTags[i]] = ["administrative"];
+              } else {
+                tagsobj[osmTags[i]] = [];
               }
             }
           }
-        }
+          if (osmTags_custom_key.length > 0) {
+            for (var i = 0; i < osmTags_custom_key.length; i++) {
+              // console.log(osmTags_custom_value[i]);
+              if (osmTags_custom_value[i] != "") {
+                // console.log(osmTags_custom_value[i]);
+                const myArray = osmTags_custom_value[i].split(",");
+                console.log(myArray);
+                tagsobj[osmTags_custom_key[i]] = myArray;
+              } else {
+                if (osmTags_custom_key[i] != "") {
+                  tagsobj[osmTags_custom_key[i]] = [];
+                }
+              }
+            }
+          }
 
-        input += ',"osmTags":' + JSON.stringify(tagsobj);
+          input +=
+            ',"filters":{"tags":{"all_geometry":' +
+            JSON.stringify(tagsobj) +
+            "}";
+          if (columns_filter.length > 0) {
+            console.log(columns_filter);
+            if (columns_filter[0] != "") {
+              console.log(columns_filter);
+              input +=
+                ',"attributes":{"all_geometry":' +
+                JSON.stringify(columns_filter) +
+                "}";
+            }
+          }
+          input += "}";
+        }
       }
       input += "}";
       console.log(input);
@@ -202,8 +217,11 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
       $.ajax({
         type: "POST",
-        url: "http://44.203.33.53:8000/raw-data/current-snapshot/",
-        contentType: "text/plain; charset=utf-8",
+        url: "https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
         data: input,
 
         success: function (data) {
@@ -220,37 +238,41 @@ $(document).ready(function () {
           download_url[1].innerHTML =
             '<a id="response_file_download" href="' +
             data.download_url +
-            '"> Download </a><p><small>( Zip Size : '+data.zip_file_size/1000000+' MB, Inside File size : '+data.binded_file_size+' )</small></p>';
+            '"> Download </a><p><small>( Zip Size : ' +
+            parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2) +
+            " MB, Inside File size : " +
+            data.binded_file_size +
+            " )</small></p>";
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
-          // document.getElementById("filename").disabled = false;
+          document.getElementById("filename").disabled = false;
 
           map.addControl(drawControlEditOnly);
-
         },
         error: function (e) {
           try {
-          console.log(e.responseJSON);
-          stat = document.getElementById("summary_response").rows[1].cells;
-          stat[1].innerHTML = '<p style="color:red;">'+e.responseJSON.detail[0].msg+'</p>';
-          document.getElementById("hot_export_btn").disabled = false;
-          document.getElementById("loadgeojson").disabled = false;
-          document.getElementById("geojsontextarea").disabled = false;
-          // document.getElementById("filename").disabled = false;
-
-          map.addControl(drawControlEditOnly);
-
-          }
-          catch(err) {
-            stat[1].innerHTML = '<p style="color:red;">'+"Error , API didn't responded"+'</p>' ;
+            console.log(e.responseJSON);
+            stat = document.getElementById("summary_response").rows[1].cells;
+            stat[1].innerHTML =
+              '<p style="color:red;">' + e.responseJSON.detail[0].msg + "</p>";
             document.getElementById("hot_export_btn").disabled = false;
             document.getElementById("loadgeojson").disabled = false;
             document.getElementById("geojsontextarea").disabled = false;
             // document.getElementById("filename").disabled = false;
 
             map.addControl(drawControlEditOnly);
+          } catch (err) {
+            stat[1].innerHTML =
+              '<p style="color:red;">' +
+              "Error , API didn't responded" +
+              "</p>";
+            document.getElementById("hot_export_btn").disabled = false;
+            document.getElementById("loadgeojson").disabled = false;
+            document.getElementById("geojsontextarea").disabled = false;
+            document.getElementById("filename").disabled = false;
 
+            map.addControl(drawControlEditOnly);
           }
         },
       });
@@ -264,7 +286,11 @@ $(document).ready(function () {
 
   //Clone the hidden element and shows it
   $("#custom_tag_add_btn").click(function () {
-    $("#custom_tag_content").first().clone().appendTo("#custom_tag_content_show").show();
+    $("#custom_tag_content")
+      .first()
+      .clone()
+      .appendTo("#custom_tag_content_show")
+      .show();
     attach_delete();
   });
 
@@ -289,29 +315,31 @@ $(document).ready(function () {
   var add_button = $("#addcolumnkey");
 
   var x = 1;
-  $(add_button).click(function(e) {
-      e.preventDefault();
-      if (x < max_fields) {
-          x++;
-          $(wrapper).append('<div class="col-sm-9 col-md-6 col-lg-8 col-xl-10"><input type="text" class="form-control" name="column_key" placeholder="Osm Key"/> <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" id="columndelete"><p class="delete">-</p></div></div>'); //add input box
-      } else {
-          alert('You Reached the limits')
-      }
+  $(add_button).click(function (e) {
+    e.preventDefault();
+    if (x < max_fields) {
+      x++;
+      $(wrapper).append(
+        '<div class="col-sm-9 col-md-6 col-lg-8 col-xl-10"><input type="text" class="form-control" name="column_key" placeholder="Osm Key"/> <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" id="columndelete"><p class="delete">-</p></div></div>'
+      ); //add input box
+    } else {
+      alert("You Reached the limits");
+    }
   });
 
-  $(wrapper).on("click", "#columndelete", function(e) {
-      e.preventDefault();
-      $(this).parent('div').remove();
-      x--;
-  })
+  $(wrapper).on("click", "#columndelete", function (e) {
+    e.preventDefault();
+    $(this).parent("div").remove();
+    x--;
+  });
 
   $("#loadgeojson").click(function () {
-    jsonstring = document.getElementById('geojsontextarea');
+    jsonstring = document.getElementById("geojsontextarea");
     try {
-      value=jsonstring.value;
-      geojson_layer=JSON.parse(jsonstring.value);
-      document.querySelector("a.leaflet-draw-edit-remove").click(); 
-      
+      value = jsonstring.value;
+      geojson_layer = JSON.parse(jsonstring.value);
+      document.querySelector("a.leaflet-draw-edit-remove").click();
+
       editableLayers.addLayer(L.geoJSON(geojson_layer));
       map.removeControl(drawControlFull);
       map.addControl(drawControlEditOnly);
@@ -319,30 +347,48 @@ $(document).ready(function () {
       stat[1].innerHTML = "Ready to Run";
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = "To be Calculated";
-      document.getElementById("geojsontextarea").value=value;
+      document.getElementById("geojsontextarea").value = value;
     } catch (error) {
       console.log(error);
       alert(error);
     }
-});
+  });
 
-  function check_status(){
+  function check_status() {
     $.ajax({
       type: "GET",
-      url: "http://44.203.33.53:8000/raw-data/status/",
+      url: "https://galaxy-api.hotosm.org/v1/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
-        document.getElementById("db_status").innerHTML = '<strong> Database Updated '+data.last_updated+'</strong>';
+        document.getElementById("db_status").innerHTML =
+          "<strong> Database Updated " + data.last_updated + "</strong>";
       },
       error: function (e) {
         console.log(e);
-        document.getElementById("db_status").innerHTML = '<p style="color:red;">Could not connect to Database</p>';
+        document.getElementById("db_status").innerHTML =
+          '<p style="color:red;">Could not connect to Database</p>';
       },
     });
   }
-  // let nIntervId;
-  // if (!nIntervId) {
-  //   nIntervId = setInterval(check_status, 120000);
-  // }
+
+  let nIntervId;
+  if (!nIntervId) {
+    nIntervId = setInterval(check_status, 120000);
+  }
+
+  $('input[name="download_everything"]').click(function () {
+    if (this.checked) {
+      $(".form-check").each(function () {
+        // print(this)
+        $('input[type="checkbox"]').prop("disabled", true);
+      });
+    } else {
+      $(".form-check").each(function () {
+        // print(this)
+        $('input[type="checkbox"]').prop("disabled", false);
+      });
+    }
+    $(this).prop("disabled", false);
+  });
 });
