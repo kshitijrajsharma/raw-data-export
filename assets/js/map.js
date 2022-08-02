@@ -213,7 +213,8 @@ $(document).ready(function () {
       }
       input += "}";
       console.log(input);
-      stat[1].innerHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running</strong></div>';
+      start_time=new Date().toLocaleString();
+      stat[1].innerHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running from '+start_time+'</strong></div> :';
       response_time = document.getElementById("summary_response").rows[2].cells;
       response_time[1].innerHTML = "";
       download_url = document.getElementById("summary_response").rows[3].cells;
