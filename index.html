@@ -123,19 +123,18 @@
 
                       <div class="form-group dynamic-element" id="custom_tag_content" style="display:none">
                         <div class="row">
-                          <div class="col-md-2"></div>
 
                           <!-- Replace these fields -->
-                          <div class="col-md-4">
+                          <div class="col-md-5">
                             <input type="text" id="customtag_key" class="form-control" name="customtag_key"
                               placeholder="amenity" />
                           </div>
-                          <div class="col-md-3">
+                          <div class="col-md-5">
                             <input type="text" id="customtag_value" name="customtag_value" class="form-control"
-                              placeholder="cafe,pub" />
+                              placeholder="Leave empty to download everything" />
                           </div>
                           <!-- End of fields-->
-                          <div class="col-md-1">
+                          <div class="col-md-2">
                             <p class="delete">-</p>
                           </div>
                         </div>
@@ -302,6 +301,13 @@
                     <tr>
                       <th scope="row">Result</th>
                       <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Server</th>
+                      <td colspan="2"><select class="form-select" id="server">
+                        <option value="prod" selected>Production</option>
+                        <option value="dev">Development</option>
+                      </select></td>
                     </tr>
                   </tbody>
                 </table>

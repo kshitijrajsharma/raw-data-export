@@ -219,9 +219,19 @@ $(document).ready(function () {
       response_time[1].innerHTML = "";
       download_url = document.getElementById("summary_response").rows[3].cells;
       download_url[1].innerHTML = "";
+
+      var select = document.getElementById('server');
+      var server = select.options[select.selectedIndex].value;
+      console.log(server)
+      if (server=="prod"){
+        api_url="https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/"
+      }else {
+        api_url="http://52.203.15.233:8000/v1/raw-data/current-snapshot/"
+      }
+      
       $.ajax({
         type: "POST",
-        url: "https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/",
+        url: api_url,
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
