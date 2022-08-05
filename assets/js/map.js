@@ -141,6 +141,7 @@ $(document).ready(function () {
         input +=
           ',"fileName":"' + document.getElementById("filename").value + '"';
       }
+      const form_data = new FormData(event.target);
       outputType = form_data.getAll("outputType");
       if (outputType.length > 0) {
         console.log(outputType);
@@ -152,7 +153,7 @@ $(document).ready(function () {
           "Downloading everything inside area, Ignoring other fields"
         );
       } else {
-        const form_data = new FormData(event.target);
+        
         geometryType = form_data.getAll("geometryType");
         osmTags = form_data.getAll("osmTags");
         osmElements = form_data.getAll("osmElements");
