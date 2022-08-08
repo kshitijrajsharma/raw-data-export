@@ -222,7 +222,7 @@
 
               </div>
               <div class="tab-pane" role="tabpanel" id="tab-4" style="padding: 15px">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" style="text-align: justify;">
                   Default with everything unchecked, You will get all tags as Tags column. You can specify if you want
                   any of tag as different column (osm_id will be included in all condition)
                 </div>
@@ -261,11 +261,14 @@
 
               </div>
               <div class="tab-pane" role="tabpanel" id="tab-5" style="padding: 15px">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  You can paste or change Geojson which is defined as Area of Interest, Loaded Geojson will appeared as
-                  Blue while created will appear Red.
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" style="text-align: justify;">
+                  You can paste/edit or Upload Geojson which is defined as Area of Interest, Loaded Geojson will appeared as
+                  Blue meanwhile Created by drawing be in Red
                 </div>
-
+                <div class="mb-3">
+                  <label for="formFile" class="form-label">Upload Your Geojson</label>
+                  <input class="form-control" name="upload_geojson" type="file" id="formFileGeojson">
+                </div>
                 <div class="form-group">
                   <label for="exampleFormControlTextarea1">Paste Your GeoJson Here or Draw</label>
                   <textarea class="form-control" id="geojsontextarea" rows="10"></textarea>
@@ -280,7 +283,7 @@
 
               </div>
               <div class="tab-pane active" role="tabpanel" id="tab-3" style="padding: 15px">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div class="alert alert-warning alert-dismissible fade show"  style="text-align: justify;" role="alert">
                   <strong>Hi There ! </strong>Download link will expire after 90 days.Make sure you copy the link and save it because All info available on this page will get erased if refreshed and request is not trackable
                 </div>
 

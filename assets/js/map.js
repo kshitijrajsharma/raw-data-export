@@ -408,4 +408,28 @@ $(document).ready(function () {
     }
     $(this).prop("disabled", false);
   });
+
+  $('input[name="upload_geojson"]').change(function () {
+    console.log("check")
+    let fileInput = document.getElementById("formFileGeojson")
+    let geojson_file=fileInput.files[0];
+    var filePath = fileInput.value;
+    var allowedExtensions =/(\.geojson)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      alert('Invalid file type : Only .geojson supported');
+      fileInput.value = '';
+      return false;
+    }
+    var reader = new FileReader();
+    reader.onload = (function(theFile) {
+      return function(e) {
+        // Do everything what you need with the file's content(e.target.result)
+        // console.log(e.target.result);
+        document.getElementById("geojsontextarea").value=e.target.result
+      };
+    })(geojson_file);
+    reader.readAsText(geojson_file);
+    
+  });
+
 });
