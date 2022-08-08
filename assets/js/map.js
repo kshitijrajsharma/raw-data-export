@@ -422,6 +422,7 @@ $(document).ready(function () {
   });
 
   $('input[name="upload_geojson"]').change(function () {
+    console.log("upload geojson clicked")
     let fileInput = document.getElementById("formFileGeojson")
     let geojson_file=fileInput.files[0];
 
@@ -438,6 +439,7 @@ $(document).ready(function () {
       fileInput.value = '';
       return false;
     }
+    document.getElementById("geojsontextarea").value=''
     var reader = new FileReader();
     reader.onload = (function(theFile) {
       return function(e) {
@@ -447,8 +449,9 @@ $(document).ready(function () {
       };
     })(geojson_file);
     reader.readAsText(geojson_file);
+    document.getElementById('formFileGeojson').value= null;
     
   });
 
-  document.getElementById("custom_tag_add_btn").click();
+  document.getElementById("formFileGeojson").click();
 });
