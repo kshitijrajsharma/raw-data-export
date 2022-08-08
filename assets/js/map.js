@@ -356,8 +356,10 @@ $(document).ready(function () {
       value = jsonstring.value;
       geojson_layer = JSON.parse(jsonstring.value);
       document.querySelector("a.leaflet-draw-edit-remove").click();
-
-      editableLayers.addLayer(L.geoJSON(geojson_layer));
+      
+      var geoJsonGroup = L.geoJson(geojson_layer);
+      addNonGroupLayers(geoJsonGroup, editableLayers);
+      // editableLayers.addLayer(L.geoJSON(geojson_layer));
       map.removeControl(drawControlFull);
       map.addControl(drawControlEditOnly);
       stat = document.getElementById("summary_response").rows[1].cells;
@@ -370,6 +372,16 @@ $(document).ready(function () {
       alert(error);
     }
   });
+
+  function addNonGroupLayers(sourceLayer, targetGroup) {
+    if (sourceLayer instanceof L.LayerGroup) {
+      sourceLayer.eachLayer(function(layer) {
+        addNonGroupLayers(layer, targetGroup);
+      });
+    } else {
+      targetGroup.addLayer(sourceLayer);
+    }
+  }
 
   function check_status() {
     $.ajax({
