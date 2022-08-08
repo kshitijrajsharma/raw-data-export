@@ -410,13 +410,19 @@ $(document).ready(function () {
   });
 
   $('input[name="upload_geojson"]').change(function () {
-    console.log("check")
     let fileInput = document.getElementById("formFileGeojson")
     let geojson_file=fileInput.files[0];
+
     var filePath = fileInput.value;
     var allowedExtensions =/(\.geojson)$/i;
     if (!allowedExtensions.exec(filePath)) {
       alert('Invalid file type : Only .geojson supported');
+      fileInput.value = '';
+      return false;
+    }
+    let file_size_in_mb=geojson_file.size*0.000001
+    if (file_size_in_mb>5){
+      alert('Maximum 5 Mb of file Supported');
       fileInput.value = '';
       return false;
     }
