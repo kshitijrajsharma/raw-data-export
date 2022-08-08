@@ -450,4 +450,5 @@ $(document).ready(function () {
     
   });
 
+  document.getElementById("custom_tag_add_btn").click();
 });
