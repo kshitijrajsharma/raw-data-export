@@ -459,4 +459,5 @@ $(document).ready(function () {
   });
 
   document.getElementById("formFileGeojson").click();
+  document.getElementById("custom_tag_add_btn").click();
 });
