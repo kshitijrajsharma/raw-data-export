@@ -214,6 +214,10 @@ $(document).ready(function () {
           input += "}";
         }
       }
+      var jointype_dropdown = document.getElementById('jointype');
+      var jointype = jointype_dropdown.options[jointype_dropdown.selectedIndex].value;
+      console.log(jointype)
+      input+=',"joinFilterType":"'+jointype+'"';
       input += "}";
       console.log(input);
       start_time=new Date().toLocaleString();
@@ -231,6 +235,7 @@ $(document).ready(function () {
       }else {
         api_url="http://52.203.15.233:8000/v1/raw-data/current-snapshot/"
       }
+
       
       $.ajax({
         type: "POST",
