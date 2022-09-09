@@ -233,7 +233,7 @@ $(document).ready(function () {
       if (server=="prod"){
         api_url="https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/"
       }else {
-        api_url="http://52.203.15.233:8000/v1/raw-data/current-snapshot/"
+        api_url="https://osm-stats.hotosm.org/v1/raw-data/current-snapshot/"
       }
 
       
