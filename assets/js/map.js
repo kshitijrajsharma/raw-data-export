@@ -21,8 +21,9 @@ $(document).ready(function () {
       hideMarkerOnCollapse: true,
       // marker: L.circleMarker([0, 0], { radius: 30 }),
       autoCollapse: false,
-      autoType: false,
+      autoType: true,
       minLength: 2,
+      zoom:12,
     })
   );
 
@@ -153,7 +154,7 @@ $(document).ready(function () {
           "Downloading everything inside area, Ignoring other fields"
         );
       } else {
-        
+
         geometryType = form_data.getAll("geometryType");
         osmTags = form_data.getAll("osmTags");
         osmElements = form_data.getAll("osmElements");
@@ -236,7 +237,7 @@ $(document).ready(function () {
         api_url="https://osm-stats.hotosm.org/v1/raw-data/current-snapshot/"
       }
 
-      
+
       $.ajax({
         type: "POST",
         url: api_url,
@@ -361,7 +362,7 @@ $(document).ready(function () {
       value = jsonstring.value;
       geojson_layer = JSON.parse(jsonstring.value);
       document.querySelector("a.leaflet-draw-edit-remove").click();
-      
+
       var geoJsonGroup = L.geoJson(geojson_layer);
       addNonGroupLayers(geoJsonGroup, editableLayers);
       // editableLayers.addLayer(L.geoJSON(geojson_layer));
@@ -455,7 +456,7 @@ $(document).ready(function () {
     })(geojson_file);
     reader.readAsText(geojson_file);
     document.getElementById('formFileGeojson').value= null;
-    
+
   });
 
   document.getElementById("formFileGeojson").click();
