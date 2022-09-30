@@ -234,7 +234,7 @@ $(document).ready(function () {
       if (server=="prod"){
         api_url="https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/"
       }else {
-        api_url="http://127.0.0.1:8000/v1/raw-data/current-snapshot/"
+        api_url="http://127.0.0.1:4000/v1/raw-data/current-snapshot/"
       }
 
 
