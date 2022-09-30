@@ -250,7 +250,7 @@ $(document).ready(function () {
         success: function (data) {
           console.log(data);
           area = document.getElementById("summary_response").rows[0].cells;
-          area[1].innerHTML = data.query_area;
+          area[1].innerHTML = parseInt(data.query_area) == 0 ? "Less than a Sq KM" : data.query_area;
           stat = document.getElementById("summary_response").rows[1].cells;
           stat[1].innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
           response_time =
