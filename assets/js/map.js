@@ -75,7 +75,7 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
-      area[1].innerHTML = parseFloat(seeArea / 1000000).toFixed(2) + " Sq Km";
+      area[1].innerHTML = parseInt(parseFloat(seeArea / 1000000).toFixed(2)) == 0 ? "Less than a Sq KM" : parseFloat(seeArea / 1000000).toFixed(2) + " Sq Km";
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
     }
@@ -234,7 +234,7 @@ $(document).ready(function () {
       if (server=="prod"){
         api_url="https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/"
       }else {
-        api_url="https://osm-stats.hotosm.org/v1/raw-data/current-snapshot/"
+        api_url="http://127.0.0.1:8000/v1/raw-data/current-snapshot/"
       }
 
 
@@ -258,14 +258,16 @@ $(document).ready(function () {
           response_time[1].innerHTML = data.response_time;
           download_url =
             document.getElementById("summary_response").rows[3].cells;
+          var zip_file_size =  parseInt(parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2))  == 0 ? "Less than a MB" : parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2)
+          var binded_file_size = parseInt(data.binded_file_size) == 0 ? "Less than a MB" : data.binded_file_size
           download_url[1].innerHTML =
             '<a id="response_file_download" href="' +
             data.download_url +
-            '"> Download </a><p><small>( Zip Size : ' +
-            parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2) +
-            " MB, Inside File size : " +
-            data.binded_file_size +
-            " )</small></p>";
+            '"> Download </a><p><small><strong>Zip size</strong> (MB) : ' + zip_file_size
+            + "<br>"+
+            "<strong>Export size</strong> (MB) : " +
+            binded_file_size  +
+            "</small></p>";
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
@@ -372,7 +374,7 @@ $(document).ready(function () {
       stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
       area = document.getElementById("summary_response").rows[0].cells;
       area[1].innerHTML = "To be Calculated";
-      document.getElementById("geojsontextarea").value = value;
+      document.getElementById("geojsontextarea").value = value ;
     } catch (error) {
       console.log(error);
       alert(error);
