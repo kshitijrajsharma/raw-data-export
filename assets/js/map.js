@@ -265,7 +265,7 @@ $(document).ready(function () {
           download_url[1].innerHTML =
             '<a id="response_file_download" href="' +
             data.download_url +
-            '"> Download </a><p><small><strong>Zip size</strong> (MB) : ' + zip_file_size
+            '">'+data.file_name+'</a><p><small><strong>Zip size</strong> (MB) : ' + zip_file_size
             + "<br>"+
             "<strong>Export size</strong> (MB) : " +
             binded_file_size  +
