@@ -236,7 +236,7 @@ $(document).ready(function () {
       }else if (server=="local"){
         api_url="http://127.0.0.1:8000/v1/raw-data/current-snapshot/"
       } else {
-        api_url="https://osm-stats.hotosm.org/v1/raw-data/current-snapshot/"
+        api_url="http://52.203.15.233:8000/v1/raw-data/current-snapshot/"
       }
 
 
