@@ -401,7 +401,7 @@ $(document).ready(function () {
       success: function (data) {
         // console.log(data);
         document.getElementById("db_status").innerHTML =
-          "<strong> Database Updated " + data.last_updated + "</strong>";
+          "<strong> Database Updated (hr:min:sec)" + data.last_updated + "</strong>";
       },
       error: function (e) {
         console.log(e);
