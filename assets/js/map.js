@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  var result_geojson;
   var select = document.getElementById("server");
   var server = select.options[select.selectedIndex].value;
   $("#server").on("change", function () {
@@ -481,10 +482,11 @@ $(document).ready(function () {
       fillOpacity: 0.01,
     };
     console.log("loading geojson to map");
-    if (map.hasLayer(result_geojson)) {
-      map.removeLayer(result_geojson);
+    if (map.hasLayer(result_geojson)){
+      result_geojson.remove();
     }
-    var result_geojson = L.geoJson(geojson_layer, {
+
+      result_geojson = L.geoJson(geojson_layer, {
       onEachFeature: function (feature, layer) {
         if(layer.feature.geometry.type == 'Polygon' || layer.feature.geometry.type == 'MultiPolygon'){
           var t_style = myStyle
