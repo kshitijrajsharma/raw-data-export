@@ -1,6 +1,13 @@
 $(document).ready(function () {
+  var select = document.getElementById('server');
+  var server = select.options[select.selectedIndex].value;
+  $('#server').on('change', function() {
+    server = this.value ;
+    console.log(server)
+    check_status();
+  });
   window.onbeforeunload = function () {
-    return "Dude, are you sure you want to leave? Think of your existing exports!";
+    return "Are you sure you want to leave? Think of your existing exports!";
   };
   check_status();
   var map = L.map("map", {
@@ -227,19 +234,7 @@ $(document).ready(function () {
       response_time[1].innerHTML = "";
       download_url = document.getElementById("summary_response").rows[3].cells;
       download_url[1].innerHTML = "";
-
-      var select = document.getElementById('server');
-      var server = select.options[select.selectedIndex].value;
-      console.log(server)
-      if (server=="prod"){
-        api_url="https://galaxy-api.hotosm.org/v1/raw-data/current-snapshot/"
-      }else if (server=="local"){
-        api_url="http://127.0.0.1:8000/v1/raw-data/current-snapshot/"
-      } else {
-        api_url="https://osm-stats.hotosm.org/v1/raw-data/current-snapshot/"
-      }
-
-
+      api_url=server+"/raw-data/current-snapshot/"
       $.ajax({
         type: "POST",
         url: api_url,
@@ -251,60 +246,101 @@ $(document).ready(function () {
 
         success: function (data) {
           console.log(data);
-          area = document.getElementById("summary_response").rows[0].cells;
-          area[1].innerHTML = parseInt(data.query_area) == 0 ? "Less than a Sq KM" : data.query_area;
-          stat = document.getElementById("summary_response").rows[1].cells;
-          stat[1].innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
-          response_time =
-            document.getElementById("summary_response").rows[2].cells;
-          response_time[1].innerHTML = data.response_time;
-          download_url =
-            document.getElementById("summary_response").rows[3].cells;
-          var zip_file_size =  parseInt(parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2))  == 0 ? "Less than a MB" : parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2)
-          var binded_file_size = parseInt(data.binded_file_size) == 0 ? "Less than a MB" : data.binded_file_size
-          download_url[1].innerHTML =
-            '<a id="response_file_download" href="' +
-            data.download_url +
-            '">'+data.file_name+'</a><p><small><strong>Zip size</strong> (MB) : ' + zip_file_size
-            + "<br>"+
-            "<strong>Export size</strong> (MB) : " +
-            binded_file_size  +
-            "</small></p>";
-          document.getElementById("hot_export_btn").disabled = false;
-          document.getElementById("loadgeojson").disabled = false;
-          document.getElementById("geojsontextarea").disabled = false;
-          document.getElementById("filename").disabled = false;
+          if (data.task_id){
+            task_id=data.task_id;
+            track_link=data.track_link;
+            url= server+track_link;
+            call_api_result(url);
+          }
 
-          map.addControl(drawControlEditOnly);
         },
         error: function (e) {
-          try {
-            console.log(e.responseJSON);
-            stat = document.getElementById("summary_response").rows[1].cells;
-            stat[1].innerHTML =
-              '<p style="color:red;">' + e.responseJSON.detail[0].msg + "</p>";
-            document.getElementById("hot_export_btn").disabled = false;
-            document.getElementById("loadgeojson").disabled = false;
-            document.getElementById("geojsontextarea").disabled = false;
-            // document.getElementById("filename").disabled = false;
-
-            map.addControl(drawControlEditOnly);
-          } catch (err) {
-            stat[1].innerHTML =
-              '<p style="color:red;">' +
-              "Error , API didn't responded" +
-              "</p>";
-            document.getElementById("hot_export_btn").disabled = false;
-            document.getElementById("loadgeojson").disabled = false;
-            document.getElementById("geojsontextarea").disabled = false;
-            document.getElementById("filename").disabled = false;
-
-            map.addControl(drawControlEditOnly);
-          }
+          handle_error(e.responseJSON.detail[0].msg)
         },
       });
     } else {
       stat[1].innerHTML = "No Polygon Supplied";
+    }
+  }
+
+
+  function call_api_result(call_url){
+    $.ajax({
+      type: "GET",
+      url: call_url,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      success: function (data) {
+        if (data.status === "SUCCESS"){
+          console.log("success i am inside");
+          populate_results(data.result);
+        }
+        else if (data.status === "FAILURE"){
+          handle_error("Task Failed");
+        } else{
+          call_api_result(call_url);
+        }
+
+      },
+      error: function (e) {
+        handle_error(e.responseJSON.detail[0].msg)
+      },
+    });
+  }
+
+  function populate_results(data){
+    console.log(data);
+    area = document.getElementById("summary_response").rows[0].cells;
+    area[1].innerHTML = parseInt(data.query_area) == 0 ? "Less than a Sq KM" : data.query_area;
+    stat = document.getElementById("summary_response").rows[1].cells;
+    stat[1].innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
+    response_time =
+      document.getElementById("summary_response").rows[2].cells;
+    response_time[1].innerHTML = "(hr:min:sec) "+data.process_time;
+    download_url =
+      document.getElementById("summary_response").rows[3].cells;
+    var zip_file_size =  parseInt(parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2))  == 0 ? "Less than a MB" : parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2)
+    var binded_file_size = parseInt(data.binded_file_size) == 0 ? "Less than a MB" : data.binded_file_size
+    download_url[1].innerHTML =
+      '<a id="response_file_download" href="' +
+      data.download_url +
+      '">'+data.file_name+'</a><p><small><strong>Zip size</strong> (MB) : ' + zip_file_size
+      + "<br>"+
+      "<strong>Export size</strong> (MB) : " +
+      binded_file_size  +
+      "</small></p>";
+    document.getElementById("hot_export_btn").disabled = false;
+    document.getElementById("loadgeojson").disabled = false;
+    document.getElementById("geojsontextarea").disabled = false;
+    document.getElementById("filename").disabled = false;
+    map.addControl(drawControlEditOnly);
+  }
+
+  function handle_error(msg){
+    try {
+
+      stat = document.getElementById("summary_response").rows[1].cells;
+      stat[1].innerHTML =
+        '<p style="color:red;">' + msg + "</p>";
+      document.getElementById("hot_export_btn").disabled = false;
+      document.getElementById("loadgeojson").disabled = false;
+      document.getElementById("geojsontextarea").disabled = false;
+      // document.getElementById("filename").disabled = false;
+
+      map.addControl(drawControlEditOnly);
+    } catch (err) {
+      stat[1].innerHTML =
+        '<p style="color:red;">' +
+        "Error , API didn't responded" +
+        "</p>";
+      document.getElementById("hot_export_btn").disabled = false;
+      document.getElementById("loadgeojson").disabled = false;
+      document.getElementById("geojsontextarea").disabled = false;
+      document.getElementById("filename").disabled = false;
+
+      map.addControl(drawControlEditOnly);
     }
   }
 
@@ -368,6 +404,7 @@ $(document).ready(function () {
       document.querySelector("a.leaflet-draw-edit-remove").click();
 
       var geoJsonGroup = L.geoJson(geojson_layer);
+      map.fitBounds(geoJsonGroup.getBounds());
       addNonGroupLayers(geoJsonGroup, editableLayers);
       // editableLayers.addLayer(L.geoJSON(geojson_layer));
       map.removeControl(drawControlFull);
@@ -396,12 +433,12 @@ $(document).ready(function () {
   function check_status() {
     $.ajax({
       type: "GET",
-      url: "https://galaxy-api.hotosm.org/v1/raw-data/status/",
+      url: server+"/raw-data/status/",
       contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
         document.getElementById("db_status").innerHTML =
-          "<strong> Database Updated (hr:min:sec)" + data.last_updated + "</strong>";
+          "<strong> Database Updated " + moment(data.last_updated).fromNow() + "</strong>";
       },
       error: function (e) {
         console.log(e);

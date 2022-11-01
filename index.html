@@ -51,17 +51,18 @@
           </button>
           <div class="collapse navbar-collapse" id="navcol-1">
             <ul class="navbar-nav me-auto">
-              <li class="nav-item">
-                <a class="nav-link active" href="#">Home</a>
-              </li>
 
-              <a
-                class="btn btn-light"
-                target="_blank"
-                href="https://github.com/kshitijrajsharma/galaxy-export"
-                >About</a
-              >
+              <li class="nav-item">
+                <select class="form-select" id="server">
+                  <option value="https://galaxy-api.hotosm.org/v1" selected>Production</option>
+                  <option value="http://52.203.15.233:8000/v1">Development</option>
+                  <option value="http://127.0.0.1:8000/v1">Localhost</option>
+                </select>
+              </li>
+              <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/kshitijrajsharma/galaxy-export">About</a></li>
+
             </ul>
+
             <span class="navbar-text actions">
               <a
                 class="btn btn-outline-light"
@@ -337,7 +338,7 @@
                       type="radio"
                       id="geojson"
                       name="outputType"
-                      value="GeoJSON"
+                      value="geojson"
                       checked
                     /><label
                       class="form-check-label"
@@ -409,6 +410,38 @@
                       data-toggle="tooltip"
                       title="Google Earth file KML"
                       >Kml</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      id="sql"
+                      name="outputType"
+                      value="sql"
+
+                    /><label
+                      class="form-check-label"
+                      for="sql"
+                      data-toggle="tooltip"
+                      title="PGDUMP (SQL)"
+                      >SQL</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      id="csv"
+                      name="outputType"
+                      value="csv"
+
+                    /><label
+                      class="form-check-label"
+                      for="csv"
+                      data-toggle="tooltip"
+                      title="CSV"
+                      >CSV</label
                     >
                   </div>
                   <div class="form-check">
@@ -635,14 +668,6 @@
                         <td colspan="2"></td>
                       </tr>
                       <tr>
-                        <th scope="row">Server</th>
-                        <td colspan="2">
-                          <select class="form-select" id="server">
-                            <option value="prod" selected>Production</option>
-                            <option value="dev">Development</option>
-                            <option value="local">Localhost</option>
-                          </select>
-                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -712,6 +737,7 @@
       integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
       crossorigin="anonymous"
     ></script>
+    <script type = "text/JavaScript" src = "https://MomentJS.com/downloads/moment.js"></script>
     <script src="assets/js/leaflet-search.js"></script>
 
     <script src="assets/js/map.js"></script>
