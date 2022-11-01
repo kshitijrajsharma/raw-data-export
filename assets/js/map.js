@@ -280,7 +280,10 @@ $(document).ready(function () {
         else if (data.status === "FAILURE"){
           handle_error("Task Failed");
         } else{
-          call_api_result(call_url);
+          setTimeout(function() {
+            call_api_result(call_url);
+          }, 2000);
+
         }
 
       },
