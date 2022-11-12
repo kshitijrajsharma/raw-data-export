@@ -1,749 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,height=device-height,initial-scale=1.0, shrink-to-fit=yes"
-    />
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0, shrink-to-fit=yes" />
     <title>Galaxy Export</title>
     <link rel="icon" type="image/x-icon" href="assets/img/logo.svg" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
     <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
     <link rel="stylesheet" href="assets/css/leaflet-search.css" />
 
     <link rel="stylesheet" href="assets/css/styles.css" />
 
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin=""
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css" integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug==" crossorigin="anonymous" referrerpolicy="no-referrer"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css"
-      integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
+</head>
 
-  <body>
+<body>
     <div class="container-fluid" style="height: 90vh">
-      <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
-        <div class="container-fluid">
-          <img
-            src="assets/img/1588741335578_hot-logo.png"
-            style="width: 50px"
-          /><a class="navbar-brand" href="./index.html">Galaxy Export</a
-          ><button
-            data-bs-toggle="collapse"
-            class="navbar-toggler"
-            data-bs-target="#navcol-1"
-          >
-            <span class="visually-hidden">Toggle navigation</span
-            ><span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav me-auto">
+        <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+            <div class="container-fluid">
+                <img src="assets/img/1588741335578_hot-logo.png" style="width: 50px" /><a class="navbar-brand" href="./index.html">Galaxy Export</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+                    <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <select class="form-select" id="server">
+                                <option value="https://galaxy-api.hotosm.org/v1">
+                                    Production
+                                </option>
+                                <option value="http://52.203.15.233:8000/v1" selected>
+                                    Development
+                                </option>
+                                <option value="http://127.0.0.1:8000/v1">Localhost</option>
+                            </select>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="./query_builder.html">Query Builder</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" target="_blank" href="https://github.com/kshitijrajsharma/galaxy-export">About</a>
+                        </li>
+                    </ul>
 
-              <li class="nav-item">
-                <select class="form-select" id="server">
-                  <option value="https://galaxy-api.hotosm.org/v1" >Production</option>
-                  <option value="http://52.203.15.233:8000/v1" selected>Development</option>
-                  <option value="http://127.0.0.1:8000/v1">Localhost</option>
-                </select>
-              </li>
-              <li class="nav-item"><a class="nav-link" target="_blank" href="./query_builder.html" active>Query Builder</a></li>
-              <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/kshitijrajsharma/galaxy-export">About</a></li>
-
-            </ul>
-
-            <span class="navbar-text actions">
-              <a
-                class="btn btn-outline-light"
-                target="_blank"
-                type="button"
-                href="https://galaxy-api.hotosm.org/latest/redoc#operation/get_current_data_raw_data_current_snapshot__post"
-                >API Doc</a
-              ></span
-            >
-          </div>
-        </div>
-      </nav>
-      <div class="row" style="height: 100%">
-        <div class="col-md-6 col-xl-4">
-          <div>
-            <form>
-              <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-1"
-                    style="color: rgb(0, 0, 0)"
-                    >Data</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-2"
-                    style="color: rgb(0, 0, 0)"
-                    >Formats</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-4"
-                    style="color: rgb(0, 0, 0)"
-                    >Columns</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-5"
-                    style="color: rgb(0, 0, 0)"
-                    >AOI</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
-                    class="nav-link active"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-3"
-                    style="color: rgb(0, 0, 0)"
-                    >Summary</a
-                  >
-                </li>
-              </ul>
-              <div class="tab-content">
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-1"
-                  style="padding: 15px"
-                >
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    role="alert"
-                  >
-                    Choose what to download, You can enter your own key value
-                    pair as well
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="download_everything"
-                      id="download_everything"
-                      value="download_everything"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="download_everything"
-                      data-toggle="tooltip"
-                      title="Download everything inside your AOI"
-                    >
-                      <p class="h6">Download Everything</p>
-                    </label>
-                  </div>
-
-                  <p class="h6" style="padding: 10px" data-toggle="tooltip">
-                    Pre Defined Keys
-                  </p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="osmTags"
-                      value="building"
-                      id="building_osm_tags"
-                      checked
-                    />
-                    <label
-                      class="form-check-label"
-                      for="building_osm_tags"
-                      data-toggle="tooltip"
-                      title="Building is Not Null i.e. building=*"
-                      id="buildings"
-                    >
-                      Buildings
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="highway"
-                      id="osmTags_highways"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="osmTags_highways"
-                      data-toggle="tooltip"
-                      title="Highways is Not Null i.e. highway=*"
-                    >
-                      Highways
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="waterway"
-                      id="osmTags_waterways"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="osmTags_waterways"
-                      data-toggle="tooltip"
-                      title="Waterways is Not Null i.e. waterway=*"
-                    >
-                      Waterways
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="osmTags"
-                      type="checkbox"
-                      value="boundary"
-                      id="osmTags_boundary"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="osmTags_boundary"
-                      data-toggle="tooltip"
-                      title="Boundary = Administrative"
-                    >
-                      Administrative Boundary
-                    </label>
-                  </div>
-                  <p class="h6" style="padding: 10px">Joint Filter Type</p>
-
-                  <select class="form-select" id="jointype">
-                    <option value="OR" selected>OR</option>
-                    <option value="AND">AND</option>
-                  </select>
-                  <div class="row" style="padding: 10px">
-                    <p
-                      class="h6"
-                      data-toggle="tooltip"
-                      title="Define Key and value pair normally like this => Key : value . You can Define multiple values for key like this => Key : value1,value2 eg=> amenity : cafe,fast_food,pub . If value is left empty it will be considered as * eg=> building:  will be considered as building=*"
-                    >
-                      Enter Custom key value pair
-                    </p>
-                    <div class="container">
-                      <div class="row">
-                        <div
-                          class="form-group dynamic-element"
-                          id="custom_tag_content"
-                          style="display: none"
-                        >
-                          <div class="row">
-                            <!-- Replace these fields -->
-                            <div class="col-md-5">
-                              <input
-                                type="text"
-                                id="customtag_key"
-                                class="form-control"
-                                name="customtag_key"
-                                placeholder="amenity"
-                              />
-                            </div>
-                            <div class="col-md-5">
-                              <input
-                                type="text"
-                                id="customtag_value"
-                                name="customtag_value"
-                                class="form-control"
-                                placeholder="Leave empty to download everything"
-                              />
-                            </div>
-                            <!-- End of fields-->
-                            <div class="col-md-2">
-                              <p class="delete">-</p>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- END OF HIDDEN ELEMENT -->
-
-                        <div class="form-container">
-                          <form class="form-horizontal">
-                            <fieldset>
-                              <!-- Form Name -->
-                              <div
-                                class="dynamic-stuff"
-                                id="custom_tag_content_show"
-                              >
-                                <!-- Dynamic element will be cloned here -->
-                                <!-- You can call clone function once if you want it to show it a first element-->
-                              </div>
-
-                              <!-- Button -->
-                              <div class="form-group">
-                                <div class="row">
-                                  <div
-                                    class="col-md-12"
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                  >
-                                    <p class="add-one" id="custom_tag_add_btn">
-                                      +Add Key-Value
-                                    </p>
-                                  </div>
-                                  <div class="col-md-5"></div>
+                    <span class="navbar-text actions">
+                        <a class="btn btn-outline-light" target="_blank" type="button"
+                            href="https://galaxy-api.hotosm.org/latest/redoc#operation/get_current_data_raw_data_current_snapshot__post">API
+                            Doc</a></span>
+                </div>
+            </div>
+        </nav>
+        <div class="row" style="height: 100%">
+            <div class="col-md-6 col-xl-4">
+                <div>
+                    <form>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-1" style="color: rgb(0, 0, 0)">Builder</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" role="tabpanel" id="tab-1" style="padding: 5px">
+                                <div class="alert alert-warning alert-dismissible fade show" id="summary_response" role="alert">
+                                    Build Your Query
                                 </div>
-                              </div>
-                            </fieldset>
-                          </form>
+                                <p class="h6" style="padding: 5px">Select</p>
+                                <div class="col-sm-9 col-md-6 col-lg-8 col-xl-10" style="margin-bottom: 10px; width : 100%">
+                                    <input type="text" id="select" class="form-control" name="select" data-toggle="tooltip" title="Enter OSM Key to visualize as properties of geojson separated by comma. '*' will give all attributes Eg : 'name','level'" value="*" placeholder="Enter osm key to display on properties separated by comma"
+                                    />
+                                </div>
+                                <div class="row" style="padding: 5px">
+                                    <p class="h6">
+                                        Where
+                                    </p>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="form-group dynamic-element" id="custom_tag_content" style="display: none">
+                                                <div class="row">
+                                                    <!-- Replace these fields -->
+                                                    <div class="col-md-5">
+                                                        <input type="text" id="where_key" class="form-control" name="where_key" placeholder="Key" data-toggle="tooltip" title="Enter your where clause , as OSM key . Default it will extract buildings . Enter * in value to extract all related to key or leave blank"
+                                                        />
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <input type="text" id="where_value" name="where_value" class="form-control" placeholder="Value" data-toggle="tooltip" title="You can enter multiple value for key such as for 'building' , value can be entered as: 'yes','school'. Leave blank or * to download all for that key"
+                                                        />
+                                                    </div>
+                                                    <!-- End of fields-->
+                                                    <div class="col-md-2">
+                                                        <p class="delete">-</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- END OF HIDDEN ELEMENT -->
+
+                                            <div class="form-container">
+                                                <form class="form-horizontal">
+                                                    <fieldset>
+                                                        <!-- Form Name -->
+                                                        <div class="dynamic-stuff" id="custom_tag_content_show">
+                                                            <!-- Dynamic element will be cloned here -->
+                                                            <!-- You can call clone function once if you want it to show it a first element-->
+                                                        </div>
+
+                                                        <!-- Button -->
+                                                        <div class="form-group" style="margin:5px">
+                                                            <div class="row">
+                                                                <div class="col-md-12" data-toggle="tooltip" data-placement="top">
+                                                                    <p class="add-one" id="custom_tag_add_btn">
+                                                                        + Add Key-Value
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-md-5"></div>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="h6" style="padding: 5px">Join By</p>
+                                <select class="form-select" id="joinBy" data-toggle="tooltip" title="You can join your where clause by">
+                                    <option value="OR" selected>OR</option>
+                                    <option value="AND">AND</option>
+                                </select>
+                                <p class="h6" style="padding: 10px" data-placement="top">
+                                    Look in
+                                </p>
+                                <div class="form-check" data-toggle="tooltip" title="look in to nodes">
+                                    <input class="form-check-input" type="checkbox" name="lookIn" value="nodes" id="nodes" />
+                                    <label class="form-check-label" for="point" id="nodes">
+                                        Nodes
+                                    </label>
+                                </div>
+                                <div class="form-check" data-toggle="tooltip" title="look in to ways which are of line type such as highway,waterway,railway">
+                                    <input class="form-check-input" type="checkbox" name="lookIn" value="ways_line" id="ways_line" />
+                                    <label class="form-check-label" for="ways_line">
+                                        Ways - Line
+                                    </label>
+                                </div>
+                                <div class="form-check" data-toggle="tooltip" title="look in to ways which are of polygon type such as buildings">
+                                    <input class="form-check-input" type="checkbox" name="lookIn" value="ways_poly" id="ways_poly" checked/>
+                                    <label class="form-check-label" for="ways_poly">
+                                        Ways - Polygon
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="lookIn" type="checkbox" value="relations" id="relations" />
+                                    <label class="form-check-label" for="relations">
+                                        Relations
+                                    </label>
+                                </div>
+                                <button class="btn btn-primary text-end" style="background: rgb(214, 64, 63); padding:5px" id="hot_export_btn" type="submit">
+                                Run
+                              </button>
+                            </div>
+                            <div class="alert alert-warning alert-dismissible fade show" style="margin-top: 5px" id="db_status" role="alert">
+                                <strong>Connecting to Database ...</strong>
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                    </form>
                 </div>
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-2"
-                  style="padding: 15px"
-                >
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    role="alert"
-                  >
-                    Choose Data output formats
-                  </div>
-                  <p class="h6" style="padding: 10px">Output Types</p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="geojson"
-                      name="outputType"
-                      value="geojson"
-                      checked
-                    /><label
-                      class="form-check-label"
-                      for="geojson"
-                      data-toggle="tooltip"
-                      title="It will use default Galaxy logic for binding"
-                      >GeoJSON</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="FlatGeobuf"
-                      name="outputType"
-                      value="fgb"
-
-                    /><label
-                      class="form-check-label"
-                      for="FlatGeobuf"
-                      data-toggle="tooltip"
-                      title="It is new fast geodata format , Supported in QGIS leaflet/openlayers and so on"
-                      >FlatGeobuf</label
-                    >
-                  </div>
-
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="shp"
-                      name="outputType"
-                      value="shp"
-                    /><label
-                      class="form-check-label"
-                      for="shp"
-                      data-toggle="tooltip"
-                      title="ESRI Shapefile"
-                      >Shapefile</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="gpkg"
-                      name="outputType"
-                      value="gpkg"
-
-                    /><label
-                      class="form-check-label"
-                      for="gpkg"
-                      data-toggle="tooltip"
-                      title="GeoPackage vector"
-                      >GeoPackage</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="kml"
-                      name="outputType"
-                      value="kml"
-
-                    /><label
-                      class="form-check-label"
-                      for="kml"
-                      data-toggle="tooltip"
-                      title="Google Earth file KML"
-                      >Kml</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="sql"
-                      name="outputType"
-                      value="sql"
-
-                    /><label
-                      class="form-check-label"
-                      for="sql"
-                      data-toggle="tooltip"
-                      title="PGDUMP (SQL)"
-                      >SQL</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="csv"
-                      name="outputType"
-                      value="csv"
-
-                    /><label
-                      class="form-check-label"
-                      for="csv"
-                      data-toggle="tooltip"
-                      title="CSV"
-                      >CSV</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      id="formCheck-8"
-                      name="outputType"
-                      value="MBTILES"
-                      disabled
-                    /><label
-                      class="form-check-label"
-                      for="formCheck-1"
-                      data-toggle="tooltip"
-                      title=" Default : MINZOOM=10 and MAXZOOM=22 ,Experimental"
-                      >MBTILES</label
-                    >
-                  </div>
-                  <p
-                    class="h6"
-                    style="padding: 10px"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                  >
-                    Geometry Types
-                  </p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="geometryType"
-                      value="point"
-                      id="point"
-                    />
-                    <label class="form-check-label" for="point" id="point">
-                      Point
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="geometryType"
-                      value="line"
-                      id="linestring"
-                    />
-                    <label class="form-check-label" for="linestring">
-                      Line
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="geometryType"
-                      type="checkbox"
-                      value="polygon"
-                      id="polygon"
-                      checked
-                    />
-                    <label class="form-check-label" for="polygon">
-                      Polygon
-                    </label>
-                  </div>
-                </div>
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-4"
-                  style="padding: 15px"
-                >
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    role="alert"
-                    style="text-align: justify"
-                  >
-                    Default with everything unchecked, You will get all tags as
-                    Tags column. You can specify if you want any of tag as
-                    different column (osm_id will be included in all condition)
-                  </div>
-                  <p
-                    class="h6"
-                    style="padding: 10px"
-                    data-toggle="tooltip"
-                    title="You can uncheck predefined columns to generate default attributes output"
-                    data-placement="top"
-                  >
-                    Predefined Columns
-                  </p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      name="column_key"
-                      type="checkbox"
-                      value="name"
-                      id="column_key"
-                      checked
-                    />
-                    <label
-                      class="form-check-label"
-                      for="flexCheckDefault"
-                      data-toggle="tooltip"
-                      title="This will export the attribute value of name tag for each feature as name (Column)"
-                    >
-                      Name
-                    </label>
-                  </div>
-                  <p class="h6" style="padding: 10px">Define Your Own</p>
-                  <div class="row">
-                    <div class="dynamic-stuff" id="columnadd">
-                      <div
-                        class="col-sm-9 col-md-6 col-lg-8 col-xl-10"
-                        style="margin-bottom: 10px"
-                      >
-                        <input
-                          type="text"
-                          id="column_key"
-                          class="form-control"
-                          name="column_key"
-                          placeholder="Osm Key"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Button -->
-                  <div class="form-group">
-                    <div class="row">
-                      <div
-                        class="col-md-12"
-                        data-toggle="tooltip"
-                        title="You can define which osm key you want to have as column , for example building:level"
-                        data-placement="top"
-                      >
-                        <p class="add-one" id="addcolumnkey">
-                          + Add Your Own Key
-                        </p>
-                      </div>
-                      <div class="col-md-5"></div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-5"
-                  style="padding: 15px"
-                >
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    role="alert"
-                    style="text-align: justify"
-                  >
-                    You can paste/edit or Upload Geojson which is defined as
-                    Area of Interest, Loaded Geojson will appeared as Blue
-                    meanwhile Created by drawing be in Red
-                  </div>
-                  <div class="mb-3">
-                    <label for="formFile" class="form-label"
-                      >Upload Your Geojson</label
-                    >
-                    <input
-                      class="form-control"
-                      name="upload_geojson"
-                      type="file"
-                      id="formFileGeojson"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleFormControlTextarea1"
-                      >Paste Your GeoJson Here or Draw</label
-                    >
-                    <textarea
-                      class="form-control"
-                      id="geojsontextarea"
-                      rows="10"
-                    ></textarea>
-                  </div>
-                  <div class="row">
-                    <div class="col text-center">
-                      <button
-                        style="margin: 10px; padding: 10px"
-                        type="button"
-                        id="loadgeojson"
-                        class="btn btn-success"
-                      >
-                        Load to Map
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="tab-pane active"
-                  role="tabpanel"
-                  id="tab-3"
-                  style="padding: 15px"
-                >
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    style="text-align: justify"
-                    role="alert"
-                  >
-                    <strong>Hi There ! </strong>Download link will expire after
-                    90 days.Make sure you copy the link and save it because All
-                    info available on this page will get erased if refreshed and
-                    request is not trackable
-                  </div>
-
-                  <table id="summary_response" class="table table-hover">
-                    <tbody>
-                      <tr>
-                        <th scope="row">Area</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Status</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Response Time</th>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Result</th>
-                        <td colspan="2"></td>
-                      </tr>
-                      <tr>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="row">
-                    <div class="dynamic-stuff" id="columnadd">
-                      <div
-                        class="col-sm-9 col-md-6 col-lg-8 col-xl-10"
-                        style="margin-bottom: 10px"
-                      >
-                        <input
-                          type="text"
-                          id="filename"
-                          class="form-control"
-                          name="filename"
-                          placeholder="File Name : Default (Raw_Export)"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    class="btn btn-primary text-end"
-                    style="background: rgb(214, 64, 63)"
-                    id="hot_export_btn"
-                    type="submit"
-                  >
-                    Export
-                  </button>
-                  <div
-                    class="alert alert-warning alert-dismissible fade show"
-                    style="margin-top: 10px"
-                    id="db_status"
-                    role="alert"
-                  >
-                    <strong>Connecting to Database ...</strong>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+            </div>
+            <div class="col-md-6 col-xl-8 offset-xl-0">
+                <div id="map"></div>
+            </div>
         </div>
-        <div class="col-md-6 col-xl-8 offset-xl-0">
-          <div id="map"></div>
-        </div>
-      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script
-      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin=""
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"
-      integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
-      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-      crossorigin="anonymous"
-    ></script>
-    <script type = "text/JavaScript" src = "https://MomentJS.com/downloads/moment.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script type="text/JavaScript" src="https://MomentJS.com/downloads/moment.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.1.0/jszip-utils.min.js" integrity="sha512-3WaCYjK/lQuL0dVIRt1thLXr84Z/4Yppka6u40yEJT1QulYm9pCxguF6r8V84ndP5K03koI9hV1+zo/bUbgMtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="assets/js/leaflet-search.js"></script>
 
-    <script src="assets/js/map.js"></script>
-  </body>
+    <script src="assets/js/builder_map.js"></script>
+</body>
+
 </html>
