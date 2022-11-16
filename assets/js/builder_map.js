@@ -178,13 +178,24 @@ $(document).ready(function() {
             success: function(data) {
                 console.log(data);
                 document.getElementById("hot_export_btn").disabled = false;
+
                 load_result_to_map(data);
                 map.addControl(drawControlEditOnly);
                 stat.innerHTML = "Build your query";
+
+
             },
             error: function(e) {
                 console.log(e.responseJSON);
-                handle_error(e.responseJSON.detail);
+                try{
+                    handle_error(e.responseJSON.detail);
+                } catch(err){
+                    handle_error('API error');
+
+                }
+
+
+
             },
         });
 
@@ -271,6 +282,7 @@ $(document).ready(function() {
             result_geojson.remove();
         }
 
+
         result_geojson = L.geoJson(geojson_layer, {
             onEachFeature: function(feature, layer) {
                 if (layer.feature.geometry.type == 'Polygon' || layer.feature.geometry.type == 'MultiPolygon') {
@@ -318,8 +330,15 @@ $(document).ready(function() {
                 layer.bindPopup(popupContent);
             },
         }).addTo(map);
+        try{
+            map.fitBounds(result_geojson.getBounds());
 
-        map.fitBounds(result_geojson.getBounds());
+        }catch (err){
+            console.log(err);
+
+
+        }
+
     }
 
     function addNonGroupLayers(sourceLayer, targetGroup) {
