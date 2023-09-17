@@ -381,49 +381,6 @@ $(document).ready(function () {
           // Call the function to check the task status
           checkTaskStatus(taskId);
         },
-
-        //   console.log(data);
-        //   area = document.getElementById("summary_response").rows[0].cells;
-        //   area[1].innerHTML =
-        //     parseInt(data.query_area) == 0
-        //       ? "Less than a Sq KM"
-        //       : data.query_area;
-        //   stat = document.getElementById("summary_response").rows[1].cells;
-        //   stat[1].innerHTML =
-        //     '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
-        //   response_time =
-        //     document.getElementById("summary_response").rows[2].cells;
-        //   response_time[1].innerHTML = data.response_time;
-        //   download_url =
-        //     document.getElementById("summary_response").rows[3].cells;
-        //   var zip_file_size =
-        //     parseInt(
-        //       parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2)
-        //     ) == 0
-        //       ? "Less than a MB"
-        //       : parseFloat(data.zip_file_size_bytes[0] / 1000000).toFixed(2);
-        //   var binded_file_size =
-        //     parseInt(data.binded_file_size) == 0
-        //       ? "Less than a MB"
-        //       : data.binded_file_size;
-        //   download_url[1].innerHTML =
-        //     '<a id="response_file_download" href="' +
-        //     data.download_url +
-        //     '">' +
-        //     data.file_name +
-        //     "</a><p><small><strong>Zip size</strong> (MB) : " +
-        //     zip_file_size +
-        //     "<br>" +
-        //     "<strong>Export size</strong> (MB) : " +
-        //     binded_file_size +
-        //     "</small></p>";
-        //   document.getElementById("hot_export_btn").disabled = false;
-        //   document.getElementById("loadgeojson").disabled = false;
-        //   document.getElementById("geojsontextarea").disabled = false;
-        //   document.getElementById("filename").disabled = false;
-
-        //   map.addControl(drawControlEditOnly);
-        // },
         error: function (e) {
           try {
             console.log(e.responseJSON);
