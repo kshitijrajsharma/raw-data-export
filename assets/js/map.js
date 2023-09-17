@@ -131,9 +131,10 @@ $(document).ready(function () {
   }
 
   function checkTaskStatus(taskId) {
+    api_url = get_api_url() + `tasks/status/${taskId}/`;
     $.ajax({
       type: "GET",
-      url: `http://127.0.0.1:8000/v1/tasks/status/${taskId}/`,
+      url: api_url,
       success: function (taskData) {
         if (taskData.status === "SUCCESS") {
           // Task is successful, you can continue processing the result
@@ -165,17 +166,23 @@ $(document).ready(function () {
             parseInt(data.binded_file_size) == 0
               ? "Less than a MB"
               : data.binded_file_size;
-          download_url[1].innerHTML =
-            '<a id="response_file_download" href="' +
-            data.download_url +
-            '">' +
-            data.file_name +
-            "</a><p><small><strong>Zip size</strong> (MB) : " +
-            zip_file_size +
-            "<br>" +
-            "<strong>Export size</strong> (MB) : " +
-            binded_file_size +
-            "</small></p>";
+          const viewButton = data.download_url.endsWith(".pmtiles")
+            ? '<button id="redirect_button" class="btn btn-primary text-end" style="background: rgb(214, 64, 63)">View</button>'
+            : "";
+
+          download_url[1].innerHTML = `<a id="response_file_download" href="${data.download_url}">${data.file_name}</a> ${viewButton} <p><small><strong>Zip size</strong> (MB) : ${zip_file_size}<br><strong>Export size</strong> (MB) : ${binded_file_size}</small></p>`;
+          if (data.download_url.endsWith(".pmtiles")) {
+            document
+              .getElementById("redirect_button")
+              .addEventListener("click", function () {
+                // Redirect to another website (change 'https://example.com' to the desired URL)
+                url =
+                  "https://protomaps.github.io/PMTiles/?url=" +
+                  data.download_url;
+                window.open(url, "_blank");
+              });
+          }
+
           document.getElementById("hot_export_btn").disabled = false;
           document.getElementById("loadgeojson").disabled = false;
           document.getElementById("geojsontextarea").disabled = false;
@@ -221,6 +228,20 @@ $(document).ready(function () {
         // Handle the error here
       },
     });
+  }
+
+  function get_api_url() {
+    var select = document.getElementById("server");
+    var server = select.options[select.selectedIndex].value;
+    console.log(server);
+    if (server == "prod") {
+      api_url = "https://rawdata-demo.hotosm.org/v1/";
+    } else if (server == "local") {
+      api_url = "http://127.0.0.1:8000/v1/";
+    } else {
+      api_url = "https://raw-data-api0.hotosm.org/v1/";
+    }
+    return api_url;
   }
 
   function handleSubmit(event) {
@@ -341,16 +362,7 @@ $(document).ready(function () {
       download_url = document.getElementById("summary_response").rows[3].cells;
       download_url[1].innerHTML = "";
 
-      var select = document.getElementById("server");
-      var server = select.options[select.selectedIndex].value;
-      console.log(server);
-      if (server == "prod") {
-        api_url = "https://rawdata-demo.hotosm.org/v1/snapshot/";
-      } else if (server == "local") {
-        api_url = "http://127.0.0.1:8000/v1/snapshot/";
-      } else {
-        api_url = "https://raw-data-api0.hotosm.org/v1/snapshot/";
-      }
+      api_url = get_api_url() + "snapshot/";
 
       $.ajax({
         type: "POST",
@@ -370,7 +382,6 @@ $(document).ready(function () {
           checkTaskStatus(taskId);
         },
 
-        // success: function (data) {
         //   console.log(data);
         //   area = document.getElementById("summary_response").rows[0].cells;
         //   area[1].innerHTML =
@@ -531,16 +542,7 @@ $(document).ready(function () {
   }
 
   function check_status() {
-    var select = document.getElementById("server");
-    var server = select.options[select.selectedIndex].value;
-    console.log(server);
-    if (server == "prod") {
-      api_url = "https://rawdata-demo.hotosm.org/v1/status/";
-    } else if (server == "local") {
-      api_url = "http://127.0.0.1:8000/v1/status/";
-    } else {
-      api_url = "https://raw-data-api0.hotosm.org/v1/status/";
-    }
+    api_url = get_api_url() + "status/";
     $.ajax({
       type: "GET",
       url: api_url,
