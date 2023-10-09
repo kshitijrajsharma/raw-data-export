@@ -138,6 +138,121 @@ $(document).ready(function () {
     download_url = document.getElementById("summary_response").rows[3].cells;
     download_url[1].innerHTML = "";
   }
+
+  function checkTaskStatus(taskId) {
+    api_url = get_api_url() + `tasks/status/${taskId}/`;
+    $.ajax({
+      type: "GET",
+      url: api_url,
+      success: function (taskData) {
+        if (taskData.status === "SUCCESS") {
+          // Task is successful, you can continue processing the result
+          console.log("Task is successful:", taskData);
+
+          // Now you can access the result data and perform further actions
+          var data = taskData.result;
+
+          area = document.getElementById("summary_response").rows[0].cells;
+          area[1].innerHTML =
+            parseInt(data.query_area) == 0
+              ? "Less than a Sq KM"
+              : data.query_area;
+          stat = document.getElementById("summary_response").rows[1].cells;
+          stat[1].innerHTML =
+            '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
+          response_time =
+            document.getElementById("summary_response").rows[2].cells;
+          response_time[1].innerHTML = data.process_time;
+          download_url =
+            document.getElementById("summary_response").rows[3].cells;
+          var zip_file_size =
+            parseInt(
+              parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2)
+            ) == 0
+              ? "Less than a MB"
+              : parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2);
+          var binded_file_size =
+            parseInt(data.binded_file_size) == 0
+              ? "Less than a MB"
+              : data.binded_file_size;
+          const viewButton = data.download_url.endsWith(".pmtiles")
+            ? '<button id="redirect_button" class="btn btn-primary text-end" style="background: rgb(214, 64, 63)">View</button>'
+            : "";
+
+          download_url[1].innerHTML = `<a id="response_file_download" href="${data.download_url}">${data.file_name}</a> ${viewButton} <p><small><strong>Zip size</strong> (MB) : ${zip_file_size}<br><strong>Export size</strong> (MB) : ${binded_file_size}</small></p>`;
+          if (data.download_url.endsWith(".pmtiles")) {
+            document
+              .getElementById("redirect_button")
+              .addEventListener("click", function () {
+                // Redirect to another website (change 'https://example.com' to the desired URL)
+                url =
+                  "https://protomaps.github.io/PMTiles/?url=" +
+                  data.download_url;
+                window.open(url, "_blank");
+              });
+          }
+
+          document.getElementById("hot_export_btn").disabled = false;
+          document.getElementById("loadgeojson").disabled = false;
+          document.getElementById("geojsontextarea").disabled = false;
+          document.getElementById("filename").disabled = false;
+          map.addControl(drawControlEditOnly);
+        } else if (
+          taskData.status === "PENDING" ||
+          taskData.status === "RUNNING"
+        ) {
+          // Task is still pending or running, continue checking
+          setTimeout(function () {
+            checkTaskStatus(taskId); // Recursively check again after a delay
+          }, 1000); // Adjust the delay time as needed
+        } else {
+          // Handle other task status scenarios here
+          console.log("Task has an unexpected status:", taskData);
+          // You might want to display an error message or take other actions
+        }
+      },
+      error: function (e) {
+        console.log("Error checking task status:", e);
+        try {
+          console.log(e.responseJSON);
+          stat = document.getElementById("summary_response").rows[1].cells;
+          stat[1].innerHTML =
+            '<p style="color:red;">' + e.responseJSON.detail[0].msg + "</p>";
+          document.getElementById("hot_export_btn").disabled = false;
+          document.getElementById("loadgeojson").disabled = false;
+          document.getElementById("geojsontextarea").disabled = false;
+          // document.getElementById("filename").disabled = false;
+
+          map.addControl(drawControlEditOnly);
+        } catch (err) {
+          stat[1].innerHTML =
+            '<p style="color:red;">' + "Error , API didn't responded" + "</p>";
+          document.getElementById("hot_export_btn").disabled = false;
+          document.getElementById("loadgeojson").disabled = false;
+          document.getElementById("geojsontextarea").disabled = false;
+          document.getElementById("filename").disabled = false;
+
+          map.addControl(drawControlEditOnly);
+        }
+        // Handle the error here
+      },
+    });
+  }
+
+  function get_api_url() {
+    var select = document.getElementById("server");
+    var server = select.options[select.selectedIndex].value;
+    console.log(server);
+    if (server == "prod") {
+      api_url = "https://rawdata-demo.hotosm.org/v1/";
+    } else if (server == "local") {
+      api_url = "http://127.0.0.1:8000/v1/";
+    } else {
+      api_url = "https://raw-data-api0.hotosm.org/v1/";
+    }
+    return api_url;
+  }
+
   function handleSubmit(event) {
     document.getElementById("hot_export_btn").disabled = true;
     document.getElementById("loadgeojson").disabled = true;
@@ -161,6 +276,17 @@ $(document).ready(function () {
       if (outputType.length > 0) {
         console.log(outputType);
         input += ',"outputType":' + JSON.stringify(outputType[0]);
+      }
+      if (document.getElementById("include_uuid").checked) {
+        input += ',"uuid": "true"';
+      } else {
+        input += ',"uuid": "false"';
+      }
+
+      if (document.getElementById("bind_zip").checked) {
+        input += ',"bindZip": "true"';
+      } else {
+        input += ',"bindZip": "false"';
       }
 
       if (document.getElementById("download_everything").checked) {
@@ -211,10 +337,16 @@ $(document).ready(function () {
           if (tagsobj.length > 0) {
             tagsobj = { building: [] };
           }
+          var jointype_dropdown = document.getElementById("jointype");
+          var jointype =
+            jointype_dropdown.options[jointype_dropdown.selectedIndex].value;
+
           input +=
-            ',"filters":{"tags":{"all_geometry":' +
+            ',"filters":{"tags":{"all_geometry":{"' +
+            jointype +
+            '":' +
             JSON.stringify(tagsobj) +
-            "}";
+            "}}";
           if (columns_filter.length > 0) {
             console.log(columns_filter);
             if (columns_filter[0] != "") {
@@ -227,11 +359,7 @@ $(document).ready(function () {
           input += "}";
         }
       }
-      var jointype_dropdown = document.getElementById("jointype");
-      var jointype =
-        jointype_dropdown.options[jointype_dropdown.selectedIndex].value;
-      console.log(jointype);
-      input += ',"joinFilterType":"' + jointype + '"';
+
       input += "}";
       console.log(input);
       start_time = new Date().toLocaleString();
@@ -243,7 +371,8 @@ $(document).ready(function () {
       response_time[1].innerHTML = "";
       download_url = document.getElementById("summary_response").rows[3].cells;
       download_url[1].innerHTML = "";
-      api_url = server + "/raw-data/current-snapshot/";
+
+      api_url = get_api_url() + "snapshot/";
       $.ajax({
         type: "POST",
         url: api_url,
@@ -254,13 +383,12 @@ $(document).ready(function () {
         data: input,
 
         success: function (data) {
-          console.log(data);
-          if (data.task_id) {
-            task_id = data.task_id;
-            track_link = data.track_link;
-            url = server + track_link;
-            call_api_result(url);
-          }
+          console.log("Task started:", data);
+          // Extract the task_id from the response
+          var taskId = data.task_id;
+
+          // Call the function to check the task status
+          checkTaskStatus(taskId);
         },
         error: function (e) {
           handle_error(e.responseJSON.detail[0].msg);
@@ -443,7 +571,17 @@ $(document).ready(function () {
     try {
       value = jsonstring.value;
       geojson_layer = JSON.parse(jsonstring.value);
-      (geojson_layer);
+      document.querySelector("a.leaflet-draw-edit-remove").click();
+      var geoJsonGroup = L.geoJson(geojson_layer);
+      addNonGroupLayers(geoJsonGroup, editableLayers);
+      // editableLayers.addLayer(L.geoJSON(geojson_layer));
+      map.removeControl(drawControlFull);
+      map.addControl(drawControlEditOnly);
+      stat = document.getElementById("summary_response").rows[1].cells;
+      stat[1].innerHTML =
+        '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
+      area = document.getElementById("summary_response").rows[0].cells;
+      area[1].innerHTML = "To be Calculated";
       document.getElementById("geojsontextarea").value = value;
     } catch (error) {
       console.log(error);
@@ -548,16 +686,15 @@ $(document).ready(function () {
   }
 
   function check_status() {
+    api_url = get_api_url() + "status/";
     $.ajax({
       type: "GET",
-      url: server + "/raw-data/status/",
-      contentType: "text/plain; charset=utf-8",
+      url: api_url,
+      // contentType: "text/plain; charset=utf-8",
       success: function (data) {
         // console.log(data);
         document.getElementById("db_status").innerHTML =
-          "<strong> Database Updated " +
-          moment(data.last_updated).fromNow() +
-          "</strong>";
+          "<strong> Database Updated " + moment(data.lastUpdated).fromNow() + "</strong>";
       },
       error: function (e) {
         console.log(e);

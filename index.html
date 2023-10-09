@@ -240,8 +240,8 @@
                   <p class="h6" style="padding: 10px">Joint Filter Type</p>
 
                   <select class="form-select" id="jointype">
-                    <option value="OR" selected>OR</option>
-                    <option value="AND">AND</option>
+                    <option value="join_or" selected>OR</option>
+                    <option value="join_and">AND</option>
                   </select>
                   <div class="row" style="padding: 10px">
                     <p
@@ -451,14 +451,28 @@
                       type="radio"
                       id="formCheck-8"
                       name="outputType"
-                      value="MBTILES"
-                      disabled
+                      value="mbtiles"
                     /><label
                       class="form-check-label"
                       for="formCheck-1"
                       data-toggle="tooltip"
                       title=" Default : MINZOOM=10 and MAXZOOM=22 ,Experimental"
-                      >MBTILES</label
+                      >Mbtiles</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      id="formCheck-8"
+                      name="outputType"
+                      value="pmtiles"
+                    /><label
+                      class="form-check-label"
+                      for="formCheck-1"
+                      data-toggle="tooltip"
+                      title=" Use to generate your cloud optimized pmtiles"
+                      >Pmtiles</label
                     >
                   </div>
                   <p
@@ -686,6 +700,43 @@
                           placeholder="File Name : Default (Raw_Export)"
                         />
                       </div>
+
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="include_uuid"
+                        id="include_uuid"
+                        value="uuid"
+                        checked
+                      />
+                      <label
+                        class="form-check-label"
+                        for="include_uuid"
+                        data-toggle="tooltip"
+                        title="Includes unique uid in your exports"
+                      >
+                        <p class="h6">Include unique uid</p>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="bind_zip"
+                        id="bind_zip"
+                        value="bindZip"
+                        checked
+                      />
+                      <label
+                        class="form-check-label"
+                        for="bind_zip"
+                        data-toggle="tooltip"
+                        title="Binds your export to zip and compresses it"
+                      >
+                        <p class="h6">Bind Zip</p>
+                      </label>
                     </div>
                   </div>
                   <button
