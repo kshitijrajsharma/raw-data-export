@@ -196,7 +196,7 @@ $(document).ready(function () {
       const form_data = new FormData(event.target);
       outputType = form_data.getAll("outputType");
       if (outputType.length > 0) {
-        console.log(outputType);
+        // console.log(outputType);
         input += ',"outputType":' + JSON.stringify(outputType[0]);
       }
       if (document.getElementById("include_uuid").checked) {
@@ -231,7 +231,7 @@ $(document).ready(function () {
         columns_filter = form_data.getAll("column_key");
 
         if (geometryType.length > 0) {
-          console.log(geometryType);
+          // console.log(geometryType);
           input += ',"geometryType":' + JSON.stringify(geometryType);
         }
 
@@ -260,7 +260,7 @@ $(document).ready(function () {
               }
             }
           }
-          console.log(tagsobj);
+          // console.log(tagsobj);
           if (tagsobj.length > 0) {
             tagsobj = { building: [] };
           }
@@ -275,7 +275,7 @@ $(document).ready(function () {
             JSON.stringify(tagsobj) +
             "}}";
           if (columns_filter.length > 0) {
-            console.log(columns_filter);
+            // console.log(columns_filter);
             if (columns_filter[0] != "") {
               input +=
                 ',"attributes":{"all_geometry":' +
@@ -357,29 +357,31 @@ $(document).ready(function () {
   }
 
   function unzip_file(url) {
-    console.log("unziping file " + url);
-    JSZipUtils.getBinaryContent(url, function (err, data) {
-      JSZip.loadAsync(data).then(function (zip) {
-        for (let [filename, file] of Object.entries(zip.files)) {
-          // TODO Your code goes here
-          if (filename != "clipping_boundary.geojson") {
-            if (filename.slice(-7).toLowerCase() === "geojson") {
-              console.log(filename);
-              geojson = new File([file], filename);
-              console.log(geojson);
-              zip
-                .file(filename)
-                .async("string")
-                .then(function (data) {
-                  // data is a string
-                  // load_geojson(JSON.parse(data));
-                  load_result_to_map(JSON.parse(data));
-                });
+    if (url.toLowerCase().endsWith(".zip")) {
+      console.log("Unziping file " + url);
+      JSZipUtils.getBinaryContent(url, function (err, data) {
+        JSZip.loadAsync(data).then(function (zip) {
+          for (let [filename, file] of Object.entries(zip.files)) {
+            // TODO Your code goes here
+            if (filename != "clipping_boundary.geojson") {
+              if (filename.slice(-7).toLowerCase() === "geojson") {
+                console.log(filename);
+                geojson = new File([file], filename);
+                console.log(geojson);
+                zip
+                  .file(filename)
+                  .async("string")
+                  .then(function (data) {
+                    // data is a string
+                    // load_geojson(JSON.parse(data));
+                    load_result_to_map(JSON.parse(data));
+                  });
+              }
             }
           }
-        }
+        });
       });
-    });
+    }
   }
 
   function populate_results(data) {
@@ -599,17 +601,36 @@ $(document).ready(function () {
             }
           });
         }
-        var popupContent = "<table>";
+        // var popupContent = "<table>";
+        // for (var p in feature.properties) {
+        //   popupContent +=
+        //     "<tr><td>" +
+        //     p +
+        //     "</td><td>" +
+        //     JSON.stringify(feature.properties[p]) +
+        //     "</td></tr>";
+        // }
+
+        var popupContent = "<table class='popup-table'>"; // Apply a class to the table
         for (var p in feature.properties) {
           popupContent +=
-            "<tr><td>" +
+            "<tr><td class='popup-key'>" +
             p +
-            "</td><td>" +
+            "</td><td class='popup-value'>" +
             JSON.stringify(feature.properties[p]) +
             "</td></tr>";
         }
         popupContent += "</table>";
-        layer.bindPopup(popupContent);
+        popupContent += "</table>";
+        layer.bindPopup(popupContent, {
+          closeButton: false,
+        });
+        layer.on("mouseover", function () {
+          layer.openPopup();
+        });
+        layer.on("mouseout", function () {
+          layer.closePopup();
+        });
       },
     }).addTo(map);
 

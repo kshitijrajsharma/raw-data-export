@@ -3,6 +3,21 @@ body {
     height: 100%;
 }
 
+/* CSS Styles for the Custom Popup */
+.popup-table {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .popup-key {
+    font-weight: bold;
+  }
+  
+  .popup-value {
+    word-wrap: break-word;
+  }
+  
+
 #sidepanel {
     height: 100%;
     background: yellow;
