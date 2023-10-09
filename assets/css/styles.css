@@ -1,49 +1,49 @@
-html,body {
+html,
+body {
     height: 100%;
-  }
-  
+}
+
 #sidepanel {
     height: 100%;
     background: yellow;
-  }
+}
 
-  #map { height: 100%; }
+#map {
+    height: 100%;
+}
 
-  .form-container{
-    padding:10px;
-    padding-bottom:5px;
-    margin:5px ;
-    margin-top:5px;
+.form-container {
     background-color: #fdfdfd;
-  }
-  
-  .add-one{
-    color:green;
-    text-align:center;
-    cursor:pointer;
-    margin-top:10px;
-  }
-  
-  .delete{
-    color:white;
-    background-color:rgb(231, 76, 60);
-    text-align:center;
-    margin-top:6px;
-    font-weight:700;
-    border-radius:5px;
-    min-width:20px;
-    cursor:pointer;
-  }
-  
-  #singlebutton{
-    width:100%;
-    margin-top:20px;
-  }
-  
-  .dynamic-element{
-    margin-bottom:0px;
-  }
-  .form-check{
-    padding:3px;
+}
+
+.add-one {
+    color: green;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 3px;
+}
+
+.delete {
+    color: white;
+    background-color: rgb(231, 76, 60);
+    text-align: center;
+    margin-top: 6px;
+    font-weight: 700;
+    border-radius: 5px;
+    min-width: 20px;
+    cursor: pointer;
+}
+
+#singlebutton {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.dynamic-element {
+    margin-bottom: 0px;
+}
+
+.form-check {
+    padding: 3px;
     margin-left: 30px;
-  }
+}
