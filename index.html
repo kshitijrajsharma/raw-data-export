@@ -54,12 +54,11 @@
 
               <li class="nav-item">
                 <select class="form-select" id="server">
-                  <option value="https://galaxy-api.hotosm.org/v1" >Production</option>
-                  <option value="http://52.203.15.233:8000/v1" selected>Development</option>
-                  <option value="http://127.0.0.1:8000/v1">Localhost</option>
+                  <option value="prod" >Production</option>
+                  <option value="dev" selected>Development</option>
+                  <option value="local">Localhost</option>
                 </select>
               </li>
-              <li class="nav-item"><a class="nav-link" target="_blank" href="./query_builder.html">Query Builder</a></li>
               <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/kshitijrajsharma/galaxy-export">About</a></li>
 
             </ul>
@@ -237,12 +236,32 @@
                       Administrative Boundary
                     </label>
                   </div>
+
                   <p class="h6" style="padding: 10px">Joint Filter Type</p>
 
                   <select class="form-select" id="jointype">
                     <option value="join_or" selected>OR</option>
                     <option value="join_and">AND</option>
                   </select>
+                  <div class="form-check" style="padding: 10px">
+                    <input
+                      class="form-check-input" 
+                      type="checkbox"
+                      name="useStWithin"
+                      id="useStWithin"
+                      value="useStWithin"
+                      checked
+                    />
+                    <label
+                      class="form-check-label"
+                      for="useStWithin"
+                      data-toggle="tooltip"
+                      title="Gives strictly everything inside the box, if unchecked it will give all intersected features"
+                    >
+                      <p class="h6" >Use STWithin</p>
+                    </label>
+                  </div>
+
                   <div class="row" style="padding: 10px">
                     <p
                       class="h6"
