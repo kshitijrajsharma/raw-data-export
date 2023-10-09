@@ -138,6 +138,7 @@ $(document).ready(function () {
   L.EditToolbar.Delete.include({
     enable: function () {
       this.options.featureGroup.clearLayers();
+      editableLayers.clearLayers();
       map.removeControl(drawControlEditOnly);
       map.addControl(drawControlFull);
       document.getElementById("geojsontextarea").value = "";
@@ -155,6 +156,9 @@ $(document).ready(function () {
     response_time[1].innerHTML = "";
     download_url = document.getElementById("summary_response").rows[3].cells;
     download_url[1].innerHTML = "";
+    if (map.hasLayer(result_geojson)) {
+      result_geojson.remove();
+    }
   }
 
   function get_api_url() {
@@ -402,7 +406,7 @@ $(document).ready(function () {
       data.download_url +
       '">' +
       data.file_name +
-      ".zip</a><p><small><strong>Zip size</strong> (MB) : " +
+      "</a><p><small><strong>Zip size</strong> (MB) : " +
       zip_file_size +
       "<br>" +
       "<strong>Export size</strong> (MB) : " +
