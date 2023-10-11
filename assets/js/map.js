@@ -439,6 +439,7 @@ $(document).ready(function () {
           percentMapped,
           percentValidated,
           mappingTypes,
+          lastUpdated,
         } = data;
         const mappingTypesList = mappingTypes.join(", ");
 
@@ -460,10 +461,15 @@ $(document).ready(function () {
                   <strong>Creator:</strong> ${organisationName}
               </div>
               <div class="popup-line">
-                  <strong>Mapped:</strong> ${percentMapped} %
+                  <strong>Mapped:</strong> ${percentMapped} % 
               </div>              
               <div class="popup-line">
                   <strong>Validated:</strong> ${percentValidated} %
+              </div>
+              <div class="popup-line">
+                  <strong>Last Updated :</strong> ${moment(
+                    lastUpdated
+                  ).fromNow()}
               </div>
               <div class="popup-line">
                   <strong>Mapping Type :</strong> ${mappingTypesList}
@@ -634,7 +640,16 @@ $(document).ready(function () {
       value = jsonstring.value;
       geojson_layer = JSON.parse(jsonstring.value);
       document.querySelector("a.leaflet-draw-edit-remove").click();
-      var geoJsonGroup = L.geoJson(geojson_layer);
+      var geoJsonGroup = L.geoJson(geojson_layer, {
+        style: function (feature) {
+          return {
+            color: "#d6403f",
+            opacity: 1,
+            fillOpacity: 0,
+          };
+        },
+      });
+
       addNonGroupLayers(geoJsonGroup, editableLayers);
       var bounds = geoJsonGroup.getBounds();
 
