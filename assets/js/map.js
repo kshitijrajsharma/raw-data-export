@@ -397,10 +397,10 @@ $(document).ready(function () {
           const [lng, lat] = feature.geometry.coordinates;
 
           const marker = L.circleMarker([lat, lng], {
-            color: "red",
-            fillColor: "#f03",
-            fillOpacity: 0.5,
-            radius: 5,
+            color: "#DD0610D6",
+            // fillColor: "#f03",
+            // fillOpacity: 0.5,
+            radius: 2.5,
           }).addTo(map);
 
           marker.on("click", () => {
@@ -436,7 +436,11 @@ $(document).ready(function () {
           projectInfo: { name },
           aoiBBOX,
           organisationName,
+          percentMapped,
+          percentValidated,
+          mappingTypes,
         } = data;
+        const mappingTypesList = mappingTypes.join(", ");
 
         const popupContent = `
           <div class="popup-header">
@@ -455,11 +459,20 @@ $(document).ready(function () {
               <div class="popup-line">
                   <strong>Creator:</strong> ${organisationName}
               </div>
+              <div class="popup-line">
+                  <strong>Mapped:</strong> ${percentMapped} %
+              </div>              
+              <div class="popup-line">
+                  <strong>Validated:</strong> ${percentValidated} %
+              </div>
+              <div class="popup-line">
+                  <strong>Mapping Type :</strong> ${mappingTypesList}
+              </div>
               <div class="popup-button-container">
                   <button id="fetchTmbutton" type="button" class="btn btn-danger btn-sm"
                   style="background: rgb(214, 64, 63);" data-tmid="${projectId}" data-aoibbox="${JSON.stringify(
           aoiBBOX
-        )}">Load Task AOI</button>
+        )}">Load Project AOI</button>
               </div>
           </div>
       `;
