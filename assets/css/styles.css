@@ -3,6 +3,44 @@ body {
     height: 100%;
 }
 
+
+
+.popup-spinner {
+    margin: 10px auto;
+    border: 5px solid rgba(150, 150, 150, 0.3);
+    border-top: 5px solid #db3460;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+}
+
+.popup-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* padding: 20px; */
+    text-align: center;
+}
+
+.popup-header {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.popup-line {
+    margin-bottom: 10px;
+    font-size: 13px;
+
+}
+
+.popup-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+
+
 /* CSS Styles for the Custom Popup */
 .popup-table {
     padding: 10px;

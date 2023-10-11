@@ -55,6 +55,8 @@ $(document).ready(function () {
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
 
+  fetchTMProjects();
+
   var drawControlFull = new L.Control.Draw({
     draw: {
       polyline: false,
@@ -384,6 +386,122 @@ $(document).ready(function () {
     }
   }
 
+  function fetchTMProjects() {
+    fetch(
+      "https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/?orderBy=priority&orderByType=ASC&mappingTypesExact=false&page=1&createdByMe=false&mappedByMe=false&favoritedByMe=false&managedByMe=false&basedOnMyInterests=false&omitMapResults=false"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        data.mapResults.features.forEach((feature) => {
+          const { projectId } = feature.properties;
+          const [lng, lat] = feature.geometry.coordinates;
+
+          const marker = L.circleMarker([lat, lng], {
+            color: "red",
+            fillColor: "#f03",
+            fillOpacity: 0.5,
+            radius: 5,
+          }).addTo(map);
+
+          marker.on("click", () => {
+            fetchProjectDetails(projectId, [lat, lng]);
+          });
+        });
+      });
+  }
+
+  function fetchProjectDetails(projectId, location) {
+    const popup = L.popup({
+      className: "popup-container",
+      closeButton: false,
+    });
+    popup.setLatLng(location);
+    popup.setContent(`
+        <div class="popup-content">
+            <strong>Tasking Manager Project</strong> <br>
+            <strong>ID:</strong> ${projectId} <br>
+            <div class="popup-spinner"></div>
+        </div>
+    `);
+    popup.openOn(map);
+
+    fetch(
+      `https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/${projectId}/?as_file=false&abbreviated=false`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const {
+          status,
+          projectPriority,
+          projectInfo: { name },
+          aoiBBOX,
+          organisationName,
+        } = data;
+
+        const popupContent = `
+          <div class="popup-header">
+              <strong>Tasking Manager Project ${projectId}</strong>
+          </div>
+          <div class="popup-content">
+              <div class="popup-line">
+                  <strong>Name:</strong> ${name}
+              </div>
+              <div class="popup-line">
+                  <strong>Status:</strong> ${status}
+              </div>
+              <div class="popup-line">
+                  <strong>Priority:</strong> ${projectPriority}
+              </div>
+              <div class="popup-line">
+                  <strong>Creator:</strong> ${organisationName}
+              </div>
+              <div class="popup-button-container">
+                  <button id="fetchTmbutton" type="button" class="btn btn-danger btn-sm"
+                  style="background: rgb(214, 64, 63);" data-tmid="${projectId}" data-aoibbox="${JSON.stringify(
+          aoiBBOX
+        )}">Load Task AOI</button>
+              </div>
+          </div>
+      `;
+
+        popup.setContent(popupContent);
+      })
+      .catch((error) => {
+        console.error("Error fetching project details:", error);
+        popup.setContent(
+          "Error fetching project details. Please try again later."
+        );
+      });
+  }
+
+  document.body.addEventListener("click", function (event) {
+    if (event.target.id === "fetchTmbutton") {
+      console.log("clicked");
+      const aoiBBOX = JSON.parse(event.target.dataset.aoibbox);
+      const filename = `hotosm-project-${event.target.dataset.tmid}`;
+      const aoi_bbox_geojson = {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [aoiBBOX[0], aoiBBOX[1]],
+              [aoiBBOX[2], aoiBBOX[1]],
+              [aoiBBOX[2], aoiBBOX[3]],
+              [aoiBBOX[0], aoiBBOX[3]],
+              [aoiBBOX[0], aoiBBOX[1]],
+            ],
+          ],
+        },
+      };
+      document.getElementById("geojsontextarea").value =
+        JSON.stringify(aoi_bbox_geojson);
+      loadRawGeojsonToMap();
+      document.getElementById("filename").value = filename;
+    }
+  });
+
   function populate_results(data) {
     console.log(data);
     area = document.getElementById("summary_response").rows[0].cells;
@@ -495,8 +613,10 @@ $(document).ready(function () {
     x--;
   });
 
-  $("#loadgeojson").click(function () {
+  function loadRawGeojsonToMap() {
     jsonstring = document.getElementById("geojsontextarea");
+    value = jsonstring.value;
+    geojson_layer = JSON.parse(jsonstring.value);
     try {
       value = jsonstring.value;
       geojson_layer = JSON.parse(jsonstring.value);
@@ -507,6 +627,7 @@ $(document).ready(function () {
 
       // Zoom the map to the bounds of the GeoJSON layer
       map.fitBounds(bounds);
+
       // editableLayers.addLayer(L.geoJSON(geojson_layer));
       map.removeControl(drawControlFull);
       map.addControl(drawControlEditOnly);
@@ -520,6 +641,10 @@ $(document).ready(function () {
       console.log(error);
       alert(error);
     }
+  }
+
+  $("#loadgeojson").click(function () {
+    loadRawGeojsonToMap();
   });
 
   function load_geojson(geojson_layer) {
@@ -601,15 +726,6 @@ $(document).ready(function () {
             }
           });
         }
-        // var popupContent = "<table>";
-        // for (var p in feature.properties) {
-        //   popupContent +=
-        //     "<tr><td>" +
-        //     p +
-        //     "</td><td>" +
-        //     JSON.stringify(feature.properties[p]) +
-        //     "</td></tr>";
-        // }
 
         var popupContent = "<table class='popup-table'>"; // Apply a class to the table
         for (var p in feature.properties) {
