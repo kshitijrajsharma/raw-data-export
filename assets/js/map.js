@@ -1,12 +1,6 @@
 $(document).ready(function () {
   var result_geojson;
-  var select = document.getElementById("server");
-  var server = select.options[select.selectedIndex].value;
-  $("#server").on("change", function () {
-    server = this.value;
-    // console.log(server);
-    check_status();
-  });
+
   window.onbeforeunload = function () {
     return "Are you sure you want to leave? Think of your existing exports!";
   };
@@ -67,8 +61,24 @@ $(document).ready(function () {
       // Call the function to check the task status using stored task_id
       api_url = get_api_url() + `tasks/status/${storedTaskId}/`;
       call_api_result(api_url);
+      var server_local = localStorage.getItem("server");
+      if (server_local) {
+        server = server_local;
+        var selectElement = document.getElementById("server");
+        selectElement.value = server;
+      } else {
+        var select = document.getElementById("server");
+        var server = select.options[select.selectedIndex].value;
+        localStorage.setItem("server", server);
+      }
     }
   }
+  $("#server").on("change", function () {
+    server = this.value;
+    // console.log(server);
+    localStorage.setItem("server", server);
+    check_status();
+  });
   var drawControlFull = new L.Control.Draw({
     draw: {
       polyline: false,
