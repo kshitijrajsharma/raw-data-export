@@ -12,7 +12,8 @@ $(document).ready(function () {
   };
   check_status();
   var map = L.map("map", {
-    minZoom: 2,
+    minZoom: 3,
+    maxZoom: 16,
     attributionControl: false,
   });
   function setMapToUserLocation(position) {
@@ -217,6 +218,12 @@ $(document).ready(function () {
         input += ',"useStWithin": "true"';
       } else {
         input += ',"useStWithin": "false"';
+      }
+
+      if (document.getElementById("centroid").checked) {
+        input += ',"centroid": "true"';
+      } else {
+        input += ',"centroid": "false"';
       }
 
       if (document.getElementById("download_everything").checked) {
@@ -721,7 +728,7 @@ $(document).ready(function () {
         } else if (layer.feature.geometry.type == "Point") {
           var ico = L.icon({
             iconUrl: "assets/img/marker.png",
-            iconSize: [10, 10],
+            iconSize: [6, 6],
           });
           layer.setIcon(ico);
         } else if (
@@ -740,7 +747,7 @@ $(document).ready(function () {
             if (layer_GeometryCollection._latlng) {
               var ico = L.icon({
                 iconUrl: "assets/img/marker.png",
-                iconSize: [10, 10],
+                iconSize: [6, 6],
               });
               layer_GeometryCollection.setIcon(ico);
             } else {
