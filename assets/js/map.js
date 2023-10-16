@@ -366,6 +366,9 @@ $(document).ready(function () {
           handle_error("Task Failed");
         } else {
           setTimeout(function () {
+            stat = document.getElementById("summary_response").rows[1].cells;
+            stat[1].innerHTML =
+              '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running</strong></div>';
             call_api_result(call_url);
           }, 2000);
         }
