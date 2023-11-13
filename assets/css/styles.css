@@ -100,3 +100,29 @@ body {
     padding: 3px;
     margin-left: 30px;
 }
+
+
+.autocomplete-results {
+    /* position: absolute; */
+    position: fixed; /* Change to fixed for centering on the screen */
+    /* top: 100%; */
+    /* left: 0; */
+    z-index: 1000000;
+    width: auto;
+    max-height: 200px;
+    min-width: 250px;
+    overflow-y: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none;
+  }
+  
+  .autocomplete-item {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .autocomplete-item:hover {
+    background-color: #f0f0f0;
+  }
+  

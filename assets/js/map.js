@@ -20,15 +20,15 @@ $(document).ready(function () {
   function handleLocationError(error) {
     // Handle errors here, such as permission denied or unavailable geolocation API
     console.error("Error getting your location: " + error.message);
+    map.setView([28.2957487, 83.8123341], 4);
   }
   navigator.geolocation.getCurrentPosition(
     setMapToUserLocation,
     handleLocationError,
     {
-      enableHighAccuracy: true, // Enable high accuracy mode for better results (optional)
+      enableHighAccuracy: true,
     }
   );
-  // map.setView([28.2957487, 83.8123341], 4);
   L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors, © CartoDB",
   }).addTo(map);
@@ -883,14 +883,59 @@ $(document).ready(function () {
     var reader = new FileReader();
     reader.onload = (function (theFile) {
       return function (e) {
-        // Do everything what you need with the file's content(e.target.result)
         // console.log(e.target.result);
         document.getElementById("geojsontextarea").value = e.target.result;
+        $("#tab-5").tab("show");
       };
     })(geojson_file);
     reader.readAsText(geojson_file);
     document.getElementById("formFileGeojson").value = null;
   });
+  var typingTimer;
+  var doneTypingInterval = 500;
+
+  $("#searchCountryInput").on("input", function () {
+    clearTimeout(typingTimer);
+    var query = $(this).val().trim();
+    if (query !== "") {
+      typingTimer = setTimeout(function () {
+        $.ajax({
+          url: get_api_url() + "countries/?q=" + query,
+          method: "GET",
+          success: function (data) {
+            updateAutocompleteResults(data.features);
+          },
+        });
+      }, doneTypingInterval);
+    } else {
+      $("#autocompleteResults").empty().hide();
+    }
+  });
+
+  function updateAutocompleteResults(features) {
+    var autocompleteResults = $("#autocompleteResults");
+    autocompleteResults.empty().show();
+
+    features.forEach(function (feature) {
+      var resultItem = $(
+        "<a href='#' class='list-group-item list-group-item-action'>" +
+          feature.properties.description +
+          "</a>"
+      );
+      resultItem.click(function () {
+        renderFeatureOnMap(feature);
+        $("#searchCountryInput").val("");
+        autocompleteResults.empty().hide();
+      });
+
+      autocompleteResults.append(resultItem);
+    });
+  }
+
+  function renderFeatureOnMap(feature) {
+    document.getElementById("geojsontextarea").value = JSON.stringify(feature);
+    loadRawGeojsonToMap();
+  }
 
   document.getElementById("formFileGeojson").click();
   document.getElementById("custom_tag_add_btn").click();
