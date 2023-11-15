@@ -1018,6 +1018,14 @@ $(document).ready(function () {
     `;
     $("#osmLoginModal .modal-content").html(modalContent);
   }
+  $("#clickHereLink").click(function () {
+    fetch(get_api_url() + "auth/login/")
+      .then((response) => response.json())
+      .then((data) => {
+        window.open(data.login_url, "_blank");
+      })
+      .catch((error) => console.error("Error:", error));
+  });
 
   $("#loginbtn").click(function () {
     var modal = document.getElementById("osmLoginModal");
