@@ -5,6 +5,7 @@ $(document).ready(function () {
     return "Are you sure you want to leave? Think of your existing exports!";
   };
   check_status();
+
   var map = L.map("map", {
     minZoom: 3,
     maxZoom: 17,
@@ -328,13 +329,22 @@ $(document).ready(function () {
       download_url[1].innerHTML = "";
 
       api_url = get_api_url() + "snapshot/";
+      headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+      if (isAccessTokenPresent()) {
+        headers = {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "access-token": localStorage.getItem("access_token"),
+        };
+      }
+
       $.ajax({
         type: "POST",
         url: api_url,
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         data: input,
 
         success: function (data) {
@@ -937,6 +947,95 @@ $(document).ready(function () {
     loadRawGeojsonToMap();
   }
 
+  function isAccessTokenPresent() {
+    return localStorage.getItem("access_token") !== null;
+  }
+  function fetchUserDetails() {
+    var apiEndpoint = get_api_url() + "auth/me/";
+
+    var accessToken = localStorage.getItem("access_token");
+    fetch(apiEndpoint, {
+      method: "GET",
+      headers: {
+        "access-token": accessToken,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        displayUserProfile(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user details:", error);
+        displayError();
+      });
+  }
+
+  function displayUserProfile(userDetails) {
+    var modalContent = `
+      <div class="modal-header">
+        <h5 class="modal-title" id="osmLoginModalLabel">Welcome, ${userDetails.username}!</h5>
+      </div>
+      <div class="modal-body text-center">
+        <div class="user-profile">
+          <img src="${userDetails.img_url}" alt="User Profile Image" class="img-fluid profile-image">
+          <div class="profile-details">
+            <p class="profile-name">${userDetails.username}</p>
+            <button type="button" class="btn btn-danger" onclick="signOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+      <script>
+      function signOut() {
+        localStorage.removeItem("access_token");
+        console.log("access_token revoked");
+        var modal = document.getElementById("osmLoginModal");
+        var modalInstance = new bootstrap.Modal(modal);
+        modalInstance.hide();
+      }
+      </script>
+    `;
+
+    $("#osmLoginModal .modal-content").html(modalContent);
+  }
+
+  function displayError() {
+    var modalContent = `
+      <div class="modal-header">
+        <h5 class="modal-title" id="osmLoginModalLabel">Error Fetching User Details</h5>
+      </div>
+      <div class="modal-body text-center">
+        <p>There was an error fetching user details. Please try again.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    `;
+    $("#osmLoginModal .modal-content").html(modalContent);
+  }
+
+  $("#loginbtn").click(function () {
+    var modal = document.getElementById("osmLoginModal");
+    var modalInstance = new bootstrap.Modal(modal);
+
+    if (isAccessTokenPresent()) {
+      fetchUserDetails();
+      modalInstance.show();
+    } else {
+      modalInstance.show();
+    }
+  });
+
+  $("#loginsubmitbtn").click(function () {
+    var accessToken = document.getElementById("accessTokenInput").value;
+    localStorage.setItem("access_token", accessToken);
+    fetchUserDetails();
+  });
   document.getElementById("formFileGeojson").click();
   document.getElementById("custom_tag_add_btn").click();
 });

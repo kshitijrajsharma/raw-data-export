@@ -87,9 +87,13 @@
                 >API</a
               ></span
             >
+            <button type="button" id="loginbtn" class="btn btn-danger">
+              Login
+            </button>
           </div>
         </div>
       </nav>
+
       <div class="row" style="height: 100%">
         <div class="col-md-6 col-xl-4 order-md-1">
           <div>
@@ -806,6 +810,42 @@
         </div>
         <div class="col-md-6 col-xl-8 order-md-2">
           <div id="map"></div>
+        </div>
+        <div
+          class="modal fade"
+          id="osmLoginModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="osmLoginModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="osmLoginModalLabel">
+                  Login with OSM
+                </h5>
+              </div>
+              <div class="modal-body text-center">
+                <p>Copy the access_token and paste here:</p>
+                <input
+                  type="text"
+                  id="accessTokenInput"
+                  class="form-control"
+                  placeholder="Enter access_token"
+                />
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  id="loginsubmitbtn"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
