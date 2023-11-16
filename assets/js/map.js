@@ -191,11 +191,11 @@ $(document).ready(function () {
     var server = select.options[select.selectedIndex].value;
     // console.log(server);
     if (server == "prod") {
-      api_url = "https://rawdata-demo.hotosm.org/v1/";
+      api_url = "https://api-prod.raw-data.hotosm.org/v1/";
     } else if (server == "local") {
       api_url = "http://127.0.0.1:8000/v1/";
     } else {
-      api_url = "https://raw-data-api0.hotosm.org/v1/";
+      api_url = "https://api-stage.raw-data.hotosm.org/v1/";
     }
     return api_url;
   }
