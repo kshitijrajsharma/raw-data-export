@@ -321,7 +321,7 @@ $(document).ready(function () {
       input += "}";
       console.log(input);
       stat[1].innerHTML =
-        '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running';
+        '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Pending';
       ("</strong></div>");
       response_time = document.getElementById("summary_response").rows[2].cells;
       response_time[1].innerHTML = "";
@@ -386,7 +386,9 @@ $(document).ready(function () {
           setTimeout(function () {
             stat = document.getElementById("summary_response").rows[1].cells;
             stat[1].innerHTML =
-              '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Running</strong></div>';
+              '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>' +
+              data.status +
+              "</strong></div>";
             call_api_result(call_url);
           }, 2000);
         }
