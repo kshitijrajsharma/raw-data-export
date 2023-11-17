@@ -973,19 +973,36 @@ $(document).ready(function () {
       .catch((error) => {
         console.error("Error fetching user details:", error);
         displayError();
+        localStorage.removeItem("access_token");
       });
+  }
+  function get_role(role) {
+    if (role == 1) {
+      return "ADMIN";
+    }
+    if (role == 2) {
+      return "STAFF";
+    }
+    if (role == 3) {
+      return "GUEST";
+    }
   }
 
   function displayUserProfile(userDetails) {
     var modalContent = `
       <div class="modal-header">
-        <h5 class="modal-title" id="osmLoginModalLabel">Welcome, ${userDetails.username}!</h5>
+        <h5 class="modal-title" id="osmLoginModalLabel">Welcome, ${get_role(
+          userDetails.role
+        )} User !</h5>
       </div>
       <div class="modal-body text-center">
         <div class="user-profile">
-          <img src="${userDetails.img_url}" alt="User Profile Image" class="img-fluid profile-image">
+          <img src="${
+            userDetails.img_url
+          }" alt="User Profile Image" class="img-fluid profile-image">
           <div class="profile-details">
             <p class="profile-name">${userDetails.username}</p>
+            <p > OSM ID : ${userDetails.id}</p>
             <button type="button" class="btn btn-danger" onclick="signOut()">Sign Out</button>
           </div>
         </div>
@@ -994,9 +1011,7 @@ $(document).ready(function () {
       function signOut() {
         localStorage.removeItem("access_token");
         console.log("access_token revoked");
-        var modal = document.getElementById("osmLoginModal");
-        var modalInstance = new bootstrap.Modal(modal);
-        modalInstance.hide();
+        location.reload();
       }
       </script>
     `;
@@ -1013,7 +1028,7 @@ $(document).ready(function () {
         <p>There was an error fetching user details. Please try again.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" onclick="location.reload()">Reload</button>
       </div>
     `;
     $("#osmLoginModal .modal-content").html(modalContent);
