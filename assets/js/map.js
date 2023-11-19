@@ -586,12 +586,24 @@ $(document).ready(function () {
       data.download_url +
       '">' +
       data.file_name +
-      "</a><p><small><strong>Zip size</strong> (MB) : " +
+      '</a>&nbsp;<span style="cursor: pointer;" onclick="(function(text) {' +
+      "  var dummyTextarea = document.createElement('textarea');" +
+      "  dummyTextarea.value = text;" +
+      "  document.body.appendChild(dummyTextarea);" +
+      "  dummyTextarea.select();" +
+      "  document.execCommand('copy');" +
+      "  document.body.removeChild(dummyTextarea);" +
+      "  alert('Download link copied to clipboard!');" +
+      "})('" +
+      data.download_url +
+      '\')" title="Copy Link">&#x1F4CB;</span>' +
+      "<p><small><strong>Zip size</strong> (MB) : " +
       zip_file_size +
       "<br>" +
       "<strong>Export size</strong> (MB) : " +
       binded_file_size +
       "</small></p>";
+
     document.getElementById("hot_export_btn").disabled = false;
     document.getElementById("loadgeojson").disabled = false;
     document.getElementById("geojsontextarea").disabled = false;
