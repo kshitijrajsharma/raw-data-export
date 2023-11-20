@@ -1031,12 +1031,27 @@ $(document).ready(function () {
           }" alt="User Profile Image" class="img-fluid profile-image">
           <div class="profile-details">
             <p class="profile-name">${userDetails.username}</p>
-            <p > OSM ID : ${userDetails.id}</p>
+            <p> OSM ID : ${
+              userDetails.id
+            }  <span style="cursor: pointer;" onclick="copyToClipboard('${
+      localStorage.getItem("access_token") || ""
+    }')" title="Copy access token">&#x1F4CB;</span></p>
+          
             <button type="button" class="btn btn-danger" onclick="signOut()">Sign Out</button>
           </div>
         </div>
       </div>
       <script>
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            alert('Access Token copied!');
+          })
+          .catch((err) => {
+            console.error('Unable to copy to clipboard', err);
+          });
+      }
+  
       function signOut() {
         localStorage.removeItem("access_token");
         console.log("access_token revoked");
