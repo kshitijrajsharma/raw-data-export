@@ -562,6 +562,21 @@ $(document).ready(function () {
     }
   });
 
+  function extractFilename(inputString) {
+    const parts = inputString.split("/");
+    const filenameWithExtension = parts[parts.length - 1];
+
+    const filenameParts = filenameWithExtension.split(".");
+    const fileExtension = filenameParts[filenameParts.length - 1];
+    const filenameWithoutExtension = filenameParts.slice(0, -1).join(".");
+
+    if (filenameWithoutExtension.includes("_uid_")) {
+      const uidParts = filenameWithoutExtension.split("_uid_");
+      return uidParts[0] + "." + fileExtension;
+    } else {
+      return filenameWithoutExtension + "." + fileExtension;
+    }
+  }
   function populate_results(data) {
     console.log(data);
     area = document.getElementById("summary_response").rows[0].cells;
@@ -585,7 +600,7 @@ $(document).ready(function () {
       '<a id="response_file_download" href="' +
       data.download_url +
       '">' +
-      data.file_name +
+      extractFilename(data.download_url) +
       '</a>&nbsp;<span style="cursor: pointer;" onclick="(function(text) {' +
       "  var dummyTextarea = document.createElement('textarea');" +
       "  dummyTextarea.value = text;" +
