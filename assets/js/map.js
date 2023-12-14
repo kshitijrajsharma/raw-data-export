@@ -236,6 +236,12 @@ $(document).ready(function () {
         input += ',"bindZip": "false"';
       }
 
+      if (document.getElementById("include_stats").checked) {
+        input += ',"includeStats": "true"';
+      } else {
+        input += ',"includeStats": "false"';
+      }
+
       if (document.getElementById("useStWithin").checked) {
         input += ',"useStWithin": "true"';
       } else {
@@ -618,6 +624,72 @@ $(document).ready(function () {
       "<strong>Export size</strong> (MB) : " +
       binded_file_size +
       "</small></p>";
+
+    if (data && "stats" in data) {
+      // Create a label for "About the Data"
+      var aboutDataLabel = document.createElement("span");
+      aboutDataLabel.innerHTML = "About the Data: ";
+      aboutDataLabel.style.fontSize = "12px";
+      aboutDataLabel.style.marginRight = "5px";
+
+      // Append the label before the information icon
+      download_url[1].insertAdjacentElement("beforeend", aboutDataLabel);
+
+      // Create information icon
+      var infoIcon = document.createElement("span");
+      infoIcon.innerHTML = "&#9432;";
+      infoIcon.style.cursor = "pointer";
+
+      // Append the information icon after the label
+      download_url[1].insertAdjacentElement("beforeend", infoIcon);
+
+      // Create a variable to store the tooltip
+      var tooltip;
+
+      // Display building and road summaries on information icon hover
+      infoIcon.addEventListener("mouseover", function () {
+        tooltip = document.createElement("div");
+        tooltip.innerHTML =
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Building:</strong> " +
+          data.stats.summary.building +
+          "</p>" +
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Road:</strong> " +
+          data.stats.summary.road +
+          "</p>" +
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Raw Data:</strong></p>" +
+          "<pre style='font-size: 10px; margin-bottom: 8px; max-width: 300px; overflow: auto;'>" +
+          JSON.stringify(data.stats.raw, null, 2) +
+          "</pre>" +
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Meta Information:</strong></p>" +
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><a href='" +
+          data.stats.meta.indicators +
+          "' target='_blank'>Indicators</a></p>" +
+          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><a href='" +
+          data.stats.meta.metrics +
+          "' target='_blank'>Metrics</a></p>";
+
+        tooltip.style.position = "absolute";
+        tooltip.style.background = "white";
+        tooltip.style.border = "1px solid #ccc";
+        tooltip.style.padding = "10px";
+        tooltip.style.zIndex = "1000";
+        tooltip.style.maxWidth = "350px";
+        tooltip.style.textAlign = "justify";
+        tooltip.style.top =
+          download_url[1].offsetTop + download_url[1].offsetHeight + 10 + "px";
+        tooltip.style.left =
+          download_url[1].offsetLeft + infoIcon.offsetWidth + 150 + "px";
+
+        document.body.appendChild(tooltip);
+      });
+
+      // Close tooltip when mouse is out of the information icon
+      infoIcon.addEventListener("mouseout", function () {
+        if (tooltip) {
+          tooltip.parentNode.removeChild(tooltip);
+        }
+      });
+    }
 
     document.getElementById("hot_export_btn").disabled = false;
     document.getElementById("loadgeojson").disabled = false;
