@@ -382,8 +382,8 @@ $(document).ready(function () {
       success: function (data) {
         if (data.status === "SUCCESS") {
           populate_results(data.result);
-          if (data.result.zip_file_size_bytes / 1000000 < 2) {
-            // if greater than 25 mb don't load it
+          if (data.result.zip_file_size_bytes / 1000000 < 4) {
+            // if greater than 4 mb don't load it
             unzip_file(data.result.download_url);
           }
         } else if (data.status === "FAILURE") {
@@ -909,7 +909,7 @@ $(document).ready(function () {
         layer.bindPopup(popupContent, {
           closeButton: false,
         });
-        layer.on("mouseover", function () {
+        layer.on("click", function () {
           layer.openPopup();
         });
         layer.on("mouseout", function () {
