@@ -52,28 +52,28 @@ $(document).ready(function () {
   map.addLayer(editableLayers);
 
   fetchTMProjects();
-  var storedTaskId = localStorage.getItem("task_id");
-  if (storedTaskId) {
-    // Ask the user if they want to load data from the previous run
-    var loadFromPreviousRun = confirm(
-      "Do you want to load data from the previous run?"
-    );
-    if (loadFromPreviousRun) {
-      // Call the function to check the task status using stored task_id
-      api_url = get_api_url() + `tasks/status/${storedTaskId}/`;
-      call_api_result(api_url);
-      var server_local = localStorage.getItem("server");
-      if (server_local) {
-        server = server_local;
-        var selectElement = document.getElementById("server");
-        selectElement.value = server;
-      } else {
-        var select = document.getElementById("server");
-        var server = select.options[select.selectedIndex].value;
-        localStorage.setItem("server", server);
-      }
-    }
-  }
+  // var storedTaskId = localStorage.getItem("task_id");
+  // if (storedTaskId) {
+  //   // Ask the user if they want to load data from the previous run
+  //   var loadFromPreviousRun = confirm(
+  //     "Do you want to load data from the previous run?"
+  //   );
+  //   if (loadFromPreviousRun) {
+  //     // Call the function to check the task status using stored task_id
+  //     api_url = get_api_url() + `tasks/status/${storedTaskId}/`;
+  //     call_api_result(api_url);
+  //     var server_local = localStorage.getItem("server");
+  //     if (server_local) {
+  //       server = server_local;
+  //       var selectElement = document.getElementById("server");
+  //       selectElement.value = server;
+  //     } else {
+  //       var select = document.getElementById("server");
+  //       var server = select.options[select.selectedIndex].value;
+  //       localStorage.setItem("server", server);
+  //     }
+  //   }
+  // }
   $("#server").on("change", function () {
     server = this.value;
     // console.log(server);
@@ -357,7 +357,7 @@ $(document).ready(function () {
           console.log("Task started:", data);
           // Extract the task_id from the response
           var taskId = data.task_id;
-          localStorage.setItem("task_id", taskId);
+          // localStorage.setItem("task_id", taskId);
           // Call the function to check the task status
           api_url = get_api_url() + `tasks/status/${taskId}/`;
           call_api_result(api_url);
