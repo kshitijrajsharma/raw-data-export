@@ -21,6 +21,13 @@
 
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.0.0/jsoneditor.css"
+      integrity="sha512-iOFdnlwX6UGb55bU5DL0tjWkS/+9jxRxw2KiRzyHMZARASUSwm0nEXBcdqsYni+t3UKJSK7vrwvlL8792/UMjQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
@@ -31,6 +38,14 @@
       integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"
     />
   </head>
 
@@ -137,6 +152,16 @@
                     href="#tab-5"
                     style="color: rgb(0, 0, 0)"
                     >AOI</a
+                  >
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a
+                    class="nav-link"
+                    role="tab"
+                    data-bs-toggle="tab"
+                    href="#tab-6"
+                    style="color: rgb(0, 0, 0)"
+                    >Raw</a
                   >
                 </li>
                 <li class="nav-item" role="presentation">
@@ -707,7 +732,7 @@
                         id="loadgeojson"
                         class="btn btn-success"
                       >
-                        Load to Map
+                        Load to Map & Fetch Stats
                       </button>
                     </div>
                   </div>
@@ -836,6 +861,17 @@
                     <strong>Connecting to Database ...</strong>
                   </div>
                 </div>
+                <div
+                  class="tab-pane"
+                  role="tabpanel"
+                  id="tab-6"
+                  style="padding: 15px"
+                >
+                  <div
+                    id="jsoneditor"
+                    style="width: 400px; height: 400px"
+                  ></div>
+                </div>
               </div>
             </form>
           </div>
@@ -925,6 +961,14 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.0.0/jsoneditor.min.js"
+      integrity="sha512-vi9Akg8ycb3xXYCKlTgF2aRh9qU4m8za8Y9v+cm4lcg4Cm8koF5NDQwZ0QxF4+AFo3wTvTJFo56dKTeMGhMvzw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="assets/js/leaflet-search.js"></script>
 
     <script src="assets/js/map.js"></script>

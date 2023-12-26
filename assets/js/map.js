@@ -50,7 +50,6 @@ $(document).ready(function () {
 
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
-
   fetchTMProjects();
   // var storedTaskId = localStorage.getItem("task_id");
   // if (storedTaskId) {
@@ -74,12 +73,22 @@ $(document).ready(function () {
   //     }
   //   }
   // }
+
+  const container = document.getElementById("jsoneditor");
+  const options = {};
+  const editor = new JSONEditor(container, options);
+
+  // set json
+  const initialJson = {};
+  editor.set(initialJson);
+
   $("#server").on("change", function () {
     server = this.value;
     // console.log(server);
     localStorage.setItem("server", server);
     check_status();
   });
+
   var drawControlFull = new L.Control.Draw({
     draw: {
       polyline: false,
@@ -127,6 +136,10 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
+      var json = editor.get();
+      json.geometry = layer.toGeoJSON();
+      editor.set(json);
+
       area[1].innerHTML =
         parseInt(parseFloat(seeArea / 1000000).toFixed(2)) == 0
           ? "Less than a Sq KM"
@@ -150,11 +163,14 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
+      var json = editor.get();
+      json.geometry = layer.toGeoJSON();
+      editor.set(json);
 
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML =
         '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
-      console.log(layer.toGeoJSON());
+      // console.log(layer.toGeoJSON());
 
       //do whatever you want; most likely save back to db
     });
@@ -200,6 +216,79 @@ $(document).ready(function () {
     return api_url;
   }
 
+  function generate_json_payload() {
+    var payload = {};
+
+    if (document.getElementById("filename").value !== "") {
+      payload.fileName = document.getElementById("filename").value;
+    }
+
+    const form_data = new FormData(document.forms[0]);
+    const outputType = form_data.getAll("outputType");
+
+    if (outputType.length > 0) {
+      payload.outputType = outputType[0];
+    }
+
+    payload.uuid = document.getElementById("include_uuid").checked;
+    payload.bindZip = document.getElementById("bind_zip").checked;
+    payload.includeStats = document.getElementById("include_stats").checked;
+    payload.useStWithin = document.getElementById("useStWithin").checked;
+    payload.centroid = document.getElementById("centroid").checked;
+
+    if (document.getElementById("download_everything").checked) {
+      console.log("Downloading everything inside area, Ignoring other fields");
+    } else {
+      const geometryType = form_data.getAll("geometryType");
+      const osmTags = form_data.getAll("osmTags");
+      const osmElements = form_data.getAll("osmElements");
+      const osmTags_custom_key = form_data.getAll("customtag_key");
+      const osmTags_custom_value = form_data.getAll("customtag_value");
+      const columns_filter = form_data.getAll("column_key");
+
+      if (geometryType.length > 0) {
+        payload.geometryType = geometryType;
+      }
+
+      if (osmTags.length > 0 || osmTags_custom_key.length > 0) {
+        const tagsobj = {};
+
+        if (osmTags.length > 0) {
+          for (const tag of osmTags) {
+            tagsobj[tag] = tag === "boundary" ? ["administrative"] : [];
+          }
+        }
+
+        if (osmTags_custom_key.length > 0) {
+          for (let i = 0; i < osmTags_custom_key.length; i++) {
+            if (osmTags_custom_value[i] !== "") {
+              const myArray = osmTags_custom_value[i].split(",");
+              tagsobj[osmTags_custom_key[i]] = myArray;
+            } else if (osmTags_custom_key[i] !== "") {
+              tagsobj[osmTags_custom_key[i]] = [];
+            }
+          }
+        }
+
+        payload.filters = {
+          tags: {
+            all_geometry: {
+              [document.getElementById("jointype").value]: tagsobj,
+            },
+          },
+        };
+
+        if (columns_filter.length > 0 && columns_filter[0] !== "") {
+          payload.filters.attributes = {
+            all_geometry: columns_filter,
+          };
+        }
+      }
+    }
+    // console.log(payload);
+    editor.set(payload);
+  }
+
   function handleSubmit(event) {
     document.getElementById("hot_export_btn").disabled = true;
     document.getElementById("loadgeojson").disabled = true;
@@ -209,123 +298,13 @@ $(document).ready(function () {
 
     map.removeControl(drawControlEditOnly);
     event.preventDefault();
+
     var data = editableLayers.toGeoJSON();
-    console.log(data);
     stat = document.getElementById("summary_response").rows[1].cells;
     if (JSON.stringify(data) != '{"type":"FeatureCollection","features":[]}') {
-      var input = '{"geometry":' + JSON.stringify(data.features[0].geometry);
-      if (document.getElementById("filename").value != "") {
-        input +=
-          ',"fileName":"' + document.getElementById("filename").value + '"';
-      }
-      const form_data = new FormData(event.target);
-      outputType = form_data.getAll("outputType");
-      if (outputType.length > 0) {
-        // console.log(outputType);
-        input += ',"outputType":' + JSON.stringify(outputType[0]);
-      }
-      if (document.getElementById("include_uuid").checked) {
-        input += ',"uuid": "true"';
-      } else {
-        input += ',"uuid": "false"';
-      }
-
-      if (document.getElementById("bind_zip").checked) {
-        input += ',"bindZip": "true"';
-      } else {
-        input += ',"bindZip": "false"';
-      }
-
-      if (document.getElementById("include_stats").checked) {
-        input += ',"includeStats": "true"';
-      } else {
-        input += ',"includeStats": "false"';
-      }
-
-      if (document.getElementById("useStWithin").checked) {
-        input += ',"useStWithin": "true"';
-      } else {
-        input += ',"useStWithin": "false"';
-      }
-
-      if (document.getElementById("centroid").checked) {
-        input += ',"centroid": "true"';
-      } else {
-        input += ',"centroid": "false"';
-      }
-
-      if (document.getElementById("download_everything").checked) {
-        console.log(
-          "Downloading everything inside area, Ignoring other fields"
-        );
-      } else {
-        geometryType = form_data.getAll("geometryType");
-        osmTags = form_data.getAll("osmTags");
-        osmElements = form_data.getAll("osmElements");
-
-        osmTags_custom_key = form_data.getAll("customtag_key");
-        osmTags_custom_value = form_data.getAll("customtag_value");
-        columns_filter = form_data.getAll("column_key");
-
-        if (geometryType.length > 0) {
-          // console.log(geometryType);
-          input += ',"geometryType":' + JSON.stringify(geometryType);
-        }
-
-        if (osmTags.length > 0 || osmTags_custom_key.length > 0) {
-          var tagsobj = {};
-          if (osmTags.length > 0) {
-            for (var i = 0; i < osmTags.length; i++) {
-              if (osmTags[i] == "boundary") {
-                tagsobj[osmTags[i]] = ["administrative"];
-              } else {
-                tagsobj[osmTags[i]] = [];
-              }
-            }
-          }
-          if (osmTags_custom_key.length > 0) {
-            for (var i = 0; i < osmTags_custom_key.length; i++) {
-              // console.log(osmTags_custom_value[i]);
-              if (osmTags_custom_value[i] != "") {
-                // console.log(osmTags_custom_value[i]);
-                const myArray = osmTags_custom_value[i].split(",");
-                tagsobj[osmTags_custom_key[i]] = myArray;
-              } else {
-                if (osmTags_custom_key[i] != "") {
-                  tagsobj[osmTags_custom_key[i]] = [];
-                }
-              }
-            }
-          }
-          // console.log(tagsobj);
-          if (tagsobj.length > 0) {
-            tagsobj = { building: [] };
-          }
-          var jointype_dropdown = document.getElementById("jointype");
-          var jointype =
-            jointype_dropdown.options[jointype_dropdown.selectedIndex].value;
-
-          input +=
-            ',"filters":{"tags":{"all_geometry":{"' +
-            jointype +
-            '":' +
-            JSON.stringify(tagsobj) +
-            "}}";
-          if (columns_filter.length > 0) {
-            // console.log(columns_filter);
-            if (columns_filter[0] != "") {
-              input +=
-                ',"attributes":{"all_geometry":' +
-                JSON.stringify(columns_filter) +
-                "}";
-            }
-          }
-          input += "}";
-        }
-      }
-
-      input += "}";
-      console.log(input);
+      // generate_json_payload();
+      input = JSON.stringify(editor.get());
+      // console.log(input);
       stat[1].innerHTML =
         '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Pending';
       ("</strong></div>");
@@ -434,6 +413,9 @@ $(document).ready(function () {
   }
 
   function fetchTMProjects() {
+    // Create a marker cluster group
+    const markers = L.markerClusterGroup();
+
     fetch(
       "https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/?orderBy=priority&orderByType=ASC&mappingTypesExact=false&page=1&createdByMe=false&mappedByMe=false&favoritedByMe=false&managedByMe=false&basedOnMyInterests=false&omitMapResults=false"
     )
@@ -445,15 +427,19 @@ $(document).ready(function () {
 
           const marker = L.circleMarker([lat, lng], {
             color: "#DD0610D6",
-            // fillColor: "#f03",
-            // fillOpacity: 0.5,
             radius: 2.5,
-          }).addTo(map);
+          });
 
           marker.on("click", () => {
             fetchProjectDetails(projectId, [lat, lng]);
           });
+
+          // Add the marker to the marker cluster group
+          markers.addLayer(marker);
         });
+
+        // Add the marker cluster group to the map
+        map.addLayer(markers);
       });
   }
 
@@ -542,7 +528,7 @@ $(document).ready(function () {
 
   document.body.addEventListener("click", function (event) {
     if (event.target.id === "fetchTmbutton") {
-      console.log("clicked");
+      // console.log("clicked");
       const aoiBBOX = JSON.parse(event.target.dataset.aoibbox);
       const filename = `hotosm-project-${event.target.dataset.tmid}`;
       const aoi_bbox_geojson = {
@@ -742,7 +728,7 @@ $(document).ready(function () {
   function attach_delete() {
     $(".delete").off();
     $(".delete").click(function () {
-      console.log("click");
+      // console.log("click");
       $(this).closest(".form-group").remove();
     });
   }
@@ -772,7 +758,7 @@ $(document).ready(function () {
     x--;
   });
 
-  function loadRawGeojsonToMap() {
+  async function loadRawGeojsonToMap() {
     jsonstring = document.getElementById("geojsontextarea");
     value = jsonstring.value;
     geojson_layer = JSON.parse(jsonstring.value);
@@ -787,6 +773,114 @@ $(document).ready(function () {
             opacity: 1,
             fillOpacity: 0,
           };
+        },
+        onEachFeature: async function (feature, layer) {
+          // Make API request to get data for the current polygon
+          try {
+            const response = await fetch(get_api_url() + "stats/polygon/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                geometry: feature.geometry,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const popupContent = `
+            <div style="text-align: justify;">
+              <strong>Buildings:</strong> ${data.summary.buildings}<br>
+              <strong>Roads:</strong> ${data.summary.roads}<br>
+              <br>
+              <table style="width:100%;">
+                <tr>
+                  <th></th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <td><strong>Population</strong></td>
+                  <td>${data.raw.population.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>Populated Area (km2)</strong></td>
+                  <td>${data.raw.populatedAreaKm2.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}</td>
+                </tr>
+                <tr>
+                  <td><strong>Average Edit Time</strong></td>
+                  <td>${new Date(
+                    data.raw.averageEditTime
+                  ).toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>Last Edit Time</strong></td>
+                  <td>${new Date(data.raw.lastEditTime).toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>OSM Buildings Count</strong></td>
+                  <td>${data.raw.osmBuildingsCount.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>OSM Highway Length (km)</strong></td>
+                  <td>${data.raw.osmHighwayLengthKm.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}</td>
+                </tr>
+                <tr>
+                  <td><strong>OSM Users Count</strong></td>
+                  <td>${data.raw.osmUsersCount.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>AI Buildings Count Estimation (km)</strong></td>
+                  <td>${data.raw.aiBuildingsCountEstimationKm.toLocaleString(
+                    undefined,
+                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                  )}</td>
+                </tr>
+                <tr>
+                  <td><strong>AI Road Count Estimation (km)</strong></td>
+                  <td>${data.raw.aiRoadCountEstimationKm.toLocaleString(
+                    undefined,
+                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                  )}</td>
+                </tr>
+                <tr>
+                  <td><strong>Building Count (Last 6 Months)</strong></td>
+                  <td>${data.raw.buildingCount6Months.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td><strong>Highway Length (Last 6 Months)</strong></td>
+                  <td>${data.raw.highwayLength6Months.toLocaleString(
+                    undefined,
+                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                  )}</td>
+                </tr>
+              </table>
+              <br>
+              <div>
+                <strong>Learn more: </strong>
+                <a href="${
+                  data.meta.indicators
+                }" target="_blank">Indicators</a>,
+                <a href="${data.meta.metrics}" target="_blank">Metrics</a>
+              </div>
+            </div>
+          `;
+            layer
+              .bindPopup(popupContent, { maxWidth: 400, closeOnClick: false })
+              .openPopup();
+          } catch (error) {
+            console.log(error);
+            alert(error);
+          }
         },
       });
 
@@ -813,10 +907,16 @@ $(document).ready(function () {
 
   $("#loadgeojson").click(function () {
     loadRawGeojsonToMap();
+    var json = editor.get();
+    json.geometry = JSON.parse(
+      document.getElementById("geojsontextarea").value
+    );
+    console.log(json);
+    editor.set(json);
   });
 
   function load_geojson(geojson_layer) {
-    console.log("loading geojson to map");
+    // console.log("loading geojson to map");
     document.querySelector("a.leaflet-draw-edit-remove").click();
 
     var geoJsonGroup = L.geoJson(geojson_layer);
@@ -845,7 +945,7 @@ $(document).ready(function () {
       opacity: 1,
       fillOpacity: 0.01,
     };
-    console.log("loading geojson to map");
+    // console.log("loading geojson to map");
     if (map.hasLayer(result_geojson)) {
       result_geojson.remove();
     }
@@ -973,7 +1073,7 @@ $(document).ready(function () {
   });
 
   $('input[name="upload_geojson"]').change(function () {
-    console.log("upload geojson clicked");
+    // console.log("upload geojson clicked");
     let fileInput = document.getElementById("formFileGeojson");
     let geojson_file = fileInput.files[0];
 
@@ -1177,4 +1277,5 @@ $(document).ready(function () {
   });
   document.getElementById("formFileGeojson").click();
   document.getElementById("custom_tag_add_btn").click();
+  generate_json_payload();
 });
