@@ -636,23 +636,10 @@ $(document).ready(function () {
       infoIcon.addEventListener("mouseover", function () {
         tooltip = document.createElement("div");
         tooltip.innerHTML =
-          "<p style='text-align: justify; font-size: 14px; margin-bottom: 8px;'><strong>Building:</strong> " +
-          data.stats.summary.building +
-          "</p>" +
-          "<p style='text-align: justify; font-size: 14px; margin-bottom: 8px;'><strong>Road:</strong> " +
-          data.stats.summary.road +
-          "</p>" +
           "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Raw:</strong></p>" +
           "<pre style='font-size: 10px; margin-bottom: 8px; max-width: 300px; overflow: auto;'>" +
           JSON.stringify(data.stats.raw, null, 2) +
-          "</pre>" +
-          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Meta Information:</strong></p>" +
-          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><a href='" +
-          data.stats.meta.indicators +
-          "' target='_blank'>Indicators</a></p>" +
-          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><a href='" +
-          data.stats.meta.metrics +
-          "' target='_blank'>Metrics</a></p>";
+          "</pre>";
 
         tooltip.style.position = "absolute";
         tooltip.style.background = "white";
