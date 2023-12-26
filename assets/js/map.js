@@ -861,9 +861,7 @@ $(document).ready(function () {
               </div>
             </div>
           `;
-            layer
-              .bindPopup(popupContent, { maxWidth: 400, closeOnClick: false })
-              .openPopup();
+            layer.bindPopup(popupContent, { maxWidth: 400 }).openPopup();
           } catch (error) {
             console.log(error);
             alert(error);
