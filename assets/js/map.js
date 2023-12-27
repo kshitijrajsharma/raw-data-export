@@ -285,6 +285,9 @@ $(document).ready(function () {
         }
       }
     }
+    payload.geometry = JSON.parse(
+      document.getElementById("geojsontextarea").value
+    );
     // console.log(payload);
     editor.set(payload);
   }
