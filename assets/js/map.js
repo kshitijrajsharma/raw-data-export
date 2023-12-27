@@ -342,7 +342,11 @@ $(document).ready(function () {
           call_api_result(api_url);
         },
         error: function (e) {
-          handle_error(e.responseJSON.detail[0].msg);
+          try {
+            handle_error(e.responseJSON.detail[0].msg);
+          } catch (error) {
+            handle_error("Couldn't Reach to API");
+          }
         },
       });
     } else {
