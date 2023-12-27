@@ -302,7 +302,7 @@ $(document).ready(function () {
     var data = editableLayers.toGeoJSON();
     stat = document.getElementById("summary_response").rows[1].cells;
     if (JSON.stringify(data) != '{"type":"FeatureCollection","features":[]}') {
-      // generate_json_payload();
+      generate_json_payload();
       input = JSON.stringify(editor.get());
       // console.log(input);
       stat[1].innerHTML =
