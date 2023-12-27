@@ -777,7 +777,7 @@ $(document).ready(function () {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                geometry: feature.geometry,
+                geometry: geojson_layer,
               }),
             });
 
@@ -898,13 +898,13 @@ $(document).ready(function () {
   }
 
   $("#loadgeojson").click(function () {
-    loadRawGeojsonToMap();
     var json = editor.get();
     json.geometry = JSON.parse(
       document.getElementById("geojsontextarea").value
     );
     console.log(json);
     editor.set(json);
+    loadRawGeojsonToMap();
   });
 
   function load_geojson(geojson_layer) {
