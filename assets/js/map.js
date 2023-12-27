@@ -7,8 +7,8 @@ $(document).ready(function () {
   check_status();
 
   var map = L.map("map", {
-    minZoom: 3,
-    maxZoom: 17,
+    minZoom: 2,
+    maxZoom: 18,
     attributionControl: false,
   });
   function setMapToUserLocation(position) {
@@ -582,7 +582,7 @@ $(document).ready(function () {
     stat[1].innerHTML =
       '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
     response_time = document.getElementById("summary_response").rows[2].cells;
-    response_time[1].innerHTML = "(hr:min:sec) " + data.process_time;
+    response_time[1].innerHTML = data.process_time;
     download_url = document.getElementById("summary_response").rows[3].cells;
     var zip_file_size =
       parseInt(parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2)) == 0
