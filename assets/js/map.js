@@ -11,25 +11,8 @@ $(document).ready(function () {
     maxZoom: 18,
     attributionControl: false,
   });
-  function setMapToUserLocation(position) {
-    var userLat = position.coords.latitude;
-    var userLng = position.coords.longitude;
+  map.setView([28.2957487, 83.8123341], 2);
 
-    // Set the map view to the user's location
-    map.setView([userLat, userLng], 10);
-  }
-  function handleLocationError(error) {
-    // Handle errors here, such as permission denied or unavailable geolocation API
-    console.error("Error getting your location: " + error.message);
-    map.setView([28.2957487, 83.8123341], 4);
-  }
-  navigator.geolocation.getCurrentPosition(
-    setMapToUserLocation,
-    handleLocationError,
-    {
-      enableHighAccuracy: true,
-    }
-  );
   L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors, © CartoDB",
   }).addTo(map);
