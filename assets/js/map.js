@@ -1105,7 +1105,7 @@ $(document).ready(function () {
     features.forEach(function (feature) {
       var resultItem = $(
         "<a href='#' class='list-group-item list-group-item-action'>" +
-          feature.properties.description +
+          feature.properties.name +
           "</a>"
       );
       resultItem.click(function () {
