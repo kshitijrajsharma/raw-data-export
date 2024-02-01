@@ -816,8 +816,8 @@ $(document).ready(function () {
                   <td>${data.raw.osmUsersCount.toLocaleString()}</td>
                 </tr>
                 <tr>
-                  <td><strong>AI Buildings Count Estimation (km)</strong></td>
-                  <td>${data.raw.aiBuildingsCountEstimationKm.toLocaleString(
+                  <td><strong>AI Buildings Count Estimation</strong></td>
+                  <td>${data.raw.aiBuildingsCountEstimation.toLocaleString(
                     undefined,
                     { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                   )}</td>
