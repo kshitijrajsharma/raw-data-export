@@ -835,7 +835,7 @@ $(document).ready(function () {
                 </tr>
                 <tr>
                   <td><strong>Highway Length (Last 6 Months)</strong></td>
-                  <td>${data.raw.highwayLength6Months.toLocaleString(
+                  <td>${data.raw.highwayLength6MonthsKm.toLocaleString(
                     undefined,
                     { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                   )}</td>
