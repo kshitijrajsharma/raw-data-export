@@ -15,6 +15,7 @@ $(document).ready(function () {
 
   L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors, © CartoDB",
+    zoom: 18,
   }).addTo(map);
   map.addControl(
     new L.Control.Search({
@@ -34,28 +35,6 @@ $(document).ready(function () {
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
   fetchTMProjects();
-  // var storedTaskId = localStorage.getItem("task_id");
-  // if (storedTaskId) {
-  //   // Ask the user if they want to load data from the previous run
-  //   var loadFromPreviousRun = confirm(
-  //     "Do you want to load data from the previous run?"
-  //   );
-  //   if (loadFromPreviousRun) {
-  //     // Call the function to check the task status using stored task_id
-  //     api_url = get_api_url() + `tasks/status/${storedTaskId}/`;
-  //     call_api_result(api_url);
-  //     var server_local = localStorage.getItem("server");
-  //     if (server_local) {
-  //       server = server_local;
-  //       var selectElement = document.getElementById("server");
-  //       selectElement.value = server;
-  //     } else {
-  //       var select = document.getElementById("server");
-  //       var server = select.options[select.selectedIndex].value;
-  //       localStorage.setItem("server", server);
-  //     }
-  //   }
-  // }
 
   const container = document.getElementById("jsoneditor");
   const options = {};
@@ -170,6 +149,7 @@ $(document).ready(function () {
       clear_summary();
     },
   });
+  var resultVectorGrid = null;
 
   function clear_summary() {
     area = document.getElementById("summary_response").rows[0].cells;
@@ -182,6 +162,9 @@ $(document).ready(function () {
     download_url[1].innerHTML = "";
     if (map.hasLayer(result_geojson)) {
       result_geojson.remove();
+    }
+    if (map.hasLayer(resultVectorGrid)) {
+      resultVectorGrid.remove();
     }
   }
 
@@ -340,6 +323,13 @@ $(document).ready(function () {
     }
   }
 
+  function showSpinner(show) {
+    const spinnerContainer = document.getElementById("spinnerid");
+    if (spinnerContainer) {
+      spinnerContainer.style.display = show ? "block" : "none";
+    }
+  }
+
   function call_api_result(call_url) {
     $.ajax({
       type: "GET",
@@ -351,9 +341,21 @@ $(document).ready(function () {
       success: function (data) {
         if (data.status === "SUCCESS") {
           populate_results(data.result);
-          if (data.result.zip_file_size_bytes / 1000000 < 4) {
-            // if greater than 4 mb don't load it
+          const fileSizeMb = data.result.zip_file_size_bytes / 1000000;
+          if (fileSizeMb < 4) {
+            // If less than 4 MB, load it
             unzip_file(data.result.download_url);
+          } else {
+            const userAgrees = confirm(
+              `The zip file size is ${fileSizeMb.toFixed(
+                2
+              )} MB, which is large and may take time to load. Do you still want to visualize it?`
+            );
+            if (userAgrees) {
+              unzip_file(data.result.download_url);
+            } else {
+              console.log("User opted not to load the file.");
+            }
           }
         } else if (data.status === "FAILURE") {
           handle_error("Task Failed");
@@ -374,25 +376,34 @@ $(document).ready(function () {
     });
   }
 
+  function fit_bounds_geojson(geojson) {
+    var clippingBoundary = L.geoJson(geojson);
+    var bounds = clippingBoundary.getBounds();
+    var centroid = bounds.getCenter();
+    var desiredZoomLevel = 18;
+    map.setView(centroid, desiredZoomLevel);
+  }
+
   function unzip_file(url) {
     if (url.toLowerCase().endsWith(".zip")) {
       console.log("Unziping file " + url);
       JSZipUtils.getBinaryContent(url, function (err, data) {
         JSZip.loadAsync(data).then(function (zip) {
           for (let [filename, file] of Object.entries(zip.files)) {
-            // TODO Your code goes here
-            if (filename != "clipping_boundary.geojson") {
+            if (filename == "clipping_boundary.geojson") {
+              zip
+                .file(filename)
+                .async("string")
+                .then(function (data) {
+                  fit_bounds_geojson(JSON.parse(data));
+                });
+            } else {
               if (filename.slice(-7).toLowerCase() === "geojson") {
-                console.log(filename);
-                geojson = new File([file], filename);
-                console.log(geojson);
                 zip
                   .file(filename)
                   .async("string")
                   .then(function (data) {
-                    // data is a string
-                    // load_geojson(JSON.parse(data));
-                    load_result_to_map(JSON.parse(data));
+                    loadResultToMapWithSlicer(JSON.parse(data));
                   });
               }
             }
@@ -424,11 +435,9 @@ $(document).ready(function () {
             fetchProjectDetails(projectId, [lat, lng]);
           });
 
-          // Add the marker to the marker cluster group
           markers.addLayer(marker);
         });
 
-        // Add the marker cluster group to the map
         map.addLayer(markers);
       });
   }
@@ -890,110 +899,84 @@ $(document).ready(function () {
     loadRawGeojsonToMap();
   });
 
-  function load_geojson(geojson_layer) {
-    // console.log("loading geojson to map");
-    document.querySelector("a.leaflet-draw-edit-remove").click();
-
-    var geoJsonGroup = L.geoJson(geojson_layer);
-    map.fitBounds(geoJsonGroup.getBounds());
-    addNonGroupLayers(geoJsonGroup, editableLayers);
-    // editableLayers.addLayer(L.geoJSON(geojson_layer));
-    map.removeControl(drawControlFull);
-    map.addControl(drawControlEditOnly);
-    stat = document.getElementById("summary_response").rows[1].cells;
-    stat[1].innerHTML =
-      '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
-    area = document.getElementById("summary_response").rows[0].cells;
-    area[1].innerHTML = "To be Calculated";
-  }
-
-  function load_result_to_map(geojson_layer) {
-    var myStyle = {
-      color: "#00008B",
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.01,
-    };
-    var highlight = {
-      color: "yellow",
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.01,
-    };
-    // console.log("loading geojson to map");
-    if (map.hasLayer(result_geojson)) {
-      result_geojson.remove();
+  function loadResultToMapWithSlicer(geojsonLayer) {
+    showSpinner(true);
+    if (map.hasLayer(resultVectorGrid)) {
+      resultVectorGrid.remove();
     }
 
-    result_geojson = L.geoJson(geojson_layer, {
-      onEachFeature: function (feature, layer) {
-        if (
-          layer.feature.geometry.type == "Polygon" ||
-          layer.feature.geometry.type == "MultiPolygon"
-        ) {
-          var t_style = myStyle;
-          layer.setStyle(t_style);
-        } else if (layer.feature.geometry.type == "Point") {
-          var ico = L.icon({
-            iconUrl: "assets/img/marker.png",
-            iconSize: [6, 6],
-          });
-          layer.setIcon(ico);
-        } else if (
-          layer.feature.geometry.type == "LineString" ||
-          layer.feature.geometry.type == "MultiLineString"
-        ) {
-          var t_style = {
-            color: "#FFA500",
-            weight: 2,
-            opacity: 2,
-            fillOpacity: 0.01,
-          };
-          layer.setStyle(t_style);
-        } else if (layer.feature.geometry.type == "GeometryCollection") {
-          layer.eachLayer(function (layer_GeometryCollection) {
-            if (layer_GeometryCollection._latlng) {
-              var ico = L.icon({
-                iconUrl: "assets/img/marker.png",
-                iconSize: [6, 6],
-              });
-              layer_GeometryCollection.setIcon(ico);
-            } else {
-              var t_style = {
-                color: "#00008B",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.01,
-              };
-              layer.setStyle(t_style);
-            }
-          });
-        }
+    var myStyle = function (properties, zoom) {
+      // Style based on geometry type, similar to previous example
+      var geometryType = properties.osm_type;
+      if (geometryType === "ways_poly" || geometryType === "MultiPolygon") {
+        return {
+          color: "#00008B",
+          weight: 0.8,
+          opacity: 1,
+          fillOpacity: 0.01,
+        };
+      } else if (
+        geometryType === "ways_line" ||
+        geometryType === "MultiLineString"
+      ) {
+        return {
+          color: "#FFA500",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.01,
+        };
+      } else if (geometryType == "nodes") {
+        return {
+          color: "#ff0000",
+          radius: 4,
+          weight: 1.5,
+          opacity: 1,
+          fillOpacity: 0.01,
+        };
+      }
+      // Default style
+      return {
+        color: "#008000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.01,
+      };
+    };
 
-        var popupContent = "<table class='popup-table'>"; // Apply a class to the table
-        for (var p in feature.properties) {
-          popupContent +=
-            "<tr><td class='popup-key'>" +
-            p +
-            "</td><td class='popup-value'>" +
-            JSON.stringify(feature.properties[p]) +
-            "</td></tr>";
-        }
-        popupContent += "</table>";
-        popupContent += "</table>";
-        layer.bindPopup(popupContent, {
-          closeButton: false,
-        });
-        layer.on("click", function () {
-          layer.openPopup();
-        });
-        layer.on("mouseout", function () {
-          layer.closePopup();
-        });
-      },
-    }).addTo(map);
+    var vectorGrid = L.vectorGrid
+      .slicer(geojsonLayer, {
+        rendererFactory: L.svg.tile,
+        vectorTileLayerStyles: {
+          sliced: myStyle,
+        },
+        maxNativeZoom: 18,
+        maxZoom: 18,
+        interactive: true,
+        getFeatureId: function (f) {
+          return f.properties.osm_id;
+        },
+      })
+      .on("mouseover", function (e) {
+        // var properties = e.layer.properties;
+        // var popupContent = "<table class='popup-table'>";
+        // for (var p in properties) {
+        //   popupContent +=
+        //     "<tr><td class='popup-key'>" +
+        //     p +
+        //     "</td><td class='popup-value'>" +
+        //     JSON.stringify(properties[p]) +
+        //     "</td></tr>";
+        // }
+        // popupContent += "</table>";
+        // console.log(popupContent);
+        // L.popup().setLatLng(e.latlng).setContent(popupContent).openOn(map);
+      })
+      .addTo(map);
 
-    map.fitBounds(result_geojson.getBounds());
+    // map.fitBounds(vectorGrid.getBounds());
+
+    resultVectorGrid = vectorGrid;
+    showSpinner(false);
   }
 
   function addNonGroupLayers(sourceLayer, targetGroup) {
