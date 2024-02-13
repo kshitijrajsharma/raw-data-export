@@ -951,20 +951,19 @@ $(document).ready(function () {
         },
       })
       .on("mouseover", function (e) {
-        var properties = e.layer.properties;
-        var popupContent = "<table class='popup-table'>";
-        for (var p in properties) {
-          popupContent +=
-            "<tr><td class='popup-key'>" +
-            p +
-            "</td><td class='popup-value'>" +
-            JSON.stringify(properties[p]) +
-            "</td></tr>";
-        }
-        popupContent += "</table>";
-        console.log(popupContent);
-        // Creating and showing the popup on click
-        L.popup().setLatLng(e.latlng).setContent(popupContent).openOn(map);
+        // var properties = e.layer.properties;
+        // var popupContent = "<table class='popup-table'>";
+        // for (var p in properties) {
+        //   popupContent +=
+        //     "<tr><td class='popup-key'>" +
+        //     p +
+        //     "</td><td class='popup-value'>" +
+        //     JSON.stringify(properties[p]) +
+        //     "</td></tr>";
+        // }
+        // popupContent += "</table>";
+        // console.log(popupContent);
+        // L.popup().setLatLng(e.latlng).setContent(popupContent).openOn(map);
       })
       .addTo(map);
 
