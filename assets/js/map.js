@@ -331,7 +331,6 @@ $(document).ready(function () {
   }
 
   function call_api_result(call_url) {
-    showSpinner(true);
     $.ajax({
       type: "GET",
       url: call_url,
@@ -348,7 +347,7 @@ $(document).ready(function () {
             unzip_file(data.result.download_url);
           } else {
             const userAgrees = confirm(
-              `The file size is ${fileSizeMb.toFixed(
+              `The zip file size is ${fileSizeMb.toFixed(
                 2
               )} MB, which is large and may take time to load. Do you still want to visualize it?`
             );
@@ -358,7 +357,6 @@ $(document).ready(function () {
               console.log("User opted not to load the file.");
             }
           }
-          showSpinner(false);
         } else if (data.status === "FAILURE") {
           handle_error("Task Failed");
         } else {
@@ -378,19 +376,29 @@ $(document).ready(function () {
     });
   }
 
+  function fit_bounds_geojson(geojson) {
+    var clippingBoundary = L.geoJson(geojson);
+    var bounds = clippingBoundary.getBounds();
+    var centroid = bounds.getCenter();
+    var desiredZoomLevel = 18;
+    map.setView(centroid, desiredZoomLevel);
+  }
+
   function unzip_file(url) {
-    showSpinner(true);
     if (url.toLowerCase().endsWith(".zip")) {
       console.log("Unziping file " + url);
       JSZipUtils.getBinaryContent(url, function (err, data) {
         JSZip.loadAsync(data).then(function (zip) {
           for (let [filename, file] of Object.entries(zip.files)) {
-            // TODO Your code goes here
-            if (filename != "clipping_boundary.geojson") {
+            if (filename == "clipping_boundary.geojson") {
+              zip
+                .file(filename)
+                .async("string")
+                .then(function (data) {
+                  fit_bounds_geojson(JSON.parse(data));
+                });
+            } else {
               if (filename.slice(-7).toLowerCase() === "geojson") {
-                console.log(filename);
-                geojson = new File([file], filename);
-                console.log(geojson);
                 zip
                   .file(filename)
                   .async("string")
@@ -403,7 +411,6 @@ $(document).ready(function () {
         });
       });
     }
-    showSpinner(false);
   }
 
   function fetchTMProjects() {
@@ -683,7 +690,6 @@ $(document).ready(function () {
 
       map.addControl(drawControlEditOnly);
     }
-    showSpinner(false);
   }
 
   const form = document.querySelector("form");
@@ -970,6 +976,7 @@ $(document).ready(function () {
     // map.fitBounds(vectorGrid.getBounds());
 
     resultVectorGrid = vectorGrid;
+    showSpinner(false);
   }
 
   function addNonGroupLayers(sourceLayer, targetGroup) {
