@@ -358,7 +358,11 @@ $(document).ready(function () {
             }
           }
         } else if (data.status === "FAILURE") {
-          handle_error("Task Failed");
+          error_msg= "Task Failed"
+          if (data.result){
+            error_msg+= data.result
+          }
+          handle_error(error_msg);
         } else {
           setTimeout(function () {
             stat = document.getElementById("summary_response").rows[1].cells;
