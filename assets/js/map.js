@@ -201,6 +201,9 @@ $(document).ready(function () {
     payload.includeStats = document.getElementById("include_stats").checked;
     payload.useStWithin = document.getElementById("useStWithin").checked;
     payload.centroid = document.getElementById("centroid").checked;
+    payload.includeUserMetadata = document.getElementById(
+      "includeUserMetadata"
+    ).checked;
 
     if (document.getElementById("download_everything").checked) {
       console.log("Downloading everything inside area, Ignoring other fields");
@@ -358,9 +361,9 @@ $(document).ready(function () {
             }
           }
         } else if (data.status === "FAILURE") {
-          error_msg= "Task Failed"
-          if (data.result){
-            error_msg+= data.result
+          error_msg = "Task Failed";
+          if (data.result) {
+            error_msg += data.result;
           }
           handle_error(error_msg);
         } else {
