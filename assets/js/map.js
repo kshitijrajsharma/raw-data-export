@@ -5,7 +5,6 @@ $(document).ready(function () {
   window.onbeforeunload = function () {
     return "Are you sure you want to leave? Think of your existing exports!";
   };
-  check_status();
 
   var map = L.map("map", {
     minZoom: 2,
@@ -18,6 +17,8 @@ $(document).ready(function () {
     attribution: "© OpenStreetMap contributors",
     maxZoom: 19,
   }).addTo(map);
+  
+  check_status();
   map.addControl(
     new L.Control.Search({
       url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
