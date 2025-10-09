@@ -210,7 +210,6 @@ $(document).ready(function () {
 
     payload.uuid = document.getElementById("include_uuid").checked;
     payload.bindZip = document.getElementById("bind_zip").checked;
-    payload.includeStats = document.getElementById("include_stats").checked;
     payload.useStWithin = document.getElementById("useStWithin").checked;
     payload.centroid = document.getElementById("centroid").checked;
     payload.includeUserMetadata = document.getElementById(
