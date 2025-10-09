@@ -17,7 +17,7 @@ $(document).ready(function () {
     attribution: "© OpenStreetMap contributors",
     maxZoom: 19,
   }).addTo(map);
-  
+
   check_status();
   map.addControl(
     new L.Control.Search({
