@@ -305,10 +305,10 @@ $(document).ready(function () {
         success: function (data) {
           console.log("Task started:", data);
           var taskId = data.task_id;
-          
+
           task_id_row = document.getElementById("summary_response").rows[4].cells;
           task_id_row[1].innerHTML = taskId;
-          
+
           api_url = get_api_url() + `tasks/status/${taskId}/`;
           call_api_result(api_url);
         },
@@ -839,7 +839,7 @@ $(document).ready(function () {
         if (!document.getElementById("enable_attributes").checked) {
           return;
         }
-        
+
         var properties = e.layer.properties;
         var popupContent = "<table class='popup-table'>";
         for (var p in properties) {
