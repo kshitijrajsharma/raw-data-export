@@ -6,6 +6,23 @@ $(document).ready(function () {
     return "Are you sure you want to leave? Think of your existing exports!";
   };
 
+  function checkAndResumeExport() {
+    var savedTaskId = localStorage.getItem("current_task_id");
+    if (savedTaskId) {
+      if (confirm("Found a previous export (Task ID: " + savedTaskId + "). Do you want to load the results?")) {
+        api_url = get_api_url() + `tasks/status/${savedTaskId}/`;
+        task_id_row = document.getElementById("summary_response").rows[4].cells;
+        task_id_row[1].innerHTML = '<span style="font-size: 0.85em; font-style: italic;">' + savedTaskId + '</span>';
+        stat = document.getElementById("summary_response").rows[1].cells;
+        stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Loading...</strong></div>';
+        call_api_result(api_url);
+      } else {
+        localStorage.removeItem("current_task_id");
+        clear_summary();
+      }
+    }
+  }
+
   var map = L.map("map", {
     minZoom: 2,
     maxZoom: 18,
@@ -19,6 +36,7 @@ $(document).ready(function () {
   }).addTo(map);
 
   check_status();
+  checkAndResumeExport();
   map.addControl(
     new L.Control.Search({
       url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
@@ -260,6 +278,8 @@ $(document).ready(function () {
   }
 
   function handleSubmit(event) {
+    localStorage.removeItem("current_task_id");
+    
     document.getElementById("hot_export_btn").disabled = true;
     document.getElementById("loadgeojson").disabled = true;
     document.getElementById("filename").disabled = true;
@@ -306,8 +326,10 @@ $(document).ready(function () {
           console.log("Task started:", data);
           var taskId = data.task_id;
 
+          localStorage.setItem("current_task_id", taskId);
+
           task_id_row = document.getElementById("summary_response").rows[4].cells;
-          task_id_row[1].innerHTML = taskId;
+          task_id_row[1].innerHTML = '<span style="font-size: 0.85em; font-style: italic;">' + taskId + '</span>';
 
           api_url = get_api_url() + `tasks/status/${taskId}/`;
           call_api_result(api_url);
@@ -345,7 +367,6 @@ $(document).ready(function () {
           populate_results(data.result);
           const fileSizeMb = data.result.zip_file_size_bytes / 1000000;
           if (fileSizeMb < 4) {
-            // If less than 4 MB, load it
             unzip_file(data.result.download_url);
           } else {
             const userAgrees = confirm(
@@ -360,6 +381,7 @@ $(document).ready(function () {
             }
           }
         } else if (data.status === "FAILURE") {
+          localStorage.removeItem("current_task_id");
           error_msg = "Task Failed";
           if (data.result) {
             error_msg += data.result;
@@ -638,120 +660,13 @@ $(document).ready(function () {
             fillOpacity: 0,
           };
         },
-        onEachFeature: async function (feature, layer) {
-          // Make API request to get data for the current polygon
-          try {
-            const response = await fetch(get_api_url() + "stats/polygon/", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                geometry: geojson_layer,
-              }),
-            });
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const popupContent = `
-            <div style="text-align: justify;">
-              <strong>Buildings:</strong> ${data.summary.buildings}<br>
-              <strong>Roads:</strong> ${data.summary.roads}<br>
-              <br>
-              <table style="width:100%;">
-                <tr>
-                  <th></th>
-                  <th></th>
-                </tr>
-                <tr>
-                  <td><strong>Population</strong></td>
-                  <td>${data.raw.population.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>Populated Area (km2)</strong></td>
-                  <td>${data.raw.populatedAreaKm2.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}</td>
-                </tr>
-                <tr>
-                  <td><strong>Average Edit Time</strong></td>
-                  <td>${new Date(
-              data.raw.averageEditTime
-            ).toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>Last Edit Time</strong></td>
-                  <td>${new Date(data.raw.lastEditTime).toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>OSM Buildings Count</strong></td>
-                  <td>${data.raw.osmBuildingsCount.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>OSM Highway Length (km)</strong></td>
-                  <td>${data.raw.osmHighwayLengthKm.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}</td>
-                </tr>
-                <tr>
-                  <td><strong>OSM Users Count</strong></td>
-                  <td>${data.raw.osmUsersCount.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>AI Buildings Count Estimation</strong></td>
-                  <td>${data.raw.aiBuildingsCountEstimation.toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}</td>
-                </tr>
-                <tr>
-                  <td><strong>AI Road Count Estimation (km)</strong></td>
-                  <td>${data.raw.aiRoadCountEstimationKm.toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}</td>
-                </tr>
-                <tr>
-                  <td><strong>Building Count (Last 6 Months)</strong></td>
-                  <td>${data.raw.buildingCount6Months.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td><strong>Highway Length (Last 6 Months)</strong></td>
-                  <td>${data.raw.highwayLength6MonthsKm.toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}</td>
-                </tr>
-              </table>
-              <br>
-              <div>
-                <strong>Learn more: </strong>
-                <a href="${data.meta.indicators
-              }" target="_blank">Indicators</a>,
-                <a href="${data.meta.metrics}" target="_blank">Metrics</a>
-              </div>
-            </div>
-          `;
-            layer.bindPopup(popupContent, { maxWidth: 400 }).openPopup();
-          } catch (error) {
-            console.log(error);
-            alert(error);
-          }
-        },
       });
 
       addNonGroupLayers(geoJsonGroup, editableLayers);
       var bounds = geoJsonGroup.getBounds();
 
-      // Zoom the map to the bounds of the GeoJSON layer
       map.fitBounds(bounds);
 
-      // editableLayers.addLayer(L.geoJSON(geojson_layer));
       map.removeControl(drawControlFull);
       map.addControl(drawControlEditOnly);
       stat = document.getElementById("summary_response").rows[1].cells;
