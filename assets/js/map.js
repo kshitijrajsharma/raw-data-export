@@ -107,10 +107,10 @@ $(document).ready(function () {
     const geojson = layer.toGeoJSON();
     const seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
     const areaInSqKm = parseFloat(seeArea / 1000000).toFixed(2);
-    
+
     $("#geojsontextarea").val(JSON.stringify(geojson));
     exportPayload.geometry = geojson;
-    
+
     updateSummaryRow("area", parseInt(areaInSqKm) == 0 ? "Less than a Sq KM" : `${areaInSqKm} Sq Km`);
     updateSummaryRow("status", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>');
   }
@@ -257,7 +257,7 @@ $(document).ready(function () {
 
   function handleSubmit(event) {
     event.preventDefault();
-    
+
     clear_summary();
     localStorage.removeItem("current_task_id");
     setFormEnabled(false);
@@ -412,7 +412,7 @@ $(document).ready(function () {
       &nbsp;<span style="cursor: pointer;" onclick="copyToClipboard('${data.download_url}')" title="Copy Link">&#x1F4CB;</span>
       <p><small><strong>Zip size</strong> (MB): ${zipSize}<br><strong>Export size</strong> (MB): ${bindedSize}</small></p>
     `;
-    
+
     window.copyToClipboard = copyToClipboard;
 
     if (data?.stats) {
@@ -427,7 +427,7 @@ $(document).ready(function () {
     if (data?.stats) {
       let tooltip = null;
       $("#statsIcon").hover(
-        function() {
+        function () {
           tooltip = $("<div>").html(
             `<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Raw:</strong></p>
              <pre style='font-size: 10px; margin-bottom: 8px; max-width: 300px; overflow: auto;'>${JSON.stringify(data.stats.raw, null, 2)}</pre>`
@@ -440,7 +440,7 @@ $(document).ready(function () {
             maxWidth: "350px"
           }).appendTo("body");
         },
-        function() {
+        function () {
           if (tooltip) tooltip.remove();
         }
       );
