@@ -1,34 +1,41 @@
 $(document).ready(function () {
-  var result_geojson;
-  var clipping_boundary;
+  let resultVectorGrid = null;
+  let result_geojson = null;
+  let clipping_boundary = null;
+  let exportPayload = {};
+  let currentPollingInterval = null;
 
-  window.onbeforeunload = function () {
-    return "Are you sure you want to leave? Think of your existing exports!";
+  window.onbeforeunload = () => "Are you sure you want to leave? Think of your existing exports!";
+
+  const summaryRows = {
+    area: () => $("#summary_response").find("tr:eq(0) td"),
+    status: () => $("#summary_response").find("tr:eq(1) td"),
+    responseTime: () => $("#summary_response").find("tr:eq(2) td"),
+    downloadUrl: () => $("#summary_response").find("tr:eq(3) td"),
+    taskId: () => $("#summary_response").find("tr:eq(4) td")
   };
 
+  function updateSummaryRow(row, content) {
+    summaryRows[row]().html(content);
+  }
+
   function checkAndResumeExport() {
-    var savedTaskId = localStorage.getItem("current_task_id");
-    if (savedTaskId) {
-      if (confirm("Found a previous export (Task ID: " + savedTaskId + "). Do you want to load the results?")) {
-        api_url = get_api_url() + `tasks/status/${savedTaskId}/`;
-        task_id_row = document.getElementById("summary_response").rows[4].cells;
-        task_id_row[1].innerHTML = '<span style="font-size: 0.85em; font-style: italic;">' + savedTaskId + '</span>';
-        stat = document.getElementById("summary_response").rows[1].cells;
-        stat[1].innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Loading...</strong></div>';
-        call_api_result(api_url);
-      } else {
-        localStorage.removeItem("current_task_id");
-        clear_summary();
-      }
+    const savedTaskId = localStorage.getItem("current_task_id");
+    if (savedTaskId && confirm(`Found a previous export (Task ID: ${savedTaskId}). Do you want to load the results?`)) {
+      updateSummaryRow("taskId", `<span style="font-size: 0.85em; font-style: italic;">${savedTaskId}</span>`);
+      updateSummaryRow("status", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Loading...</strong></div>');
+      call_api_result(get_api_url() + `tasks/status/${savedTaskId}/`);
+    } else if (savedTaskId) {
+      localStorage.removeItem("current_task_id");
+      clear_summary();
     }
   }
 
-  var map = L.map("map", {
+  const map = L.map("map", {
     minZoom: 2,
     maxZoom: 18,
     attributionControl: false,
-  });
-  map.setView([28.2957487, 83.8123341], 2);
+  }).setView([28.2957487, 83.8123341], 2);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
@@ -52,15 +59,11 @@ $(document).ready(function () {
     })
   );
 
-  var editableLayers = new L.FeatureGroup();
+  const editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
 
-  var exportPayload = {};
-
   $("#server").on("change", function () {
-    server = this.value;
-    // console.log(server);
-    localStorage.setItem("server", server);
+    localStorage.setItem("server", this.value);
     check_status();
   });
 
@@ -100,51 +103,31 @@ $(document).ready(function () {
 
   // document.getElementById("filename").disabled = true; //disable me - temp
 
+  function handlePolygonUpdate(layer) {
+    const geojson = layer.toGeoJSON();
+    const seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+    const areaInSqKm = parseFloat(seeArea / 1000000).toFixed(2);
+    
+    $("#geojsontextarea").val(JSON.stringify(geojson));
+    exportPayload.geometry = geojson;
+    
+    updateSummaryRow("area", parseInt(areaInSqKm) == 0 ? "Less than a Sq KM" : `${areaInSqKm} Sq Km`);
+    updateSummaryRow("status", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>');
+  }
+
   map.on("draw:created", function (e) {
     clear_summary();
-    var type = e.layerType,
-      layer = e.layer;
-
-    if (type === "polygon" || type == "rectangle") {
-      var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-      area = document.getElementById("summary_response").rows[0].cells;
-      document.getElementById("geojsontextarea").value = JSON.stringify(
-        layer.toGeoJSON()
-      );
-      exportPayload.geometry = layer.toGeoJSON();
-
-      area[1].innerHTML =
-        parseInt(parseFloat(seeArea / 1000000).toFixed(2)) == 0
-          ? "Less than a Sq KM"
-          : parseFloat(seeArea / 1000000).toFixed(2) + " Sq Km";
-      stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML =
-        '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
+    if (e.layerType === "polygon" || e.layerType === "rectangle") {
+      handlePolygonUpdate(e.layer);
     }
-
-    editableLayers.addLayer(layer);
+    editableLayers.addLayer(e.layer);
     map.removeControl(drawControlFull);
     map.addControl(drawControlEditOnly);
   });
+
   map.on("draw:edited", function (e) {
-    var layers = e.layers;
     clear_summary();
-    layers.eachLayer(function (layer) {
-      var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-      area = document.getElementById("summary_response").rows[0].cells;
-      area[1].innerHTML = parseInt(seeArea / 1000000) + " Sq Km";
-      document.getElementById("geojsontextarea").value = JSON.stringify(
-        layer.toGeoJSON()
-      );
-      exportPayload.geometry = layer.toGeoJSON();
-
-      stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML =
-        '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Ready to Run</strong></div>';
-      // console.log(layer.toGeoJSON());
-
-      //do whatever you want; most likely save back to db
-    });
+    e.layers.eachLayer(handlePolygonUpdate);
   });
 
   L.EditToolbar.Delete.include({
@@ -158,25 +141,15 @@ $(document).ready(function () {
       clear_summary();
     },
   });
-  var resultVectorGrid = null;
 
   function clear_summary() {
-    area = document.getElementById("summary_response").rows[0].cells;
-    area[1].innerHTML = "";
-    stat = document.getElementById("summary_response").rows[1].cells;
-    stat[1].innerHTML = "";
-    response_time = document.getElementById("summary_response").rows[2].cells;
-    response_time[1].innerHTML = "";
-    download_url = document.getElementById("summary_response").rows[3].cells;
-    download_url[1].innerHTML = "";
-    if (map.hasLayer(result_geojson)) {
-      result_geojson.remove();
-    }
-    if (map.hasLayer(resultVectorGrid)) {
-      resultVectorGrid.remove();
-    }
-    if (map.hasLayer(clipping_boundary)) {
-      clipping_boundary.remove();
+    ["area", "status", "responseTime", "downloadUrl", "taskId"].forEach(row => updateSummaryRow(row, ""));
+    [result_geojson, resultVectorGrid, clipping_boundary].forEach(layer => {
+      if (layer && map.hasLayer(layer)) layer.remove();
+    });
+    if (currentPollingInterval) {
+      clearTimeout(currentPollingInterval);
+      currentPollingInterval = null;
     }
   }
 
@@ -276,74 +249,54 @@ $(document).ready(function () {
     exportPayload = payload;
   }
 
+  function setFormEnabled(enabled) {
+    ["hot_export_btn", "loadgeojson", "filename", "geojsontextarea"].forEach(id => {
+      document.getElementById(id).disabled = !enabled;
+    });
+  }
+
   function handleSubmit(event) {
-    localStorage.removeItem("current_task_id");
-
-    document.getElementById("hot_export_btn").disabled = true;
-    document.getElementById("loadgeojson").disabled = true;
-    document.getElementById("filename").disabled = true;
-
-    document.getElementById("geojsontextarea").disabled = true;
-
-    map.removeControl(drawControlEditOnly);
     event.preventDefault();
+    
+    clear_summary();
+    localStorage.removeItem("current_task_id");
+    setFormEnabled(false);
+    map.removeControl(drawControlEditOnly);
 
-    var data = editableLayers.toGeoJSON();
-    stat = document.getElementById("summary_response").rows[1].cells;
-    if (JSON.stringify(data) != '{"type":"FeatureCollection","features":[]}') {
-      generate_json_payload();
-      input = JSON.stringify(exportPayload);
-      // console.log(input);
-      stat[1].innerHTML =
-        '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Pending';
-      ("</strong></div>");
-      response_time = document.getElementById("summary_response").rows[2].cells;
-      response_time[1].innerHTML = "";
-      download_url = document.getElementById("summary_response").rows[3].cells;
-      download_url[1].innerHTML = "";
-
-      api_url = get_api_url() + "snapshot/";
-      headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-      if (isAccessTokenPresent()) {
-        headers = {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": localStorage.getItem("access_token"),
-        };
-      }
-
-      $.ajax({
-        type: "POST",
-        url: api_url,
-        headers: headers,
-        data: input,
-
-        success: function (data) {
-          console.log("Task started:", data);
-          var taskId = data.task_id;
-
-          localStorage.setItem("current_task_id", taskId);
-
-          task_id_row = document.getElementById("summary_response").rows[4].cells;
-          task_id_row[1].innerHTML = '<span style="font-size: 0.85em; font-style: italic;">' + taskId + '</span>';
-
-          api_url = get_api_url() + `tasks/status/${taskId}/`;
-          call_api_result(api_url);
-        },
-        error: function (e) {
-          try {
-            handle_error(e.responseJSON.detail[0].msg);
-          } catch (error) {
-            handle_error("Couldn't Reach to API");
-          }
-        },
-      });
-    } else {
-      stat[1].innerHTML = "No Polygon Supplied";
+    const data = editableLayers.toGeoJSON();
+    if (JSON.stringify(data) === '{"type":"FeatureCollection","features":[]}') {
+      updateSummaryRow("status", "No Polygon Supplied");
+      setFormEnabled(true);
+      map.addControl(drawControlEditOnly);
+      return;
     }
+
+    generate_json_payload();
+    updateSummaryRow("status", '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Pending</strong></div>');
+
+    const headers = {
+      "accept": "application/json",
+      "Content-Type": "application/json"
+    };
+    if (isAccessTokenPresent()) {
+      headers["access-token"] = localStorage.getItem("access_token");
+    }
+
+    $.ajax({
+      type: "POST",
+      url: get_api_url() + "snapshot/",
+      headers: headers,
+      data: JSON.stringify(exportPayload),
+      success: function (data) {
+        const taskId = data.task_id;
+        localStorage.setItem("current_task_id", taskId);
+        updateSummaryRow("taskId", `<span style="font-size: 0.85em; font-style: italic;">${taskId}</span>`);
+        call_api_result(get_api_url() + `tasks/status/${taskId}/`);
+      },
+      error: function (e) {
+        handle_error(e.responseJSON?.detail?.[0]?.msg || "Couldn't Reach to API");
+      }
+    });
   }
 
   function showSpinner(show) {
@@ -365,41 +318,20 @@ $(document).ready(function () {
         if (data.status === "SUCCESS") {
           populate_results(data.result);
           const fileSizeMb = data.result.zip_file_size_bytes / 1000000;
-          if (fileSizeMb < 4) {
+          if (fileSizeMb < 4 || confirm(`The zip file size is ${fileSizeMb.toFixed(2)} MB, which is large and may take time to load. Do you still want to visualize it?`)) {
             unzip_file(data.result.download_url);
-          } else {
-            const userAgrees = confirm(
-              `The zip file size is ${fileSizeMb.toFixed(
-                2
-              )} MB, which is large and may take time to load. Do you still want to visualize it?`
-            );
-            if (userAgrees) {
-              unzip_file(data.result.download_url);
-            } else {
-              console.log("User opted not to load the file.");
-            }
           }
         } else if (data.status === "FAILURE") {
           localStorage.removeItem("current_task_id");
-          error_msg = "Task Failed";
-          if (data.result) {
-            error_msg += data.result;
-          }
-          handle_error(error_msg);
+          handle_error("Task Failed" + (data.result || ""));
         } else {
-          setTimeout(function () {
-            stat = document.getElementById("summary_response").rows[1].cells;
-            stat[1].innerHTML =
-              '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>' +
-              data.status +
-              "</strong></div>";
-            call_api_result(call_url);
-          }, 2000);
+          updateSummaryRow("status", `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>${data.status}</strong></div>`);
+          currentPollingInterval = setTimeout(() => call_api_result(call_url), 2000);
         }
       },
       error: function (e) {
-        handle_error(e.responseJSON.detail[0].msg);
-      },
+        handle_error(e.responseJSON?.detail?.[0]?.msg || "API Error");
+      }
     });
   }
 
@@ -448,143 +380,80 @@ $(document).ready(function () {
     }
   }
 
-  function extractFilename(inputString) {
-    const parts = inputString.split("/");
-    const filenameWithExtension = parts[parts.length - 1];
-
-    const filenameParts = filenameWithExtension.split(".");
-    const fileExtension = filenameParts[filenameParts.length - 1];
-    const filenameWithoutExtension = filenameParts.slice(0, -1).join(".");
-
-    if (filenameWithoutExtension.includes("_uid_")) {
-      const uidParts = filenameWithoutExtension.split("_uid_");
-      return uidParts[0] + "." + fileExtension;
-    } else {
-      return filenameWithoutExtension + "." + fileExtension;
-    }
+  function extractFilename(url) {
+    const filename = url.split("/").pop();
+    return filename.replace(/_uid_[^.]+/, "");
   }
+
+  function formatFileSize(bytes) {
+    const mb = parseFloat(bytes / 1000000).toFixed(2);
+    return parseInt(mb) == 0 ? "Less than a MB" : mb;
+  }
+
+  function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('Download link copied to clipboard!');
+  }
+
   function populate_results(data) {
-    console.log(data);
-    area = document.getElementById("summary_response").rows[0].cells;
-    area[1].innerHTML =
-      parseInt(data.query_area) == 0 ? "Less than a Sq KM" : data.query_area;
-    stat = document.getElementById("summary_response").rows[1].cells;
-    stat[1].innerHTML =
-      '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>';
-    response_time = document.getElementById("summary_response").rows[2].cells;
-    response_time[1].innerHTML = data.process_time;
-    download_url = document.getElementById("summary_response").rows[3].cells;
-    var zip_file_size =
-      parseInt(parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2)) == 0
-        ? "Less than a MB"
-        : parseFloat(data.zip_file_size_bytes / 1000000).toFixed(2);
-    var binded_file_size =
-      parseInt(data.binded_file_size) == 0
-        ? "Less than a MB"
-        : data.binded_file_size;
-    download_url[1].innerHTML =
-      '<a id="response_file_download" href="' +
-      data.download_url +
-      '">' +
-      extractFilename(data.download_url) +
-      '</a>&nbsp;<span style="cursor: pointer;" onclick="(function(text) {' +
-      "  var dummyTextarea = document.createElement('textarea');" +
-      "  dummyTextarea.value = text;" +
-      "  document.body.appendChild(dummyTextarea);" +
-      "  dummyTextarea.select();" +
-      "  document.execCommand('copy');" +
-      "  document.body.removeChild(dummyTextarea);" +
-      "  alert('Download link copied to clipboard!');" +
-      "})('" +
-      data.download_url +
-      '\')" title="Copy Link">&#x1F4CB;</span>' +
-      "<p><small><strong>Zip size</strong> (MB) : " +
-      zip_file_size +
-      "<br>" +
-      "<strong>Export size</strong> (MB) : " +
-      binded_file_size +
-      "</small></p>";
+    updateSummaryRow("area", parseInt(data.query_area) == 0 ? "Less than a Sq KM" : data.query_area);
+    updateSummaryRow("status", '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success</strong></div>');
+    updateSummaryRow("responseTime", data.process_time);
 
-    if (data && "stats" in data) {
-      // Create a label for "About the Data"
-      var aboutDataLabel = document.createElement("span");
-      aboutDataLabel.innerHTML = "<strong>About the Data: </small>";
-      aboutDataLabel.style.fontSize = "12px";
-      aboutDataLabel.style.marginRight = "5px";
+    const zipSize = formatFileSize(data.zip_file_size_bytes);
+    const bindedSize = parseInt(data.binded_file_size) == 0 ? "Less than a MB" : data.binded_file_size;
+    let downloadHtml = `
+      <a id="response_file_download" href="${data.download_url}">${extractFilename(data.download_url)}</a>
+      &nbsp;<span style="cursor: pointer;" onclick="copyToClipboard('${data.download_url}')" title="Copy Link">&#x1F4CB;</span>
+      <p><small><strong>Zip size</strong> (MB): ${zipSize}<br><strong>Export size</strong> (MB): ${bindedSize}</small></p>
+    `;
+    
+    window.copyToClipboard = copyToClipboard;
 
-      // Append the label before the information icon
-      download_url[1].insertAdjacentElement("beforeend", aboutDataLabel);
-
-      // Create information icon
-      var infoIcon = document.createElement("span");
-      infoIcon.innerHTML = "&#9432;";
-      infoIcon.style.cursor = "pointer";
-
-      // Append the information icon after the label
-      download_url[1].insertAdjacentElement("beforeend", infoIcon);
-
-      // Create a variable to store the tooltip
-      var tooltip;
-
-      // Display building and road summaries on information icon hover
-      infoIcon.addEventListener("mouseover", function () {
-        tooltip = document.createElement("div");
-        tooltip.innerHTML =
-          "<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Raw:</strong></p>" +
-          "<pre style='font-size: 10px; margin-bottom: 8px; max-width: 300px; overflow: auto;'>" +
-          JSON.stringify(data.stats.raw, null, 2) +
-          "</pre>";
-
-        tooltip.style.position = "absolute";
-        tooltip.style.background = "white";
-        tooltip.style.border = "1px solid #ccc";
-        tooltip.style.padding = "10px";
-        tooltip.style.zIndex = "1000";
-        tooltip.style.maxWidth = "350px";
-        tooltip.style.textAlign = "justify";
-        tooltip.style.top =
-          download_url[1].offsetTop + download_url[1].offsetHeight + 10 + "px";
-        tooltip.style.left =
-          download_url[1].offsetLeft + infoIcon.offsetWidth + 150 + "px";
-
-        document.body.appendChild(tooltip);
-      });
-
-      // Close tooltip when mouse is out of the information icon
-      infoIcon.addEventListener("mouseout", function () {
-        if (tooltip) {
-          tooltip.parentNode.removeChild(tooltip);
-        }
-      });
+    if (data?.stats) {
+      downloadHtml += `
+        <span style="font-size: 12px; margin-right: 5px;"><strong>About the Data:</strong></span>
+        <span id="statsIcon" style="cursor: pointer;" title="View Stats">&#9432;</span>
+      `;
     }
 
-    document.getElementById("hot_export_btn").disabled = false;
-    document.getElementById("loadgeojson").disabled = false;
-    document.getElementById("geojsontextarea").disabled = false;
-    document.getElementById("filename").disabled = false;
+    updateSummaryRow("downloadUrl", downloadHtml);
+
+    if (data?.stats) {
+      let tooltip = null;
+      $("#statsIcon").hover(
+        function() {
+          tooltip = $("<div>").html(
+            `<p style='text-align: justify; font-size: 12px; margin-bottom: 8px;'><strong>Raw:</strong></p>
+             <pre style='font-size: 10px; margin-bottom: 8px; max-width: 300px; overflow: auto;'>${JSON.stringify(data.stats.raw, null, 2)}</pre>`
+          ).css({
+            position: "absolute",
+            background: "white",
+            border: "1px solid #ccc",
+            padding: "10px",
+            zIndex: "1000",
+            maxWidth: "350px"
+          }).appendTo("body");
+        },
+        function() {
+          if (tooltip) tooltip.remove();
+        }
+      );
+    }
+
+    setFormEnabled(true);
     map.addControl(drawControlEditOnly);
   }
 
   function handle_error(msg) {
-    try {
-      stat = document.getElementById("summary_response").rows[1].cells;
-      stat[1].innerHTML = '<p style="color:red;">' + msg + "</p>";
-      document.getElementById("hot_export_btn").disabled = false;
-      document.getElementById("loadgeojson").disabled = false;
-      document.getElementById("geojsontextarea").disabled = false;
-      // document.getElementById("filename").disabled = false;
-
-      map.addControl(drawControlEditOnly);
-    } catch (err) {
-      stat[1].innerHTML =
-        '<p style="color:red;">' + "Error , API didn't responded" + "</p>";
-      document.getElementById("hot_export_btn").disabled = false;
-      document.getElementById("loadgeojson").disabled = false;
-      document.getElementById("geojsontextarea").disabled = false;
-      document.getElementById("filename").disabled = false;
-
-      map.addControl(drawControlEditOnly);
-    }
+    updateSummaryRow("status", `<p style="color:red;">${msg}</p>`);
+    setFormEnabled(true);
+    map.addControl(drawControlEditOnly);
   }
 
   const form = document.querySelector("form");
