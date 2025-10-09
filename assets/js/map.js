@@ -279,7 +279,7 @@ $(document).ready(function () {
 
   function handleSubmit(event) {
     localStorage.removeItem("current_task_id");
-    
+
     document.getElementById("hot_export_btn").disabled = true;
     document.getElementById("loadgeojson").disabled = true;
     document.getElementById("filename").disabled = true;
