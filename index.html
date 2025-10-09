@@ -21,13 +21,6 @@
 
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.0.0/jsoneditor.css"
-      integrity="sha512-iOFdnlwX6UGb55bU5DL0tjWkS/+9jxRxw2KiRzyHMZARASUSwm0nEXBcdqsYni+t3UKJSK7vrwvlL8792/UMjQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link
-      rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
@@ -38,14 +31,6 @@
       integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"
     />
   </head>
 
@@ -866,14 +851,13 @@
                         <p class="h6">Include stats</p>
                       </label>
                     </div>
-                    
-                    <div class="row" style="padding: 10px 0px;">
-                      <p class="h6" data-toggle="tooltip" title="Select the processing queue for your export. Use 'On Demand' for larger exports that require more processing time.">
+                    <div class="row" style="margin-bottom: 15px">
+                      <p class="h6" style="padding: 10px" data-toggle="tooltip" title="Select the processing queue for your export. Use 'On Demand' for larger exports that require more processing time.">
                         Queue Type
                       </p>
                       <select class="form-select" id="queue_type">
-                        <option value="raw_daemon" selected>Raw Daemon (Default)</option>
-                        <option value="raw_ondemand">Raw On Demand (For bigger exports)</option>
+                        <option value="raw_daemon" selected>Daemon (Default)</option>
+                        <option value="raw_ondemand">On Demand (For bigger exports)</option>
                       </select>
                     </div>
                   </div>
@@ -997,13 +981,6 @@
       referrerpolicy="no-referrer"
     ></script>
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.0.0/jsoneditor.min.js"
-      integrity="sha512-vi9Akg8ycb3xXYCKlTgF2aRh9qU4m8za8Y9v+cm4lcg4Cm8koF5NDQwZ0QxF4+AFo3wTvTJFo56dKTeMGhMvzw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="assets/js/leaflet-search.js"></script>
     <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
     <script src="assets/js/map.js"></script>

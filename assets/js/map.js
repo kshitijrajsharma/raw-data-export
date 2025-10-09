@@ -14,9 +14,9 @@ $(document).ready(function () {
   });
   map.setView([28.2957487, 83.8123341], 2);
 
-  L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors, © CartoDB",
-    zoom: 18,
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
+    maxZoom: 19,
   }).addTo(map);
   map.addControl(
     new L.Control.Search({
@@ -35,15 +35,8 @@ $(document).ready(function () {
 
   var editableLayers = new L.FeatureGroup();
   map.addLayer(editableLayers);
-  fetchTMProjects();
 
-  const container = document.getElementById("jsoneditor");
-  const options = {};
-  const editor = new JSONEditor(container, options);
-
-  // set json
-  const initialJson = {};
-  editor.set(initialJson);
+  var exportPayload = {};
 
   $("#server").on("change", function () {
     server = this.value;
@@ -99,9 +92,7 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
-      var json = editor.get();
-      json.geometry = layer.toGeoJSON();
-      editor.set(json);
+      exportPayload.geometry = layer.toGeoJSON();
 
       area[1].innerHTML =
         parseInt(parseFloat(seeArea / 1000000).toFixed(2)) == 0
@@ -126,9 +117,7 @@ $(document).ready(function () {
       document.getElementById("geojsontextarea").value = JSON.stringify(
         layer.toGeoJSON()
       );
-      var json = editor.get();
-      json.geometry = layer.toGeoJSON();
-      editor.set(json);
+      exportPayload.geometry = layer.toGeoJSON();
 
       stat = document.getElementById("summary_response").rows[1].cells;
       stat[1].innerHTML =
@@ -261,11 +250,12 @@ $(document).ready(function () {
         }
       }
     }
-    payload.geometry = JSON.parse(
-      document.getElementById("geojsontextarea").value
-    );
+    const geojsonValue = document.getElementById("geojsontextarea").value;
+    if (geojsonValue && geojsonValue.trim() !== "") {
+      payload.geometry = JSON.parse(geojsonValue);
+    }
     // console.log(payload);
-    editor.set(payload);
+    exportPayload = payload;
   }
 
   function handleSubmit(event) {
@@ -282,7 +272,7 @@ $(document).ready(function () {
     stat = document.getElementById("summary_response").rows[1].cells;
     if (JSON.stringify(data) != '{"type":"FeatureCollection","features":[]}') {
       generate_json_payload();
-      input = JSON.stringify(editor.get());
+      input = JSON.stringify(exportPayload);
       // console.log(input);
       stat[1].innerHTML =
         '<div class="alert alert-warning alert-dismissible fade show" role="alert"><strong>Pending';
@@ -434,146 +424,6 @@ $(document).ready(function () {
       });
     }
   }
-
-  function fetchTMProjects() {
-    // Create a marker cluster group
-    const markers = L.markerClusterGroup();
-
-    fetch(
-      "https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/?orderBy=priority&orderByType=ASC&mappingTypesExact=false&page=1&createdByMe=false&mappedByMe=false&favoritedByMe=false&managedByMe=false&basedOnMyInterests=false&omitMapResults=false"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        data.mapResults.features.forEach((feature) => {
-          const { projectId } = feature.properties;
-          const [lng, lat] = feature.geometry.coordinates;
-
-          const marker = L.circleMarker([lat, lng], {
-            color: "#DD0610D6",
-            radius: 2.5,
-          });
-
-          marker.on("click", () => {
-            fetchProjectDetails(projectId, [lat, lng]);
-          });
-
-          markers.addLayer(marker);
-        });
-
-        map.addLayer(markers);
-      });
-  }
-
-  function fetchProjectDetails(projectId, location) {
-    const popup = L.popup({
-      className: "popup-container",
-      closeButton: false,
-    });
-    popup.setLatLng(location);
-    popup.setContent(`
-        <div class="popup-content">
-            <strong>Tasking Manager Project</strong> <br>
-            <strong>ID:</strong> ${projectId} <br>
-            <div class="popup-spinner"></div>
-        </div>
-    `);
-    popup.openOn(map);
-
-    fetch(
-      `https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/${projectId}/?as_file=false&abbreviated=false`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const {
-          status,
-          projectPriority,
-          projectInfo: { name },
-          aoiBBOX,
-          organisationName,
-          percentMapped,
-          percentValidated,
-          mappingTypes,
-          lastUpdated,
-        } = data;
-        const mappingTypesList = mappingTypes.join(", ");
-
-        const popupContent = `
-          <div class="popup-header">
-              <strong>Tasking Manager Project ${projectId}</strong>
-          </div>
-          <div class="popup-content">
-              <div class="popup-line">
-                  <strong>Name:</strong> ${name}
-              </div>
-              <div class="popup-line">
-                  <strong>Status:</strong> ${status}
-              </div>
-              <div class="popup-line">
-                  <strong>Priority:</strong> ${projectPriority}
-              </div>
-              <div class="popup-line">
-                  <strong>Creator:</strong> ${organisationName}
-              </div>
-              <div class="popup-line">
-                  <strong>Mapped:</strong> ${percentMapped} % 
-              </div>              
-              <div class="popup-line">
-                  <strong>Validated:</strong> ${percentValidated} %
-              </div>
-              <div class="popup-line">
-                  <strong>Last Updated :</strong> ${moment(
-          lastUpdated
-        ).fromNow()}
-              </div>
-              <div class="popup-line">
-                  <strong>Mapping Type :</strong> ${mappingTypesList}
-              </div>
-              <div class="popup-button-container">
-                  <button id="fetchTmbutton" type="button" class="btn btn-danger btn-sm"
-                  style="background: rgb(214, 64, 63);" data-tmid="${projectId}" data-aoibbox="${JSON.stringify(
-          aoiBBOX
-        )}">Load Project AOI</button>
-              </div>
-          </div>
-      `;
-
-        popup.setContent(popupContent);
-      })
-      .catch((error) => {
-        console.error("Error fetching project details:", error);
-        popup.setContent(
-          "Error fetching project details. Please try again later."
-        );
-      });
-  }
-
-  document.body.addEventListener("click", function (event) {
-    if (event.target.id === "fetchTmbutton") {
-      // console.log("clicked");
-      const aoiBBOX = JSON.parse(event.target.dataset.aoibbox);
-      const filename = `hotosm-project-${event.target.dataset.tmid}`;
-      const aoi_bbox_geojson = {
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [aoiBBOX[0], aoiBBOX[1]],
-              [aoiBBOX[2], aoiBBOX[1]],
-              [aoiBBOX[2], aoiBBOX[3]],
-              [aoiBBOX[0], aoiBBOX[3]],
-              [aoiBBOX[0], aoiBBOX[1]],
-            ],
-          ],
-        },
-      };
-      document.getElementById("geojsontextarea").value =
-        JSON.stringify(aoi_bbox_geojson);
-      loadRawGeojsonToMap();
-      document.getElementById("filename").value = filename;
-    }
-  });
 
   function extractFilename(inputString) {
     const parts = inputString.split("/");
@@ -769,10 +619,14 @@ $(document).ready(function () {
   async function loadRawGeojsonToMap() {
     jsonstring = document.getElementById("geojsontextarea");
     value = jsonstring.value;
-    geojson_layer = JSON.parse(jsonstring.value);
+
+    if (!value || value.trim() === "") {
+      alert("Please enter valid GeoJSON in the textarea");
+      return;
+    }
+
     try {
-      value = jsonstring.value;
-      geojson_layer = JSON.parse(jsonstring.value);
+      geojson_layer = JSON.parse(value);
       document.querySelector("a.leaflet-draw-edit-remove").click();
       var geoJsonGroup = L.geoJson(geojson_layer, {
         style: function (feature) {
@@ -911,13 +765,14 @@ $(document).ready(function () {
   }
 
   $("#loadgeojson").click(function () {
-    var json = editor.get();
-    json.geometry = JSON.parse(
-      document.getElementById("geojsontextarea").value
-    );
-    console.log(json);
-    editor.set(json);
-    loadRawGeojsonToMap();
+    const geojsonValue = document.getElementById("geojsontextarea").value;
+    if (geojsonValue && geojsonValue.trim() !== "") {
+      exportPayload.geometry = JSON.parse(geojsonValue);
+      console.log(exportPayload);
+      loadRawGeojsonToMap();
+    } else {
+      alert("Please enter valid GeoJSON in the textarea");
+    }
   });
 
   function loadResultToMapWithSlicer(geojsonLayer) {
