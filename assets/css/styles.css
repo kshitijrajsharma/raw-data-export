@@ -1,6 +1,83 @@
 html,
 body {
     height: 100%;
+    font-size: 14px;
+}
+
+.vh-90 {
+    height: 90vh;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.logo-img {
+    width: 50px;
+    height: auto;
+}
+
+.server-select {
+    min-width: 130px;
+}
+
+.form-panel {
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+}
+
+.tab-content {
+    padding: 15px;
+}
+
+.nav-link {
+    color: #000 !important;
+}
+
+.btn-export {
+    background: rgb(214, 64, 63);
+    border-color: rgb(214, 64, 63);
+}
+
+.btn-export:hover, .btn-export:focus {
+    background: rgb(194, 44, 43);
+    border-color: rgb(194, 44, 43);
+}
+
+.map-container {
+    height: calc(100vh - 100px);
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .form-panel {
+        height: auto;
+        max-height: 60vh;
+        margin-bottom: 1rem;
+    }
+    
+    .map-container {
+        height: 50vh;
+        min-height: 300px;
+    }
+    
+    .vh-90 {
+        height: auto;
+        min-height: 100vh;
+    }
 }
 
 
