@@ -856,51 +856,6 @@ $(document).ready(function () {
     reader.readAsText(geojson_file);
     document.getElementById("formFileGeojson").value = null;
   });
-  var typingTimer;
-  var doneTypingInterval = 500;
-
-  $("#searchCountryInput").on("input", function () {
-    clearTimeout(typingTimer);
-    var query = $(this).val().trim();
-    if (query !== "") {
-      typingTimer = setTimeout(function () {
-        $.ajax({
-          url: get_api_url() + "countries/?q=" + query,
-          method: "GET",
-          success: function (data) {
-            updateAutocompleteResults(data.features);
-          },
-        });
-      }, doneTypingInterval);
-    } else {
-      $("#autocompleteResults").empty().hide();
-    }
-  });
-
-  function updateAutocompleteResults(features) {
-    var autocompleteResults = $("#autocompleteResults");
-    autocompleteResults.empty().show();
-
-    features.forEach(function (feature) {
-      var resultItem = $(
-        "<a href='#' class='list-group-item list-group-item-action'>" +
-        feature.properties.name +
-        "</a>"
-      );
-      resultItem.click(function () {
-        renderFeatureOnMap(feature);
-        $("#searchCountryInput").val("");
-        autocompleteResults.empty().hide();
-      });
-
-      autocompleteResults.append(resultItem);
-    });
-  }
-
-  function renderFeatureOnMap(feature) {
-    document.getElementById("geojsontextarea").value = JSON.stringify(feature);
-    loadRawGeojsonToMap();
-  }
 
   function isAccessTokenPresent() {
     return localStorage.getItem("access_token") !== null;
