@@ -156,16 +156,6 @@
                 </li>
                 <li class="nav-item" role="presentation">
                   <a
-                    class="nav-link"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    href="#tab-6"
-                    style="color: rgb(0, 0, 0)"
-                    >Raw</a
-                  >
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a
                     class="nav-link active"
                     role="tab"
                     data-bs-toggle="tab"
@@ -876,6 +866,16 @@
                         <p class="h6">Include stats</p>
                       </label>
                     </div>
+                    
+                    <div class="row" style="padding: 10px 0px;">
+                      <p class="h6" data-toggle="tooltip" title="Select the processing queue for your export. Use 'On Demand' for larger exports that require more processing time.">
+                        Queue Type
+                      </p>
+                      <select class="form-select" id="queue_type">
+                        <option value="raw_daemon" selected>Raw Daemon (Default)</option>
+                        <option value="raw_ondemand">Raw On Demand (For bigger exports)</option>
+                      </select>
+                    </div>
                   </div>
                   <button
                     class="btn btn-primary text-end"
@@ -900,17 +900,13 @@
                     <strong>Connecting to Database ...</strong>
                   </div>
                 </div>
-                <div
-                  class="tab-pane"
-                  role="tabpanel"
-                  id="tab-6"
-                  style="padding: 15px"
-                >
-                  <div
-                    id="jsoneditor"
-                    style="width: 400px; height: 400px"
-                  ></div>
+                                    </div>
+                  </div>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
               </div>
             </form>
           </div>

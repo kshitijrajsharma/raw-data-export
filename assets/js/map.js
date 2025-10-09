@@ -209,6 +209,9 @@ $(document).ready(function () {
       "includeUserMetadata"
     ).checked;
 
+    const queueSelect = document.getElementById("queue_type");
+    payload.queue = queueSelect ? queueSelect.value : "raw_daemon";
+
     if (document.getElementById("download_everything").checked) {
       console.log("Downloading everything inside area, Ignoring other fields");
     } else {
@@ -519,8 +522,8 @@ $(document).ready(function () {
               </div>
               <div class="popup-line">
                   <strong>Last Updated :</strong> ${moment(
-                    lastUpdated
-                  ).fromNow()}
+          lastUpdated
+        ).fromNow()}
               </div>
               <div class="popup-line">
                   <strong>Mapping Type :</strong> ${mappingTypesList}
@@ -814,15 +817,15 @@ $(document).ready(function () {
                 <tr>
                   <td><strong>Populated Area (km2)</strong></td>
                   <td>${data.raw.populatedAreaKm2.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}</td>
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}</td>
                 </tr>
                 <tr>
                   <td><strong>Average Edit Time</strong></td>
                   <td>${new Date(
-                    data.raw.averageEditTime
-                  ).toLocaleString()}</td>
+              data.raw.averageEditTime
+            ).toLocaleString()}</td>
                 </tr>
                 <tr>
                   <td><strong>Last Edit Time</strong></td>
@@ -835,9 +838,9 @@ $(document).ready(function () {
                 <tr>
                   <td><strong>OSM Highway Length (km)</strong></td>
                   <td>${data.raw.osmHighwayLengthKm.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}</td>
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}</td>
                 </tr>
                 <tr>
                   <td><strong>OSM Users Count</strong></td>
@@ -846,16 +849,16 @@ $(document).ready(function () {
                 <tr>
                   <td><strong>AI Buildings Count Estimation</strong></td>
                   <td>${data.raw.aiBuildingsCountEstimation.toLocaleString(
-                    undefined,
-                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                  )}</td>
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}</td>
                 </tr>
                 <tr>
                   <td><strong>AI Road Count Estimation (km)</strong></td>
                   <td>${data.raw.aiRoadCountEstimationKm.toLocaleString(
-                    undefined,
-                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                  )}</td>
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}</td>
                 </tr>
                 <tr>
                   <td><strong>Building Count (Last 6 Months)</strong></td>
@@ -864,17 +867,16 @@ $(document).ready(function () {
                 <tr>
                   <td><strong>Highway Length (Last 6 Months)</strong></td>
                   <td>${data.raw.highwayLength6MonthsKm.toLocaleString(
-                    undefined,
-                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                  )}</td>
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}</td>
                 </tr>
               </table>
               <br>
               <div>
                 <strong>Learn more: </strong>
-                <a href="${
-                  data.meta.indicators
-                }" target="_blank">Indicators</a>,
+                <a href="${data.meta.indicators
+              }" target="_blank">Indicators</a>,
                 <a href="${data.meta.metrics}" target="_blank">Metrics</a>
               </div>
             </div>
@@ -1108,8 +1110,8 @@ $(document).ready(function () {
     features.forEach(function (feature) {
       var resultItem = $(
         "<a href='#' class='list-group-item list-group-item-action'>" +
-          feature.properties.name +
-          "</a>"
+        feature.properties.name +
+        "</a>"
       );
       resultItem.click(function () {
         renderFeatureOnMap(feature);
@@ -1171,21 +1173,18 @@ $(document).ready(function () {
     var modalContent = `
       <div class="modal-header">
         <h5 class="modal-title" id="osmLoginModalLabel">Welcome, ${get_role(
-          userDetails.role
-        )} User !</h5>
+      userDetails.role
+    )} User !</h5>
       </div>
       <div class="modal-body text-center">
         <div class="user-profile">
-          <img src="${
-            userDetails.img_url
-          }" alt="User Profile Image" class="img-fluid profile-image">
+          <img src="${userDetails.img_url
+      }" alt="User Profile Image" class="img-fluid profile-image">
           <div class="profile-details">
             <p class="profile-name">${userDetails.username}</p>
-            <p> OSM ID : ${
-              userDetails.id
-            }  <span style="cursor: pointer;" onclick="copyToClipboard('${
-      localStorage.getItem("access_token") || ""
-    }')" title="Copy access token">&#x1F4CB;</span></p>
+            <p> OSM ID : ${userDetails.id
+      }  <span style="cursor: pointer;" onclick="copyToClipboard('${localStorage.getItem("access_token") || ""
+      }')" title="Copy access token">&#x1F4CB;</span></p>
           
             <button type="button" class="btn btn-danger" onclick="signOut()">Sign Out</button>
           </div>
