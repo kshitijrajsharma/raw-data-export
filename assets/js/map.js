@@ -304,10 +304,11 @@ $(document).ready(function () {
 
         success: function (data) {
           console.log("Task started:", data);
-          // Extract the task_id from the response
           var taskId = data.task_id;
-          // localStorage.setItem("task_id", taskId);
-          // Call the function to check the task status
+          
+          task_id_row = document.getElementById("summary_response").rows[4].cells;
+          task_id_row[1].innerHTML = taskId;
+          
           api_url = get_api_url() + `tasks/status/${taskId}/`;
           call_api_result(api_url);
         },
@@ -835,6 +836,10 @@ $(document).ready(function () {
         },
       })
       .on("mouseover", function (e) {
+        if (!document.getElementById("enable_attributes").checked) {
+          return;
+        }
+        
         var properties = e.layer.properties;
         var popupContent = "<table class='popup-table'>";
         for (var p in properties) {
@@ -846,7 +851,6 @@ $(document).ready(function () {
             "</td></tr>";
         }
         popupContent += "</table>";
-        // console.log(popupContent);
         L.popup().setLatLng(e.latlng).setContent(popupContent).openOn(map);
       })
       .addTo(map);
