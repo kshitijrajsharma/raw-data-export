@@ -1,227 +1,221 @@
 html,
 body {
-    height: 100%;
-    font-size: 14px;
+  height: 100%;
+  font-size: 14px;
 }
 
 .vh-90 {
-    height: 90vh;
+  height: 90vh;
 }
 
 .h-100 {
-    height: 100%;
+  height: 100%;
 }
 
 .logo-img {
-    width: 50px;
-    height: auto;
+  width: 50px;
+  height: auto;
 }
 
 .server-select {
-    min-width: 130px;
+  min-width: 130px;
 }
 
 .form-panel {
-    overflow-y: auto;
-    height: calc(100vh - 100px);
+  overflow-y: auto;
+  height: calc(100vh - 100px);
 }
 
 .tab-content {
-    padding: 15px;
+  padding: 15px;
 }
 
 .nav-link {
-    color: #000 !important;
+  color: #000 !important;
 }
 
 .btn-export {
-    background: rgb(214, 64, 63);
-    border-color: rgb(214, 64, 63);
+  background: rgb(214, 64, 63);
+  border-color: rgb(214, 64, 63);
 }
 
-.btn-export:hover, .btn-export:focus {
-    background: rgb(194, 44, 43);
-    border-color: rgb(194, 44, 43);
+.btn-export:hover,
+.btn-export:focus {
+  background: rgb(194, 44, 43);
+  border-color: rgb(194, 44, 43);
 }
 
 .map-container {
-    height: calc(100vh - 100px);
+  height: calc(100vh - 100px);
 }
 
 #map {
-    width: 100%;
-    height: 100%;
-    min-height: 400px;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
 }
 
 .form-check {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-check-label {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
-    .form-panel {
-        height: auto;
-        max-height: 60vh;
-        margin-bottom: 1rem;
-    }
-    
-    .map-container {
-        height: 50vh;
-        min-height: 300px;
-    }
-    
-    .vh-90 {
-        height: auto;
-        min-height: 100vh;
-    }
+  .form-panel {
+    height: auto;
+    max-height: 60vh;
+    margin-bottom: 1rem;
+  }
+
+  .map-container {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .vh-90 {
+    height: auto;
+    min-height: 100vh;
+  }
 }
 
-
-
 .popup-spinner {
-    margin: 10px auto;
-    border: 5px solid rgba(150, 150, 150, 0.3);
-    border-top: 5px solid #db3460;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 2s linear infinite;
+  margin: 10px auto;
+  border: 5px solid rgba(150, 150, 150, 0.3);
+  border-top: 5px solid #db3460;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
 }
 
 .popup-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    /* padding: 20px; */
-    text-align: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* padding: 20px; */
+  text-align: center;
 }
 
 .popup-header {
-    font-size: 20px;
-    margin-bottom: 15px;
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
 .popup-line {
-    margin-bottom: 10px;
-    font-size: 13px;
-
+  margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .popup-button-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
-
-
 
 /* CSS Styles for the Custom Popup */
 .popup-table {
-    padding: 10px;
-    font-size: 14px;
-  }
-  
-  .popup-key {
-    font-weight: bold;
-  }
-  
-  .popup-value {
-    word-wrap: break-word;
-  }
-  
+  padding: 10px;
+  font-size: 14px;
+}
+
+.popup-key {
+  font-weight: bold;
+}
+
+.popup-value {
+  word-wrap: break-word;
+}
 
 #sidepanel {
-    height: 100%;
-    background: yellow;
+  height: 100%;
+  background: yellow;
 }
 
 #map {
-    height: 100%;
+  height: 100%;
 }
 
 .form-container {
-    background-color: #fdfdfd;
+  background-color: #fdfdfd;
 }
 
 .add-one {
-    color: green;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 3px;
+  color: green;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 3px;
 }
 
 .delete {
-    color: white;
-    background-color: rgb(231, 76, 60);
-    text-align: center;
-    margin-top: 6px;
-    font-weight: 700;
-    border-radius: 5px;
-    min-width: 20px;
-    cursor: pointer;
+  color: white;
+  background-color: rgb(231, 76, 60);
+  text-align: center;
+  margin-top: 6px;
+  font-weight: 700;
+  border-radius: 5px;
+  min-width: 20px;
+  cursor: pointer;
 }
 
 #singlebutton {
-    width: 100%;
-    margin-top: 20px;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .dynamic-element {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .form-check {
-    padding: 3px;
-    margin-left: 30px;
+  padding: 3px;
+  margin-left: 30px;
 }
 
-
 .autocomplete-results {
-    /* position: absolute; */
-    position: fixed; /* Change to fixed for centering on the screen */
-    /* top: 100%; */
-    /* left: 0; */
-    z-index: 1000000;
-    width: auto;
-    max-height: 200px;
-    min-width: 250px;
-    overflow-y: auto;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: none;
-  }
-  
-  .autocomplete-item {
-    padding: 8px;
-    cursor: pointer;
-  }
-  
-  .autocomplete-item:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .user-profile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  /* position: absolute; */
+  position: fixed; /* Change to fixed for centering on the screen */
+  /* top: 100%; */
+  /* left: 0; */
+  z-index: 1000000;
+  width: auto;
+  max-height: 200px;
+  min-width: 250px;
+  overflow-y: auto;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
 
-  .profile-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-right: 20px;
-  }
+.autocomplete-item {
+  padding: 8px;
+  cursor: pointer;
+}
 
-  .profile-details {
-    text-align: left;
-  }
+.autocomplete-item:hover {
+  background-color: #f0f0f0;
+}
 
-  .profile-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
+.user-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.profile-details {
+  text-align: left;
+}
+
+.profile-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
